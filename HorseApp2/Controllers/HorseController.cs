@@ -9,6 +9,7 @@ using System.Web.Http;
 
 namespace HorseApp2.Controllers
 {
+    //Main Controller
     public class HorseController : ApiController
     {
         //WORKS WITH ROW IN URL
