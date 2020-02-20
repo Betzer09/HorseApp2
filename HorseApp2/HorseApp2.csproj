@@ -184,9 +184,22 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\HorseListing.cs" />
+    <Compile Include="Models\HorseListingData.cs" />
+    <Compile Include="Models\HorseListingPhoto.cs" />
     <Compile Include="Models\RowExistsRequestDTO.cs" />
+    <Compile Include="Models\SearchByPriceResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="tblActiveListing.cs">
+      <DependentUpon>DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblActiveListingPhoto.cs">
+      <DependentUpon>DataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="tblName.cs">
+      <DependentUpon>DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="usp_searchByPrice_Result.cs">
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -198,8 +211,8 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="DataModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>DataModel.Context.cs</LastGenOutput>
       <DependentUpon>DataModel.edmx</DependentUpon>
+      <LastGenOutput>DataModel.Context.cs</LastGenOutput>
     </Content>
     <Content Include="DataModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

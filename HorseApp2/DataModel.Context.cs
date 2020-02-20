@@ -27,8 +27,83 @@ namespace HorseApp2
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<tblActiveListingPhoto> tblActiveListingPhotos { get; set; }
+        public virtual DbSet<tblActiveListing> tblActiveListings { get; set; }
         public virtual DbSet<tblName> tblNames { get; set; }
         public virtual DbSet<database_firewall_rules> database_firewall_rules { get; set; }
+    
+        public virtual int usp_InsertActiveListing(Nullable<int> age, string color, string dam, string sire, string damSire, string description, string firebaseId, string gender, string horseName, Nullable<bool> inFoal, Nullable<decimal> lte, Nullable<System.DateTime> originalDateListed, Nullable<decimal> price, string purchaseListingType, string ranchPhoto, string sellerId, string horseType)
+        {
+            var ageParameter = age.HasValue ?
+                new ObjectParameter("Age", age) :
+                new ObjectParameter("Age", typeof(int));
+    
+            var colorParameter = color != null ?
+                new ObjectParameter("Color", color) :
+                new ObjectParameter("Color", typeof(string));
+    
+            var damParameter = dam != null ?
+                new ObjectParameter("Dam", dam) :
+                new ObjectParameter("Dam", typeof(string));
+    
+            var sireParameter = sire != null ?
+                new ObjectParameter("Sire", sire) :
+                new ObjectParameter("Sire", typeof(string));
+    
+            var damSireParameter = damSire != null ?
+                new ObjectParameter("DamSire", damSire) :
+                new ObjectParameter("DamSire", typeof(string));
+    
+            var descriptionParameter = description != null ?
+                new ObjectParameter("Description", description) :
+                new ObjectParameter("Description", typeof(string));
+    
+            var firebaseIdParameter = firebaseId != null ?
+                new ObjectParameter("FirebaseId", firebaseId) :
+                new ObjectParameter("FirebaseId", typeof(string));
+    
+            var genderParameter = gender != null ?
+                new ObjectParameter("Gender", gender) :
+                new ObjectParameter("Gender", typeof(string));
+    
+            var horseNameParameter = horseName != null ?
+                new ObjectParameter("HorseName", horseName) :
+                new ObjectParameter("HorseName", typeof(string));
+    
+            var inFoalParameter = inFoal.HasValue ?
+                new ObjectParameter("InFoal", inFoal) :
+                new ObjectParameter("InFoal", typeof(bool));
+    
+            var lteParameter = lte.HasValue ?
+                new ObjectParameter("Lte", lte) :
+                new ObjectParameter("Lte", typeof(decimal));
+    
+            var originalDateListedParameter = originalDateListed.HasValue ?
+                new ObjectParameter("OriginalDateListed", originalDateListed) :
+                new ObjectParameter("OriginalDateListed", typeof(System.DateTime));
+    
+            var priceParameter = price.HasValue ?
+                new ObjectParameter("Price", price) :
+                new ObjectParameter("Price", typeof(decimal));
+    
+            var purchaseListingTypeParameter = purchaseListingType != null ?
+                new ObjectParameter("PurchaseListingType", purchaseListingType) :
+                new ObjectParameter("PurchaseListingType", typeof(string));
+    
+            var ranchPhotoParameter = ranchPhoto != null ?
+                new ObjectParameter("RanchPhoto", ranchPhoto) :
+                new ObjectParameter("RanchPhoto", typeof(string));
+    
+            var sellerIdParameter = sellerId != null ?
+                new ObjectParameter("SellerId", sellerId) :
+                new ObjectParameter("SellerId", typeof(string));
+    
+            var horseTypeParameter = horseType != null ?
+                new ObjectParameter("HorseType", horseType) :
+                new ObjectParameter("HorseType", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_InsertActiveListing", ageParameter, colorParameter, damParameter, sireParameter, damSireParameter, descriptionParameter, firebaseIdParameter, genderParameter, horseNameParameter, inFoalParameter, lteParameter, originalDateListedParameter, priceParameter, purchaseListingTypeParameter, ranchPhotoParameter, sellerIdParameter, horseTypeParameter);
+        }
     
         public virtual ObjectResult<Nullable<int>> usp_RowExists(Nullable<long> row)
         {
@@ -37,6 +112,19 @@ namespace HorseApp2
                 new ObjectParameter("row", typeof(long));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("usp_RowExists", rowParameter);
+        }
+    
+        public virtual ObjectResult<usp_searchByPrice_Result> usp_searchByPrice(Nullable<decimal> low, Nullable<decimal> high)
+        {
+            var lowParameter = low.HasValue ?
+                new ObjectParameter("Low", low) :
+                new ObjectParameter("Low", typeof(decimal));
+    
+            var highParameter = high.HasValue ?
+                new ObjectParameter("High", high) :
+                new ObjectParameter("High", typeof(decimal));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_searchByPrice_Result>("usp_searchByPrice", lowParameter, highParameter);
         }
     }
 }

@@ -1,0 +1,37 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace HorseApp2.Models
+{
+    public class HorseListing
+    {
+        public HorseListing()
+        {
+            Photos = new List<HorseListingPhoto>();
+        }
+
+        public long ActiveListingId { get; set; }
+        public int Age { get; set; }
+        public string Color { get; set; }
+        public string Dam { get; set; }
+        public string Sire { get; set; }
+        public string DamSire { get; set; }
+        public string Description { get; set; }
+        public string FireBaseId { get; set; }
+        public string Gender { get; set; }
+        public string HorseName { get; set; }
+        public bool InFoal { get; set; }
+        public decimal Lte { get; set; }
+        public string OriginalDateListed { get; set; }
+        public decimal Price { get; set; }
+        public string PurchaseListingType { get; set; }
+        public string RanchPhoto { get; set; }
+        public string SellerId { get; set; }
+        public string HorseType { get; set; }
+
+        public List<HorseListingPhoto> Photos { get; set; }
+
+    }
+}
