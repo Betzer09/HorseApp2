@@ -37,8 +37,8 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
     <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -187,6 +187,8 @@
     <Compile Include="Models\HorseListing.cs" />
     <Compile Include="Models\HorseListingData.cs" />
     <Compile Include="Models\HorseListingPhoto.cs" />
+    <Compile Include="Models\SearchActiveListingsRequest.cs" />
+    <Compile Include="Models\SireResponse.cs" />
     <Compile Include="Models\RowExistsRequestDTO.cs" />
     <Compile Include="Models\SearchByPriceResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

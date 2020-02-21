@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="HorseDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="HorseDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="tblActiveListingPhotos">
           <Key>
             <PropertyRef Name="ActiveListingPhotoId" />
@@ -64,6 +64,7 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
           <Property Name="create_date" Type="datetime" Nullable="false" />
           <Property Name="modify_date" Type="datetime" Nullable="false" />
         </EntityType>
+        <Function Name="usp_DeleteActiveListing" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="usp_InsertActiveListing" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Age" Type="int" Mode="In" />
           <Parameter Name="Color" Type="nvarchar" Mode="In" />
@@ -105,8 +106,7 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
     FROM [sys].[database_firewall_rules] AS [database_firewall_rules]</DefiningQuery>
           </EntitySet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="HorseDatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -192,12 +192,13 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
             <Parameter Name="HorseType" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="usp_RowExists" ReturnType="Collection(Int32)">
-            <Parameter Name="row" Mode="In" Type="Int64" />
+          <Parameter Name="row" Mode="In" Type="Int64" />
           </FunctionImport>
           <FunctionImport Name="usp_searchByPrice" ReturnType="Collection(HorseDatabaseModel.usp_searchByPrice_Result)">
             <Parameter Name="Low" Mode="In" Type="Decimal" />
             <Parameter Name="High" Mode="In" Type="Decimal" />
           </FunctionImport>
+          <FunctionImport Name="usp_DeleteActiveListing" />
         </EntityContainer>
         <ComplexType Name="usp_searchByPrice_Result">
           <Property Type="Int64" Name="ActiveListingId" Nullable="true" />
@@ -309,6 +310,7 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="usp_DeleteActiveListing" FunctionName="HorseDatabaseModel.Store.usp_DeleteActiveListing" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

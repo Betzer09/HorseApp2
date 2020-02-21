@@ -126,5 +126,10 @@ namespace HorseApp2
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_searchByPrice_Result>("usp_searchByPrice", lowParameter, highParameter);
         }
+    
+        public virtual int usp_DeleteActiveListing()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_DeleteActiveListing");
+        }
     }
 }

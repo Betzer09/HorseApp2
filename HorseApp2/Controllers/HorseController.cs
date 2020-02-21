@@ -15,35 +15,6 @@ namespace HorseApp2.Controllers
     //Main Controller
     public class HorseController : ApiController
     {
-        //WORKS WITH ROW IN URL
-        /*
-        [HttpPost]
-        [Route("RowExists/{row}")]
-        public bool Exists(int row)
-        {
-            int exists = 0;
-            string storedProcedureName = "usp_RowExists";
-            string parameterSequence = "@row";
-
-            SqlParameter[] sqlParameter =
-            {
-                    new SqlParameter { ParameterName = "@row", SqlDbType  = SqlDbType.BigInt, Value = row },
-
-            };
-
-            using (var context = new HorseDatabaseEntities())
-            {
-                exists = context.Database.SqlQuery<int>(storedProcedureName + " " + parameterSequence, sqlParameter).FirstOrDefault();
-            }
-
-            if(exists > 0)
-            {
-                return true;
-            }
-
-            return false;
-        }
-        */
 
         //WORKS WITH ROW IN HEADERS
         [HttpGet]
@@ -83,20 +54,6 @@ namespace HorseApp2.Controllers
             return false;
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         /// <summary>
         /// Inserts an Active Listing into tblActiveListing
         /// </summary>
@@ -115,7 +72,7 @@ namespace HorseApp2.Controllers
                     //Initializing sql command, parameters, and connection
                     SqlCommand cmd = new SqlCommand("usp_InsertActiveListing");
                     cmd.CommandType = CommandType.StoredProcedure;
-                    List<SqlParameter> parameters = GetSqlParameters(listing);
+                    List<SqlParameter> parameters = GetSqlParametersForInsert(listing);
                     System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection(context.Database.Connection.ConnectionString);
                     cmd.Connection = conn;
 
@@ -150,6 +107,370 @@ namespace HorseApp2.Controllers
 
             return response;
         }
+
+        [HttpDelete]
+        [Route("DeleteActiveListings")]
+        public List<HorseListing> DeleteActiveListings()
+        {
+            List<HorseListing> deleteHorseListings = new List<HorseListing>();
+            List<long> ActiveListingIds = new List<long>();
+
+            var request = this.Request;
+            var headers = request.Headers;
+
+
+            if (headers.Contains("ActiveListingIds")) ;
+            {
+                string ids = headers.GetValues("ActiveListingIds").First();
+
+                //ids = ids.ToString();
+
+                string[] idString = ids.ToString().Split(' ');
+
+                for(int i = 0; i < idString.Length; i++)
+                {
+                    ActiveListingIds.Add(long.Parse(idString[i]));
+                }
+            }
+
+            try
+            {
+                using(var context = new HorseDatabaseEntities())
+                {
+                    //Initializing sql command, parameters, and connection
+                    SqlCommand cmd = new SqlCommand("usp_DeleteActiveListing");
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    SqlParameter param = new SqlParameter();
+                    param.ParameterName = "@ActiveListingIds";
+                    param.Value = ListingIdListToDatatable(ActiveListingIds);
+                    cmd.Parameters.Add(param);
+                    System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection(context.Database.Connection.ConnectionString);
+                    cmd.Connection = conn;
+
+                    //open connection
+                    context.Database.Connection.Open();
+
+                    //execute and retrieve data from stored procedure
+                    System.Data.SqlClient.SqlDataAdapter adapter = new System.Data.SqlClient.SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    adapter.Fill(ds);
+                    DataTable listingData = ds.Tables[0];
+                    DataTable photos = ds.Tables[1];
+
+                    //convert data from stored proceduure into ActiveListing object
+                    deleteHorseListings = DataTablesToHorseListing(listingData, photos);
+
+                    //close connection
+                    context.Database.Connection.Close();
+
+                }
+
+            }
+            catch(Exception e)
+            {
+                e.ToString();
+            }
+
+            return deleteHorseListings;
+        }
+
+      
+
+        [HttpPost]
+        [Route("InsertSire")]
+        public SireResponse InsertSire(string name)
+        {
+            SireResponse response = new SireResponse();
+
+            try
+            {
+                using(var context = new HorseDatabaseEntities())
+                {
+                    //Initializing sql command, parameters, and connection
+                    SqlCommand cmd = new SqlCommand("usp_InsertSire");
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    SqlParameter param = new SqlParameter();
+                    param.ParameterName = "@Name";
+                    param.Value = name;
+                    cmd.Parameters.Add(param);
+                    System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection(context.Database.Connection.ConnectionString);
+                    cmd.Connection = conn;
+
+                    //open connection
+                    context.Database.Connection.Open();
+
+                    //execute and retrieve data from stored procedure
+                    System.Data.SqlClient.SqlDataAdapter adapter = new System.Data.SqlClient.SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    adapter.Fill(ds);
+                    DataTable SireData = ds.Tables[0];
+
+
+                    //convert data from stored procedure into Sire object
+                    response = SireTableToSireResponse(SireData).ElementAt(0);
+
+                    //close connection
+                    context.Database.Connection.Close();
+                }
+            }
+            catch(Exception e)
+            {
+                e.ToString();
+            }
+
+            return response;
+        }
+
+
+        [HttpDelete]
+        [Route("DeleteSire")]
+        public SireResponse DeleteSire()
+        {
+            SireResponse response = new SireResponse();
+            var request = this.Request;
+            var headers = request.Headers;
+            string name = "";
+
+            if (headers.Contains("Name")) ;
+            {
+                name = headers.GetValues("Name").First();
+            }
+
+            try
+            {
+
+                using(var context = new HorseDatabaseEntities())
+                {
+                    //Initializing sql command, parameters, and connection
+                    SqlCommand cmd = new SqlCommand("usp_DeleteSire");
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    SqlParameter param = new SqlParameter();
+                    param.ParameterName = "@Name";
+                    param.Value = name;
+                    cmd.Parameters.Add(param);
+                    System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection(context.Database.Connection.ConnectionString);
+                    cmd.Connection = conn;
+
+                    //open connection
+                    context.Database.Connection.Open();
+
+                    //execute and retrieve data from stored procedure
+                    System.Data.SqlClient.SqlDataAdapter adapter = new System.Data.SqlClient.SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    adapter.Fill(ds);
+                    DataTable SireData = ds.Tables[0];
+
+
+                    //convert data from stored procedure into Sire object
+                    response = SireTableToSireResponse(SireData).ElementAt(0);
+
+                    //close connection
+                    context.Database.Connection.Close();
+                }
+
+            }
+            catch(Exception e)
+            {
+                e.ToString();
+            }
+            return response;
+        }
+
+        [HttpGet]
+        [Route("SearchAllSires")]
+        public List<SireResponse> SearchAllSires()
+        {
+            List<SireResponse> response = new List<SireResponse>();
+            var request = this.Request;
+            var headers = request.Headers;
+            string name = "";
+
+            if (headers.Contains("Name")) ;
+            {
+                name = headers.GetValues("Name").First();
+            }
+
+            try
+            {
+                using (var context = new HorseDatabaseEntities())
+                {
+                    //Initializing sql command, parameters, and connection
+                    SqlCommand cmd = new SqlCommand("usp_SearchAllSires");
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    SqlParameter param = new SqlParameter();
+                    param.ParameterName = "@Name";
+                    param.Value = name;
+                    cmd.Parameters.Add(param);
+                    System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection(context.Database.Connection.ConnectionString);
+                    cmd.Connection = conn;
+
+                    //open connection
+                    context.Database.Connection.Open();
+
+                    //execute and retrieve data from stored procedure
+                    System.Data.SqlClient.SqlDataAdapter adapter = new System.Data.SqlClient.SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    adapter.Fill(ds);
+                    DataTable SireData = ds.Tables[0];
+
+
+                    //convert data from stored procedure into Sire object
+                    response = SireTableToSireResponse(SireData);
+
+                    //close connection
+                    context.Database.Connection.Close();
+                }
+            }
+            catch(Exception e)
+            {
+                e.ToString();
+            }
+
+            return response;
+        }
+
+        [HttpGet]
+        [Route("SearchAllSiresElastically")]
+        public List<SireResponse> SearchAllSiresElastically()
+        {
+            List<SireResponse> response = new List<SireResponse>();
+            var request = this.Request;
+            var headers = request.Headers;
+            string name = "";
+
+            if (headers.Contains("Name")) ;
+            {
+                name = headers.GetValues("Name").First();
+            }
+
+            try
+            {
+                using (var context = new HorseDatabaseEntities())
+                {
+                    //Initializing sql command, parameters, and connection
+                    SqlCommand cmd = new SqlCommand("usp_SearchAllSiresElastically");
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    SqlParameter param = new SqlParameter();
+                    param.ParameterName = "@Name";
+                    param.Value = name;
+                    cmd.Parameters.Add(param);
+                    System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection(context.Database.Connection.ConnectionString);
+                    cmd.Connection = conn;
+
+                    //open connection
+                    context.Database.Connection.Open();
+
+                    //execute and retrieve data from stored procedure
+                    System.Data.SqlClient.SqlDataAdapter adapter = new System.Data.SqlClient.SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    adapter.Fill(ds);
+                    DataTable SireData = ds.Tables[0];
+
+
+                    //convert data from stored procedure into Sire object
+                    response = SireTableToSireResponse(SireData);
+
+                    //close connection
+                    context.Database.Connection.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                e.ToString();
+            }
+
+            return response;
+        }
+
+
+        [HttpGet]
+        [Route("SearchActiveListings")]
+        public void SearchActiveListings()
+        {
+            var request = this.Request;
+            var headers = request.Headers;
+            string name = "";
+            SearchActiveListingsRequest objRequest = new SearchActiveListingsRequest();
+
+            if (headers.Contains("TypeSearch")) 
+            {
+                objRequest.TypeSearch = bool.Parse(headers.GetValues("TypeSearch").ToString());
+
+                if (headers.Contains("Type"))
+                {
+                    objRequest.HorseType = headers.GetValues("Type").ToString();
+                }
+            }
+            if (headers.Contains("PriceSearch"))
+            {
+                objRequest.PriceSearch = bool.Parse(headers.GetValues("PriceSearch").ToString());
+
+                if (headers.Contains("PriceLow"))
+                {
+                    objRequest.PriceLow = decimal.Parse(headers.GetValues("PriceLow").ToString());
+                }
+                else
+                {
+                    objRequest.PriceLow = 0;
+                }
+                if(headers.Contains("PriceHigh"))
+                {
+                    objRequest.PriceHigh = decimal.Parse(headers.GetValues("PriceHigh").ToString());
+                }
+                else
+                {
+                    objRequest.PriceHigh = 10000000;
+                }
+            }
+            if (headers.Contains("SireSearch"))
+            {
+                objRequest.SireSearch = bool.Parse(headers.GetValues("SireSearch").ToString());
+
+                if (headers.Contains("Sire"))
+                {
+                    objRequest.Sire = headers.GetValues("Sire").ToString();
+                }
+            }
+            if (headers.Contains("GenderSearch"))
+            {
+                objRequest.GenderSearch = bool.Parse(headers.GetValues("GenderSearch").ToString());
+
+                if (headers.Contains("Gender"))
+                {
+                    objRequest.Gender = headers.GetValues("Gender").ToString();
+                }
+            }
+            if (headers.Contains("AgeSearch"))
+            {
+                objRequest.AgeSearch = bool.Parse(headers.GetValues("AgeSearch").ToString());
+
+                if (headers.Contains("Ages"))
+                {
+                   string[] ages = headers.GetValues("Ages").ToString().Split(' ');
+                    for(int i = 0; i < ages.Length; i++)
+                    {
+                        objRequest.Ages.Add(int.Parse(ages[i]));
+                    }
+                    
+                }
+            }
+
+            try
+            {
+                using(var context = new HorseDatabaseEntities())
+                {
+
+                }
+            }
+            catch(Exception e)
+            {
+                e.ToString();
+            }
+
+        }
+
+
+          
 
 
         /// <summary>
@@ -249,6 +570,29 @@ namespace HorseApp2.Controllers
             }
           
             return listings;
+        }
+
+        private List<SireResponse> SireTableToSireResponse(DataTable sireTable)
+        {
+            List<SireResponse> response = new List<SireResponse>();
+
+            foreach(DataRow row in sireTable.Rows)
+            {
+                response.Add(PopulateSireResponse(row));
+            }
+
+            return response;
+        }
+
+        private SireResponse PopulateSireResponse(DataRow row)
+        {
+            SireResponse response = new SireResponse();
+
+            response.SireServerId = long.Parse(row["SireServerId"].ToString());
+            response.Name = row["Name"].ToString();
+            response.CreatedOn = row["CreatedOn"].ToString();
+
+            return response;
         }
 
         /// <summary>
@@ -435,7 +779,7 @@ namespace HorseApp2.Controllers
         /// </summary>
         /// <param name="listing"></param>
         /// <returns></returns>
-        private List<SqlParameter> GetSqlParameters(HorseListing listing)
+        private List<SqlParameter> GetSqlParametersForInsert(HorseListing listing)
         {
             List<SqlParameter> parameters = new List<SqlParameter>();
 
@@ -517,6 +861,36 @@ namespace HorseApp2.Controllers
 
             return parameters;
         }
+
+        private DataTable ListingIdListToDatatable(List<long> Ids)
+        {
+
+            DataTable dt = new DataTable();
+            DataColumn column = new DataColumn("ActiveListingId");
+            column.DataType = System.Type.GetType("System.Int64");
+            dt.Columns.Add(column);
+
+            List<DataRow> rows = new List<DataRow>();
+            int rowCount = Ids.Count();
+            for (int i = 0; i < rowCount; i++)
+            {
+                rows.Add(dt.NewRow());
+            }
+            int j = 0;
+            long id;
+            foreach (DataRow row in rows)
+            {
+                row["ActiveListingId"] = Ids.ElementAt(j);
+
+                dt.Rows.Add(row);
+
+                j++;
+            }
+
+            return dt;
+        }
+
+      
 
        
         
