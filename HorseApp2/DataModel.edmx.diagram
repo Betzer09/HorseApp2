@@ -4,11 +4,12 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="4dc846b95b8e49948fad3175fa0067dd" Name="Diagram1">
+      <Diagram DiagramId="2b23a4036db641ba8ba4cbd6e05a4008" Name="Diagram1">
         <EntityTypeShape EntityType="HorseDatabaseModel.tblActiveListingPhoto" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="HorseDatabaseModel.tblActiveListing" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="HorseDatabaseModel.tblName" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="HorseDatabaseModel.database_firewall_rules" Width="1.5" PointX="4.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HorseDatabaseModel.tblSire" Width="1.5" PointX="4.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="HorseDatabaseModel.database_firewall_rules" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

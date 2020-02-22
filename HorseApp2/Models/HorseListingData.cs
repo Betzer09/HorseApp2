@@ -8,7 +8,7 @@ namespace HorseApp2.Models
     public class HorseListingData
     {
         public long ActiveListingId { get; set; }
-        public int Age { get; set; }
+        public string Age { get; set; }
         public string Color { get; set; }
         public string Dam { get; set; }
         public string Sire { get; set; }

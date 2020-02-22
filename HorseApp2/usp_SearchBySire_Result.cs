@@ -10,18 +10,18 @@
 namespace HorseApp2
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class tblActiveListing
+    public partial class usp_SearchBySire_Result
     {
-        public long ActiveListingId { get; set; }
-        public string Age { get; set; }
+        public Nullable<long> ActiveListingId { get; set; }
+        public Nullable<int> Age { get; set; }
         public string Color { get; set; }
         public string Dam { get; set; }
+        public string DamId { get; set; }
         public string Sire { get; set; }
         public string DamSire { get; set; }
         public string Description { get; set; }
-        public string FireBaseId { get; set; }
+        public string FirebaseId { get; set; }
         public string Gender { get; set; }
         public string HorseName { get; set; }
         public Nullable<bool> InFoal { get; set; }

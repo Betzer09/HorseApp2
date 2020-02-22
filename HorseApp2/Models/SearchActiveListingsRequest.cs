@@ -18,6 +18,6 @@ namespace HorseApp2.Models
         public decimal PriceHigh { get; set; }
         public string Sire { get; set; }
         public string Gender { get; set; }
-        public List<int> Ages { get; set; }
+        public List<string> Ages { get; set; }
     }
 }
