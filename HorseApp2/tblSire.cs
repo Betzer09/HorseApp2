@@ -16,6 +16,7 @@ namespace HorseApp2
     {
         public long SireServerId { get; set; }
         public string Name { get; set; }
+        public string HorseType { get; set; }
         public Nullable<System.DateTime> CreatedOn { get; set; }
         public Nullable<System.DateTime> UpdatedOn { get; set; }
     }

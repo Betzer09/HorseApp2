@@ -12,7 +12,7 @@ namespace HorseApp2.Models
 
         }
         public long ActiveListingPhotoId { get; set; }
-        public long ActiveListingId { get; set; }
+        public string ActiveListingId { get; set; }
         public string PhotoURL { get; set; }
         public int PhotoOrder { get; set; }
         public string CreatedOn { get; set; }

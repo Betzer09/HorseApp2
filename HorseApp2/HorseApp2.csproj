@@ -188,6 +188,7 @@
     <Compile Include="Models\HorseListingData.cs" />
     <Compile Include="Models\HorseListingPhoto.cs" />
     <Compile Include="Models\SearchActiveListingsRequest.cs" />
+    <Compile Include="Models\SearchResponse.cs" />
     <Compile Include="Models\SireResponse.cs" />
     <Compile Include="Models\RowExistsRequestDTO.cs" />
     <Compile Include="Models\SearchByPriceResponse.cs" />
@@ -204,28 +205,10 @@
     <Compile Include="tblSire.cs">
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="usp_DeleteSire_Result.cs">
-      <DependentUpon>DataModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="usp_InsertSire_Result.cs">
-      <DependentUpon>DataModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="usp_SearchAllSiresElastically_Result.cs">
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="usp_SearchAllSires_Result.cs">
-      <DependentUpon>DataModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="usp_SearchByGender_Result.cs">
-      <DependentUpon>DataModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="usp_SearchByHorseType_Result.cs">
-      <DependentUpon>DataModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="usp_searchByPrice_Result.cs">
-      <DependentUpon>DataModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="usp_SearchBySire_Result.cs">
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
   </ItemGroup>

@@ -7,9 +7,10 @@ namespace HorseApp2.Models
 {
     public class SireResponse
     {
-        public long SireServerId { get; set; }
-        public string Name { get; set; }
-        public string CreatedOn { get; set; }
-        public string UpdatedOn { get; set; }
+        public long sireServerId { get; set; }
+        public string name { get; set; }
+        public string horseType { get; set; }
+        public string createdOn { get; set; }
+        public string updatedOn { get; set; }
     }
 }

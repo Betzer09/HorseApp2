@@ -38,7 +38,7 @@ namespace HorseApp2
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_DeleteActiveListing");
         }
     
-        public virtual ObjectResult<usp_DeleteSire_Result> usp_DeleteSire(Nullable<long> sireServerId, string name)
+        public virtual int usp_DeleteSire(Nullable<long> sireServerId, string name)
         {
             var sireServerIdParameter = sireServerId.HasValue ?
                 new ObjectParameter("SireServerId", sireServerId) :
@@ -48,11 +48,15 @@ namespace HorseApp2
                 new ObjectParameter("Name", name) :
                 new ObjectParameter("Name", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_DeleteSire_Result>("usp_DeleteSire", sireServerIdParameter, nameParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_DeleteSire", sireServerIdParameter, nameParameter);
         }
     
-        public virtual int usp_InsertActiveListing(string age, string color, string dam, string sire, string damSire, string description, string firebaseId, string gender, string horseName, Nullable<bool> inFoal, Nullable<decimal> lte, Nullable<System.DateTime> originalDateListed, Nullable<decimal> price, string purchaseListingType, string ranchPhoto, string sellerId, string horseType)
+        public virtual int usp_InsertActiveListing(string activeListingId, string age, string color, string dam, string sire, string damSire, string description, string firebaseId, string gender, string horseName, Nullable<bool> inFoal, Nullable<decimal> lte, Nullable<System.DateTime> originalDateListed, Nullable<decimal> price, string purchaseListingType, string ranchPhoto, string sellerId, string horseType, Nullable<bool> isSold)
         {
+            var activeListingIdParameter = activeListingId != null ?
+                new ObjectParameter("ActiveListingId", activeListingId) :
+                new ObjectParameter("ActiveListingId", typeof(string));
+    
             var ageParameter = age != null ?
                 new ObjectParameter("Age", age) :
                 new ObjectParameter("Age", typeof(string));
@@ -121,16 +125,20 @@ namespace HorseApp2
                 new ObjectParameter("HorseType", horseType) :
                 new ObjectParameter("HorseType", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_InsertActiveListing", ageParameter, colorParameter, damParameter, sireParameter, damSireParameter, descriptionParameter, firebaseIdParameter, genderParameter, horseNameParameter, inFoalParameter, lteParameter, originalDateListedParameter, priceParameter, purchaseListingTypeParameter, ranchPhotoParameter, sellerIdParameter, horseTypeParameter);
+            var isSoldParameter = isSold.HasValue ?
+                new ObjectParameter("IsSold", isSold) :
+                new ObjectParameter("IsSold", typeof(bool));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_InsertActiveListing", activeListingIdParameter, ageParameter, colorParameter, damParameter, sireParameter, damSireParameter, descriptionParameter, firebaseIdParameter, genderParameter, horseNameParameter, inFoalParameter, lteParameter, originalDateListedParameter, priceParameter, purchaseListingTypeParameter, ranchPhotoParameter, sellerIdParameter, horseTypeParameter, isSoldParameter);
         }
     
-        public virtual ObjectResult<usp_InsertSire_Result> usp_InsertSire(string name)
+        public virtual int usp_InsertSire(string name)
         {
             var nameParameter = name != null ?
                 new ObjectParameter("Name", name) :
                 new ObjectParameter("Name", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_InsertSire_Result>("usp_InsertSire", nameParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_InsertSire", nameParameter);
         }
     
         public virtual ObjectResult<Nullable<int>> usp_RowExists(Nullable<long> row)
@@ -142,15 +150,11 @@ namespace HorseApp2
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("usp_RowExists", rowParameter);
         }
     
-        public virtual int usp_SearchActiveListings(Nullable<bool> typeSearch, string type, Nullable<bool> priceSearch, Nullable<decimal> priceLow, Nullable<decimal> priceHigh, Nullable<bool> sireSearch, string sire, Nullable<bool> genderSearch, string gender, Nullable<bool> ageSearch)
+        public virtual int usp_SearchActiveListings(Nullable<bool> typeSearch, Nullable<bool> priceSearch, Nullable<decimal> priceLow, Nullable<decimal> priceHigh, Nullable<bool> sireSearch, Nullable<bool> damSearch, Nullable<bool> damSireSearch, Nullable<bool> genderSearch, Nullable<bool> ageSearch, Nullable<bool> colorSearch, Nullable<bool> lteSearch, Nullable<decimal> lteHigh, Nullable<decimal> lteLow, Nullable<bool> inFoalSearch, Nullable<bool> inFoal, Nullable<int> itemsPerPage, Nullable<int> page, Nullable<bool> orderBy, Nullable<int> orderByType, Nullable<bool> orderByAscOrDesc)
         {
             var typeSearchParameter = typeSearch.HasValue ?
                 new ObjectParameter("TypeSearch", typeSearch) :
                 new ObjectParameter("TypeSearch", typeof(bool));
-    
-            var typeParameter = type != null ?
-                new ObjectParameter("Type", type) :
-                new ObjectParameter("Type", typeof(string));
     
             var priceSearchParameter = priceSearch.HasValue ?
                 new ObjectParameter("PriceSearch", priceSearch) :
@@ -168,23 +172,67 @@ namespace HorseApp2
                 new ObjectParameter("SireSearch", sireSearch) :
                 new ObjectParameter("SireSearch", typeof(bool));
     
-            var sireParameter = sire != null ?
-                new ObjectParameter("Sire", sire) :
-                new ObjectParameter("Sire", typeof(string));
+            var damSearchParameter = damSearch.HasValue ?
+                new ObjectParameter("DamSearch", damSearch) :
+                new ObjectParameter("DamSearch", typeof(bool));
+    
+            var damSireSearchParameter = damSireSearch.HasValue ?
+                new ObjectParameter("DamSireSearch", damSireSearch) :
+                new ObjectParameter("DamSireSearch", typeof(bool));
     
             var genderSearchParameter = genderSearch.HasValue ?
                 new ObjectParameter("GenderSearch", genderSearch) :
                 new ObjectParameter("GenderSearch", typeof(bool));
     
-            var genderParameter = gender != null ?
-                new ObjectParameter("Gender", gender) :
-                new ObjectParameter("Gender", typeof(string));
-    
             var ageSearchParameter = ageSearch.HasValue ?
                 new ObjectParameter("AgeSearch", ageSearch) :
                 new ObjectParameter("AgeSearch", typeof(bool));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_SearchActiveListings", typeSearchParameter, typeParameter, priceSearchParameter, priceLowParameter, priceHighParameter, sireSearchParameter, sireParameter, genderSearchParameter, genderParameter, ageSearchParameter);
+            var colorSearchParameter = colorSearch.HasValue ?
+                new ObjectParameter("ColorSearch", colorSearch) :
+                new ObjectParameter("ColorSearch", typeof(bool));
+    
+            var lteSearchParameter = lteSearch.HasValue ?
+                new ObjectParameter("LteSearch", lteSearch) :
+                new ObjectParameter("LteSearch", typeof(bool));
+    
+            var lteHighParameter = lteHigh.HasValue ?
+                new ObjectParameter("LteHigh", lteHigh) :
+                new ObjectParameter("LteHigh", typeof(decimal));
+    
+            var lteLowParameter = lteLow.HasValue ?
+                new ObjectParameter("LteLow", lteLow) :
+                new ObjectParameter("LteLow", typeof(decimal));
+    
+            var inFoalSearchParameter = inFoalSearch.HasValue ?
+                new ObjectParameter("InFoalSearch", inFoalSearch) :
+                new ObjectParameter("InFoalSearch", typeof(bool));
+    
+            var inFoalParameter = inFoal.HasValue ?
+                new ObjectParameter("InFoal", inFoal) :
+                new ObjectParameter("InFoal", typeof(bool));
+    
+            var itemsPerPageParameter = itemsPerPage.HasValue ?
+                new ObjectParameter("ItemsPerPage", itemsPerPage) :
+                new ObjectParameter("ItemsPerPage", typeof(int));
+    
+            var pageParameter = page.HasValue ?
+                new ObjectParameter("Page", page) :
+                new ObjectParameter("Page", typeof(int));
+    
+            var orderByParameter = orderBy.HasValue ?
+                new ObjectParameter("OrderBy", orderBy) :
+                new ObjectParameter("OrderBy", typeof(bool));
+    
+            var orderByTypeParameter = orderByType.HasValue ?
+                new ObjectParameter("OrderByType", orderByType) :
+                new ObjectParameter("OrderByType", typeof(int));
+    
+            var orderByAscOrDescParameter = orderByAscOrDesc.HasValue ?
+                new ObjectParameter("OrderByAscOrDesc", orderByAscOrDesc) :
+                new ObjectParameter("OrderByAscOrDesc", typeof(bool));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_SearchActiveListings", typeSearchParameter, priceSearchParameter, priceLowParameter, priceHighParameter, sireSearchParameter, damSearchParameter, damSireSearchParameter, genderSearchParameter, ageSearchParameter, colorSearchParameter, lteSearchParameter, lteHighParameter, lteLowParameter, inFoalSearchParameter, inFoalParameter, itemsPerPageParameter, pageParameter, orderByParameter, orderByTypeParameter, orderByAscOrDescParameter);
         }
     
         public virtual ObjectResult<usp_SearchAllSires_Result> usp_SearchAllSires(string name)
@@ -210,25 +258,25 @@ namespace HorseApp2
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_SearchByAge");
         }
     
-        public virtual ObjectResult<usp_SearchByGender_Result> usp_SearchByGender(string gender)
+        public virtual int usp_SearchByGender(string gender)
         {
             var genderParameter = gender != null ?
                 new ObjectParameter("Gender", gender) :
                 new ObjectParameter("Gender", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_SearchByGender_Result>("usp_SearchByGender", genderParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_SearchByGender", genderParameter);
         }
     
-        public virtual ObjectResult<usp_SearchByHorseType_Result> usp_SearchByHorseType(string type)
+        public virtual int usp_SearchByHorseType(string type)
         {
             var typeParameter = type != null ?
                 new ObjectParameter("Type", type) :
                 new ObjectParameter("Type", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_SearchByHorseType_Result>("usp_SearchByHorseType", typeParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_SearchByHorseType", typeParameter);
         }
     
-        public virtual ObjectResult<usp_searchByPrice_Result> usp_searchByPrice(Nullable<decimal> low, Nullable<decimal> high)
+        public virtual int usp_searchByPrice(Nullable<decimal> low, Nullable<decimal> high)
         {
             var lowParameter = low.HasValue ?
                 new ObjectParameter("Low", low) :
@@ -238,19 +286,19 @@ namespace HorseApp2
                 new ObjectParameter("High", high) :
                 new ObjectParameter("High", typeof(decimal));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_searchByPrice_Result>("usp_searchByPrice", lowParameter, highParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_searchByPrice", lowParameter, highParameter);
         }
     
-        public virtual ObjectResult<usp_SearchBySire_Result> usp_SearchBySire(string sire)
+        public virtual int usp_SearchBySire(string sire)
         {
             var sireParameter = sire != null ?
                 new ObjectParameter("Sire", sire) :
                 new ObjectParameter("Sire", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<usp_SearchBySire_Result>("usp_SearchBySire", sireParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_SearchBySire", sireParameter);
         }
     
-        public virtual int usp_UpdateActiveListing(Nullable<long> activeListingId, Nullable<int> age, string color, string dam, string sire, string damSire, string description, string firebaseId, string gender, string horseName, Nullable<bool> inFoal, Nullable<decimal> lte, Nullable<System.DateTime> originalDateListed, Nullable<decimal> price, string purchaseListingType, string ranchPhoto, string sellerId, string horseType)
+        public virtual int usp_UpdateActiveListing(Nullable<long> activeListingId, Nullable<int> age, string color, string dam, string sire, string damSire, string description, string gender, string horseName, Nullable<bool> inFoal, Nullable<decimal> lte, Nullable<System.DateTime> originalDateListed, Nullable<decimal> price, string purchaseListingType, string ranchPhoto, string sellerId, string horseType)
         {
             var activeListingIdParameter = activeListingId.HasValue ?
                 new ObjectParameter("ActiveListingId", activeListingId) :
@@ -279,10 +327,6 @@ namespace HorseApp2
             var descriptionParameter = description != null ?
                 new ObjectParameter("Description", description) :
                 new ObjectParameter("Description", typeof(string));
-    
-            var firebaseIdParameter = firebaseId != null ?
-                new ObjectParameter("FirebaseId", firebaseId) :
-                new ObjectParameter("FirebaseId", typeof(string));
     
             var genderParameter = gender != null ?
                 new ObjectParameter("Gender", gender) :
@@ -324,7 +368,7 @@ namespace HorseApp2
                 new ObjectParameter("HorseType", horseType) :
                 new ObjectParameter("HorseType", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_UpdateActiveListing", activeListingIdParameter, ageParameter, colorParameter, damParameter, sireParameter, damSireParameter, descriptionParameter, firebaseIdParameter, genderParameter, horseNameParameter, inFoalParameter, lteParameter, originalDateListedParameter, priceParameter, purchaseListingTypeParameter, ranchPhotoParameter, sellerIdParameter, horseTypeParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_UpdateActiveListing", activeListingIdParameter, ageParameter, colorParameter, damParameter, sireParameter, damSireParameter, descriptionParameter, genderParameter, horseNameParameter, inFoalParameter, lteParameter, originalDateListedParameter, priceParameter, purchaseListingTypeParameter, ranchPhotoParameter, sellerIdParameter, horseTypeParameter);
         }
     }
 }

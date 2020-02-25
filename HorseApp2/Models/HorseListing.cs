@@ -12,24 +12,25 @@ namespace HorseApp2.Models
             Photos = new List<HorseListingPhoto>();
         }
 
-        public long ActiveListingId { get; set; }
-        public string Age { get; set; }
-        public string Color { get; set; }
-        public string Dam { get; set; }
-        public string Sire { get; set; }
-        public string DamSire { get; set; }
-        public string Description { get; set; }
-        public string FireBaseId { get; set; }
-        public string Gender { get; set; }
-        public string HorseName { get; set; }
-        public bool InFoal { get; set; }
-        public decimal Lte { get; set; }
-        public string OriginalDateListed { get; set; }
-        public decimal Price { get; set; }
-        public string PurchaseListingType { get; set; }
-        public string RanchPhoto { get; set; }
-        public string SellerId { get; set; }
-        public string HorseType { get; set; }
+        public string activeListingId { get; set; }
+        public string age { get; set; }
+        public string color { get; set; }
+        public string dam { get; set; }
+        public string sire { get; set; }
+        public string damSire { get; set; }
+        public string description { get; set; }
+        //public string fireBaseId { get; set; }
+        public string gender { get; set; }
+        public string horseName { get; set; }
+        public bool inFoal { get; set; }
+        public decimal lte { get; set; }
+        public string originalDateListed { get; set; }
+        public decimal price { get; set; }
+        public string purchaseListingType { get; set; }
+        public string ranchPhoto { get; set; }
+        public string sellerId { get; set; }
+        public string horseType { get; set; }
+        public bool isSold { get; set; }
 
         public List<HorseListingPhoto> Photos { get; set; }
 

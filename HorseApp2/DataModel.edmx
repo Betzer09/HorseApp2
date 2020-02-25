@@ -20,14 +20,13 @@
           <Key>
             <PropertyRef Name="ActiveListingId" />
           </Key>
-          <Property Name="ActiveListingId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ActiveListingId" Type="nvarchar" MaxLength="40" Nullable="false" />
           <Property Name="Age" Type="nvarchar" MaxLength="50" />
           <Property Name="Color" Type="nvarchar" MaxLength="50" />
           <Property Name="Dam" Type="nvarchar" MaxLength="100" />
           <Property Name="Sire" Type="nvarchar" MaxLength="100" />
           <Property Name="DamSire" Type="nvarchar" MaxLength="100" />
           <Property Name="Description" Type="nvarchar" MaxLength="500" />
-          <Property Name="FireBaseId" Type="nvarchar(max)" />
           <Property Name="Gender" Type="nvarchar" MaxLength="50" />
           <Property Name="HorseName" Type="nvarchar" MaxLength="100" />
           <Property Name="InFoal" Type="bit" />
@@ -38,6 +37,7 @@
           <Property Name="RanchPhoto" Type="nvarchar(max)" />
           <Property Name="SellerId" Type="nvarchar(max)" />
           <Property Name="HorseType" Type="nvarchar(max)" />
+          <Property Name="IsSold" Type="bit" />
         </EntityType>
         <EntityType Name="tblName">
           <Key>
@@ -54,6 +54,7 @@ warning 6002: The table/view 'HorseDatabase.dbo.tblSire' does not have a primary
           </Key>
           <Property Name="SireServerId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="HorseType" Type="nvarchar(max)" />
           <Property Name="CreatedOn" Type="datetime" />
           <Property Name="UpdatedOn" Type="datetime" />
         </EntityType>
@@ -81,6 +82,7 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
           <Parameter Name="Name" Type="nvarchar" Mode="In" />
         </Function>
         <Function Name="usp_InsertActiveListing" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ActiveListingId" Type="nvarchar" Mode="In" />
           <Parameter Name="Age" Type="nvarchar" Mode="In" />
           <Parameter Name="Color" Type="nvarchar" Mode="In" />
           <Parameter Name="Dam" Type="nvarchar" Mode="In" />
@@ -98,6 +100,7 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
           <Parameter Name="RanchPhoto" Type="nvarchar(max)" Mode="In" />
           <Parameter Name="SellerId" Type="nvarchar(max)" Mode="In" />
           <Parameter Name="HorseType" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="IsSold" Type="bit" Mode="In" />
         </Function>
         <Function Name="usp_InsertSire" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Name" Type="nvarchar" Mode="In" />
@@ -107,15 +110,25 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
         </Function>
         <Function Name="usp_SearchActiveListings" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="TypeSearch" Type="bit" Mode="In" />
-          <Parameter Name="Type" Type="nvarchar" Mode="In" />
           <Parameter Name="PriceSearch" Type="bit" Mode="In" />
           <Parameter Name="PriceLow" Type="decimal" Mode="In" />
           <Parameter Name="PriceHigh" Type="decimal" Mode="In" />
           <Parameter Name="SireSearch" Type="bit" Mode="In" />
-          <Parameter Name="Sire" Type="nvarchar" Mode="In" />
+          <Parameter Name="DamSearch" Type="bit" Mode="In" />
+          <Parameter Name="DamSireSearch" Type="bit" Mode="In" />
           <Parameter Name="GenderSearch" Type="bit" Mode="In" />
-          <Parameter Name="Gender" Type="nvarchar" Mode="In" />
           <Parameter Name="AgeSearch" Type="bit" Mode="In" />
+          <Parameter Name="ColorSearch" Type="bit" Mode="In" />
+          <Parameter Name="LteSearch" Type="bit" Mode="In" />
+          <Parameter Name="LteHigh" Type="decimal" Mode="In" />
+          <Parameter Name="LteLow" Type="decimal" Mode="In" />
+          <Parameter Name="InFoalSearch" Type="bit" Mode="In" />
+          <Parameter Name="InFoal" Type="bit" Mode="In" />
+          <Parameter Name="ItemsPerPage" Type="int" Mode="In" />
+          <Parameter Name="Page" Type="int" Mode="In" />
+          <Parameter Name="OrderBy" Type="bit" Mode="In" />
+          <Parameter Name="OrderByType" Type="int" Mode="In" />
+          <Parameter Name="OrderByAscOrDesc" Type="bit" Mode="In" />
         </Function>
         <Function Name="usp_SearchAllSires" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Name" Type="nvarchar" Mode="In" />
@@ -145,7 +158,6 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
           <Parameter Name="Sire" Type="nvarchar" Mode="In" />
           <Parameter Name="DamSire" Type="nvarchar" Mode="In" />
           <Parameter Name="Description" Type="nvarchar" Mode="In" />
-          <Parameter Name="FirebaseId" Type="nvarchar(max)" Mode="In" />
           <Parameter Name="Gender" Type="nvarchar" Mode="In" />
           <Parameter Name="HorseName" Type="nvarchar" Mode="In" />
           <Parameter Name="InFoal" Type="bit" Mode="In" />
@@ -165,6 +177,7 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
             <DefiningQuery>SELECT 
     [tblSire].[SireServerId] AS [SireServerId], 
     [tblSire].[Name] AS [Name], 
+    [tblSire].[HorseType] AS [HorseType], 
     [tblSire].[CreatedOn] AS [CreatedOn], 
     [tblSire].[UpdatedOn] AS [UpdatedOn]
     FROM [dbo].[tblSire] AS [tblSire]</DefiningQuery>
@@ -200,14 +213,13 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
           <Key>
             <PropertyRef Name="ActiveListingId" />
           </Key>
-          <Property Name="ActiveListingId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ActiveListingId" Type="String" MaxLength="40" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Age" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Color" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Dam" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Sire" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="DamSire" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="FireBaseId" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Gender" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="HorseName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="InFoal" Type="Boolean" />
@@ -218,6 +230,7 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
           <Property Name="RanchPhoto" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="SellerId" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="HorseType" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsSold" Type="Boolean" />
         </EntityType>
         <EntityType Name="tblName">
           <Key>
@@ -232,6 +245,7 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
           </Key>
           <Property Name="SireServerId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="HorseType" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CreatedOn" Type="DateTime" Precision="3" />
           <Property Name="UpdatedOn" Type="DateTime" Precision="3" />
         </EntityType>
@@ -258,11 +272,12 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
           <EntitySet Name="tblSires" EntityType="Self.tblSire" />
           <EntitySet Name="database_firewall_rules" EntityType="Self.database_firewall_rules" />
           <FunctionImport Name="usp_DeleteActiveListing" />
-          <FunctionImport Name="usp_DeleteSire" ReturnType="Collection(HorseDatabaseModel.usp_DeleteSire_Result)">
+          <FunctionImport Name="usp_DeleteSire">
             <Parameter Name="SireServerId" Mode="In" Type="Int64" />
             <Parameter Name="Name" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="usp_InsertActiveListing">
+            <Parameter Name="ActiveListingId" Mode="In" Type="String" />
             <Parameter Name="Age" Mode="In" Type="String" />
             <Parameter Name="Color" Mode="In" Type="String" />
             <Parameter Name="Dam" Mode="In" Type="String" />
@@ -280,8 +295,9 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
             <Parameter Name="RanchPhoto" Mode="In" Type="String" />
             <Parameter Name="SellerId" Mode="In" Type="String" />
             <Parameter Name="HorseType" Mode="In" Type="String" />
+            <Parameter Name="IsSold" Mode="In" Type="Boolean" />
           </FunctionImport>
-          <FunctionImport Name="usp_InsertSire" ReturnType="Collection(HorseDatabaseModel.usp_InsertSire_Result)">
+          <FunctionImport Name="usp_InsertSire">
             <Parameter Name="Name" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="usp_RowExists" ReturnType="Collection(Int32)">
@@ -289,15 +305,25 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
           </FunctionImport>
           <FunctionImport Name="usp_SearchActiveListings">
             <Parameter Name="TypeSearch" Mode="In" Type="Boolean" />
-            <Parameter Name="Type" Mode="In" Type="String" />
             <Parameter Name="PriceSearch" Mode="In" Type="Boolean" />
             <Parameter Name="PriceLow" Mode="In" Type="Decimal" />
             <Parameter Name="PriceHigh" Mode="In" Type="Decimal" />
             <Parameter Name="SireSearch" Mode="In" Type="Boolean" />
-            <Parameter Name="Sire" Mode="In" Type="String" />
+            <Parameter Name="DamSearch" Mode="In" Type="Boolean" />
+            <Parameter Name="DamSireSearch" Mode="In" Type="Boolean" />
             <Parameter Name="GenderSearch" Mode="In" Type="Boolean" />
-            <Parameter Name="Gender" Mode="In" Type="String" />
             <Parameter Name="AgeSearch" Mode="In" Type="Boolean" />
+            <Parameter Name="ColorSearch" Mode="In" Type="Boolean" />
+            <Parameter Name="LteSearch" Mode="In" Type="Boolean" />
+            <Parameter Name="LteHigh" Mode="In" Type="Decimal" />
+            <Parameter Name="LteLow" Mode="In" Type="Decimal" />
+            <Parameter Name="InFoalSearch" Mode="In" Type="Boolean" />
+            <Parameter Name="InFoal" Mode="In" Type="Boolean" />
+            <Parameter Name="ItemsPerPage" Mode="In" Type="Int32" />
+            <Parameter Name="Page" Mode="In" Type="Int32" />
+            <Parameter Name="OrderBy" Mode="In" Type="Boolean" />
+            <Parameter Name="OrderByType" Mode="In" Type="Int32" />
+            <Parameter Name="OrderByAscOrDesc" Mode="In" Type="Boolean" />
           </FunctionImport>
           <FunctionImport Name="usp_SearchAllSires" ReturnType="Collection(HorseDatabaseModel.usp_SearchAllSires_Result)">
             <Parameter Name="Name" Mode="In" Type="String" />
@@ -306,17 +332,17 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
             <Parameter Name="Name" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="usp_SearchByAge" />
-          <FunctionImport Name="usp_SearchByGender" ReturnType="Collection(HorseDatabaseModel.usp_SearchByGender_Result)">
+          <FunctionImport Name="usp_SearchByGender">
             <Parameter Name="Gender" Mode="In" Type="String" />
           </FunctionImport>
-          <FunctionImport Name="usp_SearchByHorseType" ReturnType="Collection(HorseDatabaseModel.usp_SearchByHorseType_Result)">
+          <FunctionImport Name="usp_SearchByHorseType">
             <Parameter Name="Type" Mode="In" Type="String" />
           </FunctionImport>
-          <FunctionImport Name="usp_searchByPrice" ReturnType="Collection(HorseDatabaseModel.usp_searchByPrice_Result)">
+          <FunctionImport Name="usp_searchByPrice">
             <Parameter Name="Low" Mode="In" Type="Decimal" />
             <Parameter Name="High" Mode="In" Type="Decimal" />
           </FunctionImport>
-          <FunctionImport Name="usp_SearchBySire" ReturnType="Collection(HorseDatabaseModel.usp_SearchBySire_Result)">
+          <FunctionImport Name="usp_SearchBySire">
             <Parameter Name="Sire" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="usp_UpdateActiveListing">
@@ -327,7 +353,6 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
             <Parameter Name="Sire" Mode="In" Type="String" />
             <Parameter Name="DamSire" Mode="In" Type="String" />
             <Parameter Name="Description" Mode="In" Type="String" />
-            <Parameter Name="FirebaseId" Mode="In" Type="String" />
             <Parameter Name="Gender" Mode="In" Type="String" />
             <Parameter Name="HorseName" Mode="In" Type="String" />
             <Parameter Name="InFoal" Mode="In" Type="Boolean" />
@@ -340,18 +365,6 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
             <Parameter Name="HorseType" Mode="In" Type="String" />
           </FunctionImport>
         </EntityContainer>
-        <ComplexType Name="usp_DeleteSire_Result">
-          <Property Type="Int64" Name="SireServerId" Nullable="true" />
-          <Property Type="String" Name="Name" Nullable="true" MaxLength="100" />
-          <Property Type="DateTime" Name="CreatedOn" Nullable="true" Precision="23" />
-          <Property Type="DateTime" Name="UpdatedOn" Nullable="true" Precision="23" />
-        </ComplexType>
-        <ComplexType Name="usp_InsertSire_Result">
-          <Property Type="Int64" Name="SireServerId" Nullable="true" />
-          <Property Type="String" Name="Name" Nullable="true" MaxLength="100" />
-          <Property Type="DateTime" Name="CreatedOn" Nullable="true" Precision="23" />
-          <Property Type="DateTime" Name="UpdatedOn" Nullable="true" Precision="23" />
-        </ComplexType>
         <ComplexType Name="usp_SearchAllSires_Result">
           <Property Type="Int64" Name="SireServerId" Nullable="true" />
           <Property Type="String" Name="Name" Nullable="true" MaxLength="100" />
@@ -363,90 +376,6 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
           <Property Type="String" Name="Name" Nullable="true" MaxLength="100" />
           <Property Type="DateTime" Name="CreatedOn" Nullable="true" Precision="23" />
           <Property Type="DateTime" Name="UpdatedOn" Nullable="true" Precision="23" />
-        </ComplexType>
-        <ComplexType Name="usp_SearchByGender_Result">
-          <Property Type="Int64" Name="ActiveListingId" Nullable="true" />
-          <Property Type="Int32" Name="Age" Nullable="true" />
-          <Property Type="String" Name="Color" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="Dam" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="DamId" Nullable="true" />
-          <Property Type="String" Name="Sire" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="DamSire" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="Description" Nullable="true" MaxLength="500" />
-          <Property Type="String" Name="FirebaseId" Nullable="true" />
-          <Property Type="String" Name="Gender" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="HorseName" Nullable="true" MaxLength="100" />
-          <Property Type="Boolean" Name="InFoal" Nullable="true" />
-          <Property Type="Decimal" Name="Lte" Nullable="true" Precision="18" Scale="2" />
-          <Property Type="DateTime" Name="OriginalDateListed" Nullable="true" Precision="23" />
-          <Property Type="Decimal" Name="Price" Nullable="true" Precision="18" Scale="2" />
-          <Property Type="String" Name="PurchaseListingType" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="RanchPhoto" Nullable="true" />
-          <Property Type="String" Name="SellerId" Nullable="true" />
-          <Property Type="String" Name="HorseType" Nullable="true" />
-        </ComplexType>
-        <ComplexType Name="usp_SearchByHorseType_Result">
-          <Property Type="Int64" Name="ActiveListingId" Nullable="true" />
-          <Property Type="Int32" Name="Age" Nullable="true" />
-          <Property Type="String" Name="Color" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="Dam" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="DamId" Nullable="true" />
-          <Property Type="String" Name="Sire" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="DamSire" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="Description" Nullable="true" MaxLength="500" />
-          <Property Type="String" Name="FirebaseId" Nullable="true" />
-          <Property Type="String" Name="Gender" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="HorseName" Nullable="true" MaxLength="100" />
-          <Property Type="Boolean" Name="InFoal" Nullable="true" />
-          <Property Type="Decimal" Name="Lte" Nullable="true" Precision="18" Scale="2" />
-          <Property Type="DateTime" Name="OriginalDateListed" Nullable="true" Precision="23" />
-          <Property Type="Decimal" Name="Price" Nullable="true" Precision="18" Scale="2" />
-          <Property Type="String" Name="PurchaseListingType" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="RanchPhoto" Nullable="true" />
-          <Property Type="String" Name="SellerId" Nullable="true" />
-          <Property Type="String" Name="HorseType" Nullable="true" />
-        </ComplexType>
-        <ComplexType Name="usp_searchByPrice_Result">
-          <Property Type="Int64" Name="ActiveListingId" Nullable="true" />
-          <Property Type="Int32" Name="Age" Nullable="true" />
-          <Property Type="String" Name="Color" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="Dam" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="DamId" Nullable="true" />
-          <Property Type="String" Name="Sire" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="DamSire" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="Description" Nullable="true" MaxLength="500" />
-          <Property Type="String" Name="FirebaseId" Nullable="true" />
-          <Property Type="String" Name="Gender" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="HorseName" Nullable="true" MaxLength="100" />
-          <Property Type="Boolean" Name="InFoal" Nullable="true" />
-          <Property Type="Decimal" Name="Lte" Nullable="true" Precision="18" Scale="2" />
-          <Property Type="DateTime" Name="OriginalDateListed" Nullable="true" Precision="23" />
-          <Property Type="Decimal" Name="Price" Nullable="true" Precision="18" Scale="2" />
-          <Property Type="String" Name="PurchaseListingType" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="RanchPhoto" Nullable="true" />
-          <Property Type="String" Name="SellerId" Nullable="true" />
-          <Property Type="String" Name="HorseType" Nullable="true" />
-        </ComplexType>
-        <ComplexType Name="usp_SearchBySire_Result">
-          <Property Type="Int64" Name="ActiveListingId" Nullable="true" />
-          <Property Type="Int32" Name="Age" Nullable="true" />
-          <Property Type="String" Name="Color" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="Dam" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="DamId" Nullable="true" />
-          <Property Type="String" Name="Sire" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="DamSire" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="Description" Nullable="true" MaxLength="500" />
-          <Property Type="String" Name="FirebaseId" Nullable="true" />
-          <Property Type="String" Name="Gender" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="HorseName" Nullable="true" MaxLength="100" />
-          <Property Type="Boolean" Name="InFoal" Nullable="true" />
-          <Property Type="Decimal" Name="Lte" Nullable="true" Precision="18" Scale="2" />
-          <Property Type="DateTime" Name="OriginalDateListed" Nullable="true" Precision="23" />
-          <Property Type="Decimal" Name="Price" Nullable="true" Precision="18" Scale="2" />
-          <Property Type="String" Name="PurchaseListingType" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="RanchPhoto" Nullable="true" />
-          <Property Type="String" Name="SellerId" Nullable="true" />
-          <Property Type="String" Name="HorseType" Nullable="true" />
         </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
@@ -476,7 +405,6 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
                 <ScalarProperty Name="Sire" ColumnName="Sire" />
                 <ScalarProperty Name="DamSire" ColumnName="DamSire" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="FireBaseId" ColumnName="FireBaseId" />
                 <ScalarProperty Name="Gender" ColumnName="Gender" />
                 <ScalarProperty Name="HorseName" ColumnName="HorseName" />
                 <ScalarProperty Name="InFoal" ColumnName="InFoal" />
@@ -487,6 +415,7 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
                 <ScalarProperty Name="RanchPhoto" ColumnName="RanchPhoto" />
                 <ScalarProperty Name="SellerId" ColumnName="SellerId" />
                 <ScalarProperty Name="HorseType" ColumnName="HorseType" />
+                <ScalarProperty Name="IsSold" ColumnName="IsSold" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -503,6 +432,7 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
               <MappingFragment StoreEntitySet="tblSire">
                 <ScalarProperty Name="SireServerId" ColumnName="SireServerId" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="HorseType" ColumnName="HorseType" />
                 <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
                 <ScalarProperty Name="UpdatedOn" ColumnName="UpdatedOn" />
               </MappingFragment>
@@ -521,27 +451,9 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
             </EntityTypeMapping>
           </EntitySetMapping>
           <FunctionImportMapping FunctionImportName="usp_DeleteActiveListing" FunctionName="HorseDatabaseModel.Store.usp_DeleteActiveListing" />
-          <FunctionImportMapping FunctionImportName="usp_DeleteSire" FunctionName="HorseDatabaseModel.Store.usp_DeleteSire">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="HorseDatabaseModel.usp_DeleteSire_Result">
-                <ScalarProperty Name="SireServerId" ColumnName="SireServerId" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-                <ScalarProperty Name="UpdatedOn" ColumnName="UpdatedOn" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="usp_DeleteSire" FunctionName="HorseDatabaseModel.Store.usp_DeleteSire" />
           <FunctionImportMapping FunctionImportName="usp_InsertActiveListing" FunctionName="HorseDatabaseModel.Store.usp_InsertActiveListing" />
-          <FunctionImportMapping FunctionImportName="usp_InsertSire" FunctionName="HorseDatabaseModel.Store.usp_InsertSire">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="HorseDatabaseModel.usp_InsertSire_Result">
-                <ScalarProperty Name="SireServerId" ColumnName="SireServerId" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-                <ScalarProperty Name="UpdatedOn" ColumnName="UpdatedOn" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="usp_InsertSire" FunctionName="HorseDatabaseModel.Store.usp_InsertSire" />
           <FunctionImportMapping FunctionImportName="usp_RowExists" FunctionName="HorseDatabaseModel.Store.usp_RowExists" />
           <FunctionImportMapping FunctionImportName="usp_SearchActiveListings" FunctionName="HorseDatabaseModel.Store.usp_SearchActiveListings" />
           <FunctionImportMapping FunctionImportName="usp_SearchAllSires" FunctionName="HorseDatabaseModel.Store.usp_SearchAllSires">
@@ -565,106 +477,10 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
             </ResultMapping>
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="usp_SearchByAge" FunctionName="HorseDatabaseModel.Store.usp_SearchByAge" />
-          <FunctionImportMapping FunctionImportName="usp_SearchByGender" FunctionName="HorseDatabaseModel.Store.usp_SearchByGender">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="HorseDatabaseModel.usp_SearchByGender_Result">
-                <ScalarProperty Name="ActiveListingId" ColumnName="ActiveListingId" />
-                <ScalarProperty Name="Age" ColumnName="Age" />
-                <ScalarProperty Name="Color" ColumnName="Color" />
-                <ScalarProperty Name="Dam" ColumnName="Dam" />
-                <ScalarProperty Name="DamId" ColumnName="DamId" />
-                <ScalarProperty Name="Sire" ColumnName="Sire" />
-                <ScalarProperty Name="DamSire" ColumnName="DamSire" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="FirebaseId" ColumnName="FirebaseId" />
-                <ScalarProperty Name="Gender" ColumnName="Gender" />
-                <ScalarProperty Name="HorseName" ColumnName="HorseName" />
-                <ScalarProperty Name="InFoal" ColumnName="InFoal" />
-                <ScalarProperty Name="Lte" ColumnName="Lte" />
-                <ScalarProperty Name="OriginalDateListed" ColumnName="OriginalDateListed" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="PurchaseListingType" ColumnName="PurchaseListingType" />
-                <ScalarProperty Name="RanchPhoto" ColumnName="RanchPhoto" />
-                <ScalarProperty Name="SellerId" ColumnName="SellerId" />
-                <ScalarProperty Name="HorseType" ColumnName="HorseType" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="usp_SearchByHorseType" FunctionName="HorseDatabaseModel.Store.usp_SearchByHorseType">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="HorseDatabaseModel.usp_SearchByHorseType_Result">
-                <ScalarProperty Name="ActiveListingId" ColumnName="ActiveListingId" />
-                <ScalarProperty Name="Age" ColumnName="Age" />
-                <ScalarProperty Name="Color" ColumnName="Color" />
-                <ScalarProperty Name="Dam" ColumnName="Dam" />
-                <ScalarProperty Name="DamId" ColumnName="DamId" />
-                <ScalarProperty Name="Sire" ColumnName="Sire" />
-                <ScalarProperty Name="DamSire" ColumnName="DamSire" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="FirebaseId" ColumnName="FirebaseId" />
-                <ScalarProperty Name="Gender" ColumnName="Gender" />
-                <ScalarProperty Name="HorseName" ColumnName="HorseName" />
-                <ScalarProperty Name="InFoal" ColumnName="InFoal" />
-                <ScalarProperty Name="Lte" ColumnName="Lte" />
-                <ScalarProperty Name="OriginalDateListed" ColumnName="OriginalDateListed" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="PurchaseListingType" ColumnName="PurchaseListingType" />
-                <ScalarProperty Name="RanchPhoto" ColumnName="RanchPhoto" />
-                <ScalarProperty Name="SellerId" ColumnName="SellerId" />
-                <ScalarProperty Name="HorseType" ColumnName="HorseType" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="usp_searchByPrice" FunctionName="HorseDatabaseModel.Store.usp_searchByPrice">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="HorseDatabaseModel.usp_searchByPrice_Result">
-                <ScalarProperty Name="ActiveListingId" ColumnName="ActiveListingId" />
-                <ScalarProperty Name="Age" ColumnName="Age" />
-                <ScalarProperty Name="Color" ColumnName="Color" />
-                <ScalarProperty Name="Dam" ColumnName="Dam" />
-                <ScalarProperty Name="DamId" ColumnName="DamId" />
-                <ScalarProperty Name="Sire" ColumnName="Sire" />
-                <ScalarProperty Name="DamSire" ColumnName="DamSire" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="FirebaseId" ColumnName="FirebaseId" />
-                <ScalarProperty Name="Gender" ColumnName="Gender" />
-                <ScalarProperty Name="HorseName" ColumnName="HorseName" />
-                <ScalarProperty Name="InFoal" ColumnName="InFoal" />
-                <ScalarProperty Name="Lte" ColumnName="Lte" />
-                <ScalarProperty Name="OriginalDateListed" ColumnName="OriginalDateListed" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="PurchaseListingType" ColumnName="PurchaseListingType" />
-                <ScalarProperty Name="RanchPhoto" ColumnName="RanchPhoto" />
-                <ScalarProperty Name="SellerId" ColumnName="SellerId" />
-                <ScalarProperty Name="HorseType" ColumnName="HorseType" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="usp_SearchBySire" FunctionName="HorseDatabaseModel.Store.usp_SearchBySire">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="HorseDatabaseModel.usp_SearchBySire_Result">
-                <ScalarProperty Name="ActiveListingId" ColumnName="ActiveListingId" />
-                <ScalarProperty Name="Age" ColumnName="Age" />
-                <ScalarProperty Name="Color" ColumnName="Color" />
-                <ScalarProperty Name="Dam" ColumnName="Dam" />
-                <ScalarProperty Name="DamId" ColumnName="DamId" />
-                <ScalarProperty Name="Sire" ColumnName="Sire" />
-                <ScalarProperty Name="DamSire" ColumnName="DamSire" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="FirebaseId" ColumnName="FirebaseId" />
-                <ScalarProperty Name="Gender" ColumnName="Gender" />
-                <ScalarProperty Name="HorseName" ColumnName="HorseName" />
-                <ScalarProperty Name="InFoal" ColumnName="InFoal" />
-                <ScalarProperty Name="Lte" ColumnName="Lte" />
-                <ScalarProperty Name="OriginalDateListed" ColumnName="OriginalDateListed" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="PurchaseListingType" ColumnName="PurchaseListingType" />
-                <ScalarProperty Name="RanchPhoto" ColumnName="RanchPhoto" />
-                <ScalarProperty Name="SellerId" ColumnName="SellerId" />
-                <ScalarProperty Name="HorseType" ColumnName="HorseType" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="usp_SearchByGender" FunctionName="HorseDatabaseModel.Store.usp_SearchByGender" />
+          <FunctionImportMapping FunctionImportName="usp_SearchByHorseType" FunctionName="HorseDatabaseModel.Store.usp_SearchByHorseType" />
+          <FunctionImportMapping FunctionImportName="usp_searchByPrice" FunctionName="HorseDatabaseModel.Store.usp_searchByPrice" />
+          <FunctionImportMapping FunctionImportName="usp_SearchBySire" FunctionName="HorseDatabaseModel.Store.usp_SearchBySire" />
           <FunctionImportMapping FunctionImportName="usp_UpdateActiveListing" FunctionName="HorseDatabaseModel.Store.usp_UpdateActiveListing" />
         </EntityContainerMapping>
       </Mapping>

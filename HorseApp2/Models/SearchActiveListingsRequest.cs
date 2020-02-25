@@ -13,11 +13,36 @@ namespace HorseApp2.Models
         public bool GenderSearch { get; set; }
         public bool AgeSearch { get; set; }
 
-        public string HorseType { get; set; }
+        /// <summary>
+        /// New Fields
+        /// </summary>
+        public bool DamSearch { get; set; }
+        public bool DamSireSearch { get; set; }
+        public bool ColorSearch { get; set; }
+        public bool LteSearch { get; set; }
+        public bool InFoalSearch { get; set; }
+
+
+        public List<string> HorseTypes { get; set; }
         public decimal PriceLow { get; set; }
         public decimal PriceHigh { get; set; }
-        public string Sire { get; set; }
-        public string Gender { get; set; }
+        public List<string> Sires { get; set; }
+        public List<string> Genders { get; set; }
         public List<string> Ages { get; set; }
+        public List<string> Dams { get; set; }
+        public List<string> DamSires { get; set; }
+        public List<string> Colors { get; set; }
+        public decimal LteHigh { get; set; }
+        public decimal LteLow { get; set; }
+        public bool InFoal { get; set; }
+        /// <summary>
+        /// New Items
+        /// </summary>
+        public int ItemsPerPage { get; set; }
+        public int Page { get; set; }
+        public bool OrderBy { get; set; }
+        public int OrderByType { get; set; }
+        public bool OrderByAsc { get; set; }
+
     }
 }
