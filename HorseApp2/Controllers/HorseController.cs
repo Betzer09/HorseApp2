@@ -556,6 +556,10 @@ namespace HorseApp2.Controllers
                     objRequest.HorseTypes = headers.GetValues("types").First().ToString().Split(',').ToList();
                 }
             }
+            else
+            {
+                objRequest.TypeSearch = false;
+            }
             if (headers.Contains("priceSearch"))
             {
                 objRequest.PriceSearch = bool.Parse(headers.GetValues("priceSearch").First());
@@ -577,6 +581,10 @@ namespace HorseApp2.Controllers
                     objRequest.PriceHigh = 10000000;
                 }
             }
+            else
+            {
+                objRequest.PriceSearch = false;
+            }
             if (headers.Contains("sireSearch"))
             {
                 objRequest.SireSearch = bool.Parse(headers.GetValues("sireSearch").First());
@@ -586,6 +594,10 @@ namespace HorseApp2.Controllers
                     objRequest.Sires = headers.GetValues("sires").First().ToString().Split(',').ToList();
                 }
             }
+            else
+            {
+                objRequest.SireSearch = false;
+            }
             if (headers.Contains("genderSearch"))
             {
                 objRequest.GenderSearch = bool.Parse(headers.GetValues("genderSearch").First());
@@ -594,6 +606,10 @@ namespace HorseApp2.Controllers
                 {
                     objRequest.Genders = headers.GetValues("genders").First().ToString().Split(',').ToList();
                 }
+            }
+            else
+            {
+                objRequest.GenderSearch = false;
             }
             if (headers.Contains("ageSearch"))
             {
@@ -610,6 +626,10 @@ namespace HorseApp2.Controllers
 
                 }
             }
+            else
+            {
+                objRequest.AgeSearch = false;
+            }
             if(headers.Contains("damSearch"))
             {
                 objRequest.AgeSearch = bool.Parse(headers.GetValues("damSearch").First());
@@ -620,6 +640,10 @@ namespace HorseApp2.Controllers
 
                 }
             }
+            else
+            {
+                objRequest.DamSearch = false;
+            }
             if (headers.Contains("damSireSearch"))
             {
                 objRequest.AgeSearch = bool.Parse(headers.GetValues("damSireSearch").First());
@@ -629,6 +653,10 @@ namespace HorseApp2.Controllers
                     objRequest.DamSires = headers.GetValues("damSires").First().ToString().Split(',').ToList();
                 }
             }
+            else
+            {
+                objRequest.DamSireSearch = false;
+            }
             if (headers.Contains("colorSearch"))
             {
                 objRequest.AgeSearch = bool.Parse(headers.GetValues("colorSearch").First());
@@ -637,6 +665,10 @@ namespace HorseApp2.Controllers
                 {
                     objRequest.Colors = headers.GetValues("colors").First().ToString().Split(',').ToList();
                 }
+            }
+            else
+            {
+                objRequest.ColorSearch = false;
             }
             if (headers.Contains("lteSearch"))
             {
@@ -651,6 +683,10 @@ namespace HorseApp2.Controllers
                     objRequest.LteLow = decimal.Parse(headers.GetValues("lteLow").First().ToString());
                 }
             }
+            else
+            {
+                objRequest.LteSearch = false;
+            }
             if (headers.Contains("inFoalSearch"))
             {
                 objRequest.AgeSearch = bool.Parse(headers.GetValues("inFoalSearch").First());
@@ -661,25 +697,49 @@ namespace HorseApp2.Controllers
 
                 }
             }
-            if(headers.Contains("itemsPerPage"))
+            else
+            {
+                objRequest.InFoalSearch = false;
+            }
+            if (headers.Contains("itemsPerPage"))
             {
                 objRequest.ItemsPerPage = int.Parse(headers.GetValues("itemsPerPage").First());
+            }
+            else
+            {
+                objRequest.ItemsPerPage = 20;
             }
             if (headers.Contains("page"))
             {
                 objRequest.Page = int.Parse(headers.GetValues("page").First());
             }
+            else
+            {
+                objRequest.Page = 1;
+            }
             if (headers.Contains("orderBy"))
             {
                 objRequest.OrderBy = bool.Parse(headers.GetValues("orderBy").First());
+            }
+            else
+            {
+                objRequest.OrderBy = false;
             }
             if (headers.Contains("orderByType"))
             {
                 objRequest.OrderByType = int.Parse(headers.GetValues("orderByType").First());
             }
+            else
+            {
+                objRequest.OrderByType = 1;
+            }
             if (headers.Contains("orderByAsc"))
             {
                 objRequest.OrderByAsc = bool.Parse(headers.GetValues("orderByAsc").First());
+            }
+            else
+            {
+                objRequest.OrderByAsc = false;
             }
 
             try
@@ -1171,6 +1231,10 @@ namespace HorseApp2.Controllers
                     name = headers.GetValues("Name").First();
                 }
             }
+            else
+            {
+                nameSearch = false;
+            }
             if(headers.Contains("horseTypeSearch"))
             {
                 horseTypeSearch = bool.Parse(headers.GetValues("horseTypeSearch").First());
@@ -1179,15 +1243,27 @@ namespace HorseApp2.Controllers
                     horseTypes = headers.GetValues("horseTypes").First().Split(' ');
                 }
             }
+            else
+            {
+                horseTypeSearch = false;
+            }
             if (headers.Contains("page"))
             {
                 
                     page = int.Parse(headers.GetValues("page").First());
                 
             }
+            else
+            {
+                page = 1;
+            }
             if (headers.Contains("itemsPerPage"))
             {
                    itemsPerPage = int.Parse(headers.GetValues("itemsPerPage").First());
+            }
+            else
+            {
+                itemsPerPage = 20;
             }
 
 
@@ -1916,22 +1992,114 @@ namespace HorseApp2.Controllers
 
 
 
-        public DataTable ConvertToDataTable<T>(IList<T> data)
+        //If
+        //type = 1 ReiningSire
+        //tpye = 2 CuttingSire
+        //type = 3 CowHorse
+        //type = 4 BarrelSire
+        [HttpPost]
+        [Route("PostSires")]
+        public void inputSires(int type)
         {
-            PropertyDescriptorCollection properties =
-               TypeDescriptor.GetProperties(typeof(T));
-            DataTable table = new DataTable();
-            foreach (PropertyDescriptor prop in properties)
-                table.Columns.Add(prop.Name, Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType);
-            foreach (T item in data)
-            {
-                DataRow row = table.NewRow();
-                foreach (PropertyDescriptor prop in properties)
-                    row[prop.Name] = prop.GetValue(item) ?? DBNull.Value;
-                table.Rows.Add(row);
-            }
-            return table;
+            DataTable dt = new DataTable();
+            DataColumn dc1 = new DataColumn();
 
+            dc1.ColumnName = "Name";
+            dc1.DataType = Type.GetType("System.String");
+            DataColumn dc2 = new DataColumn();
+            dc2.ColumnName = "HorseType";
+            dc2.DataType = Type.GetType("System.String");
+            DataColumn dc3 = new DataColumn();
+            dc3.ColumnName = "CreatedOn";
+            dc3.DataType = Type.GetType("System.DateTime");
+            dt.Columns.Add(dc1);
+            dt.Columns.Add(dc2);
+            dt.Columns.Add(dc3);
+
+            string horseType = "";
+            string[] lines;
+
+            switch (type)
+            {
+                case 1:
+                    lines = System.IO.File.ReadAllLines(@"C:\Users\Aric\Source\repos\HorseApp2\HorseApp2\ReiningSires.txt");
+                    horseType = "Reining";
+                    break;
+
+                case 2:
+                    lines = System.IO.File.ReadAllLines(@"C:\Users\Aric\Source\repos\HorseApp2\HorseApp2\CuttingSires.txt");
+                    horseType = "Cutting";
+                    break;
+
+                case 3:
+                    lines = System.IO.File.ReadAllLines(@"C:\Users\Aric\Source\repos\HorseApp2\HorseApp2\CowHorses.txt");
+                    horseType = "Cow Horse";
+                    break;
+
+                case 4:
+                    lines = System.IO.File.ReadAllLines(@"C:\Users\Aric\Source\repos\HorseApp2\HorseApp2\BarrelSires.txt");
+                    horseType = "Barrel";
+                    break;
+
+                default:
+                    lines = new string[0];
+                    break;
+            }
+
+
+            //Initializing sql command, parameters, and connection
+            SqlCommand cmd = new SqlCommand("usp_InsertSire");
+            cmd.CommandType = CommandType.StoredProcedure;
+            SqlParameter param = new SqlParameter();
+            SqlParameter param2 = new SqlParameter();
+            param2.ParameterName = "@HorseType";
+            param2.Value = horseType;
+            System.Data.SqlClient.SqlConnection conn;
+            System.Data.SqlClient.SqlDataAdapter adapter;
+            DataSet ds;
+
+
+            foreach (string line in lines)
+            {
+                try
+                {
+                    using (var context = new HorseDatabaseEntities())
+                    {
+                        
+                        param.ParameterName = "@Name";
+                        param.Value = line;
+                        cmd.Parameters.Add(param);
+                        cmd.Parameters.Add(param2);
+
+                        conn = new System.Data.SqlClient.SqlConnection(context.Database.Connection.ConnectionString);
+                        cmd.Connection = conn;
+
+                        //open connection
+                        context.Database.Connection.Open();
+
+                        //execute and retrieve data from stored procedure
+                        adapter = new System.Data.SqlClient.SqlDataAdapter(cmd);
+                        ds = new DataSet();
+                        adapter.Fill(ds);
+                        DataTable SireData;
+                        if (ds.Tables[0] != null)
+                        {
+                            SireData = ds.Tables[0];
+                        }
+                        else
+                        {
+                            SireData = new DataTable();
+                        }
+
+                        //close connection
+                        context.Database.Connection.Close();
+                    }
+                }
+                catch (Exception e)
+                {
+                    e.ToString();
+                }
+            }
         }
 
 
