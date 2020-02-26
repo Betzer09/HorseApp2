@@ -344,6 +344,22 @@ namespace HorseApp2.Controllers
             param0.Value = listing.activeListingId;
             SqlParameter param1 = new SqlParameter();
             param1.ParameterName = "@Age";
+            if(listing.age == "weanling")
+            {
+                listing.age = "0";
+            }
+            else if(listing.age == "yearling")
+            {
+                listing.age = "1";
+            }
+            else if(listing.age[listing.age.Length - 1] == 'o')
+            {
+                listing.age = listing.age.Split(' ').ElementAt(0);
+            }
+            else if(listing.age[listing.age.Length - 1] == '+')
+            {
+                listing.age = "15";
+            }
             param1.Value = listing.age;
             SqlParameter param2 = new SqlParameter();
             param2.ParameterName = "@Color";
@@ -546,15 +562,18 @@ namespace HorseApp2.Controllers
             SearchActiveListingsRequest objRequest = new SearchActiveListingsRequest();
             List<HorseListing> listings = new List<HorseListing>();
             SearchResponse response = new SearchResponse();
+            string input = "";
 
                 if (headers.Contains("types"))
                 {
                     objRequest.TypeSearch = true;
-                    objRequest.HorseTypes = headers.GetValues("types").First().ToString().Split(',').ToList();
+                    input = headers.GetValues("types").First().Trim(new Char[] { '{', '}', '[',']' }).Replace(",","").Replace("\"", "");
+                    objRequest.HorseTypes = input.Split(' ').ToList();
                 }
                 else
                 {
                     objRequest.TypeSearch = false;
+                    objRequest.HorseTypes = new List<string>();
                 }
 
                 if(headers.Contains("priceLow") || headers.Contains("priceHigh"))
@@ -592,11 +611,13 @@ namespace HorseApp2.Controllers
                 if (headers.Contains("sires"))
                 {
                     objRequest.SireSearch = true;
-                    objRequest.Sires = headers.GetValues("sires").First().ToString().Split(',').ToList();
-                }
+                    input = headers.GetValues("sires").First().Trim(new Char[] { '{', '}', '[', ']' }).Replace(",", "").Replace("\"", "");
+                    objRequest.Sires = input.Split(' ').ToList();
+            }
                 else
                 {
                     objRequest.SireSearch = false;
+                    objRequest.Sires = new List<string>();
                 }
             
            
@@ -604,21 +625,34 @@ namespace HorseApp2.Controllers
                 if (headers.Contains("genders"))
                 {
                     objRequest.GenderSearch = true;
-                    objRequest.Genders = headers.GetValues("genders").First().ToString().Split(',').ToList();
+                    input = headers.GetValues("genders").First().Trim(new Char[] { '{', '}', '[', ']' }).Replace(",", "").Replace("\"", "");
+                    objRequest.Genders = input.Split(' ').ToList();
                 }
                 else
                 {
                     objRequest.GenderSearch = false;
+                    objRequest.Genders = new List<string>();
                 }
         
      
                 if (headers.Contains("ages"))
                 {
                     objRequest.AgeSearch = true;
-                    string[] ages = headers.GetValues("ages").First().Split(' ');
+                    input = headers.GetValues("ages").First().Trim(new Char[] { '{', '}', '[', ']' }).Replace(",", "").Replace("\"", "");
+                    
+
+                    string[] ages = input.Split(' ');
                     objRequest.Ages = new List<string>();
                     for (int i = 0; i < ages.Length; i++)
                     {
+                        if(ages[i] == "weanling")
+                        {
+                            ages[i] = "0";
+                        }
+                        else if(ages[i] == "yearling")
+                        {
+                            ages[i] = "1";
+                        }
                         objRequest.Ages.Add(ages[i]);
                     }
 
@@ -633,7 +667,8 @@ namespace HorseApp2.Controllers
                 if (headers.Contains("dams"))
                 {
                     objRequest.DamSearch = true;
-                   objRequest.Dams = headers.GetValues("dams").First().ToString().Split(',').ToList();
+                    input = headers.GetValues("dams").First().Trim(new Char[] { '{', '}', '[', ']' }).Replace(",", "").Replace("\"", "");
+                    objRequest.Dams = input.Split(' ').ToList();
 
                 }
                 else
@@ -646,8 +681,9 @@ namespace HorseApp2.Controllers
                 if (headers.Contains("damSires"))
                 {
                     objRequest.DamSireSearch = true;
-                    objRequest.DamSires = headers.GetValues("damSires").First().ToString().Split(',').ToList();
-                }
+                    input = headers.GetValues("damSires").First().Trim(new Char[] { '{', '}', '[', ']' }).Replace(",", "").Replace("\"", "");
+                    objRequest.DamSires = input.Split(' ').ToList();
+            }
                 else
                 {
                     objRequest.DamSireSearch = false;
@@ -658,7 +694,8 @@ namespace HorseApp2.Controllers
                 if (headers.Contains("colors"))
                 {
                     objRequest.ColorSearch = true;
-                    objRequest.Colors = headers.GetValues("colors").First().ToString().Split(',').ToList();
+                    input = headers.GetValues("colors").First().Trim(new Char[] { '{', '}', '[', ']' }).Replace(",", "").Replace("\"", "");
+                    objRequest.Colors = input.Split(' ').ToList();
                 }
                 else
                 {
@@ -735,13 +772,13 @@ namespace HorseApp2.Controllers
             {
                 objRequest.OrderByType = 1;
             }
-            if (headers.Contains("orderByAsc"))
+            if (headers.Contains("orderByDesc"))
             {
-                objRequest.OrderByAsc = bool.Parse(headers.GetValues("orderByAsc").First());
+                objRequest.OrderByDesc = bool.Parse(headers.GetValues("orderByDesc").First());
             }
             else
             {
-                objRequest.OrderByAsc = false;
+                objRequest.OrderByDesc = false;
             }
 
             try
@@ -804,6 +841,9 @@ namespace HorseApp2.Controllers
             DataTable dt2 = new DataTable();
             DataTable dt3 = new DataTable();
             DataTable dt4 = new DataTable();
+            DataTable dt5 = new DataTable();
+            DataTable dt6 = new DataTable();
+            DataTable dt7 = new DataTable();
 
             SqlParameter param1 = new SqlParameter();
             param1.ParameterName = "@TypeSearch";
@@ -856,6 +896,7 @@ namespace HorseApp2.Controllers
             param8.ParameterName = "@Sires";
             //param8.Value = request.Sires;
             DataColumn nameColumn = new DataColumn("Name");
+            nameColumn.DataType = System.Type.GetType("System.String");
 
             dt2.Columns.Add(nameColumn);
 
@@ -885,6 +926,7 @@ namespace HorseApp2.Controllers
             param10.ParameterName = "@Genders";
             //param10.Value = request.Genders;
             DataColumn genderColumn = new DataColumn("Gender");
+            genderColumn.DataType = System.Type.GetType("System.String");
 
             dt3.Columns.Add(genderColumn);
 
@@ -907,12 +949,13 @@ namespace HorseApp2.Controllers
 
             SqlParameter param11 = new SqlParameter();
             param11.ParameterName = "@AgeSearch";
-            //param11.Value = request.AgeSearch;
+            param11.Value = request.AgeSearch;
             SqlParameter param12 = new SqlParameter();
             param12.ParameterName = "@Ages";
 
             //DataTable dt = new DataTable();
             DataColumn ageColumn = new DataColumn("Age");
+            ageColumn.DataType = System.Type.GetType("System.String");
 
             dt4.Columns.Add(ageColumn);
 
@@ -933,20 +976,147 @@ namespace HorseApp2.Controllers
             param12.Value = dt4;
 
 
+            SqlParameter param19 = new SqlParameter();
+            param19.ParameterName = "@DamSearch";
+            param19.Value = request.DamSearch;
+
+            //dams
             SqlParameter param13 = new SqlParameter();
-            param13.ParameterName = "@ItemsPerPage";
-            param13.Value = request.ItemsPerPage;
+            param13.ParameterName = "@Dams";
+
+            //DataTable dt = new DataTable();
+            DataColumn damsColumn = new DataColumn("Name");
+            damsColumn.DataType = System.Type.GetType("System.String");
+
+            dt5.Columns.Add(damsColumn);
+
+            List<DataRow> rows5 = new List<DataRow>();
+            int rowCount5 = request.Dams.Count();
+            for (int i = 0; i < rowCount5; i++)
+            {
+                rows5.Add(dt5.NewRow());
+            }
+            j = 0;
+            foreach (DataRow row in rows5)
+            {
+                row["Name"] = request.Dams.ElementAt(j);
+                dt5.Rows.Add(row);
+                j++;
+            }
+
+            param13.Value = dt5;
+            //
+
+
+            SqlParameter param20 = new SqlParameter();
+            param20.ParameterName = "@DamSireSearch";
+            param20.Value = request.DamSireSearch;
+
+            //damsires
+            //
             SqlParameter param14 = new SqlParameter();
-            param14.ParameterName = "@Page";
-            param14.Value = request.Page;
+            param14.ParameterName = "@DamSires";
+
+            //DataTable dt = new DataTable();
+            DataColumn damSiresColumn = new DataColumn("Name");
+            damSiresColumn.DataType = System.Type.GetType("System.String");
+
+            dt6.Columns.Add(damSiresColumn);
+
+            List<DataRow> rows6 = new List<DataRow>();
+            int rowCount6 = request.DamSires.Count();
+            for (int i = 0; i < rowCount6; i++)
+            {
+                rows6.Add(dt6.NewRow());
+            }
+            j = 0;
+            foreach (DataRow row in rows6)
+            {
+                row["Name"] = request.DamSires.ElementAt(j);
+                dt6.Rows.Add(row);
+                j++;
+            }
+
+            param14.Value = dt6;
+            //
+
+            SqlParameter param21 = new SqlParameter();
+            param21.ParameterName = "@ColorSearch";
+            param21.Value = request.ColorSearch;
+
+            //colors
+            //
             SqlParameter param15 = new SqlParameter();
-            param15.ParameterName = "@OrderBy";
-            param15.Value = request.OrderBy;
+            param15.ParameterName = "@Colors";
+
+            //DataTable dt = new DataTable();
+            DataColumn colorsColumn = new DataColumn("Color");
+            colorsColumn.DataType = System.Type.GetType("System.String");
+
+            dt7.Columns.Add(colorsColumn);
+
+            List<DataRow> rows7 = new List<DataRow>();
+            int rowCount7 = request.Colors.Count();
+            for (int i = 0; i < rowCount7; i++)
+            {
+                rows7.Add(dt7.NewRow());
+            }
+            j = 0;
+            foreach (DataRow row in rows7)
+            {
+                row["Color"] = request.Colors.ElementAt(j);
+                dt7.Rows.Add(row);
+                j++;
+            }
+
+            param15.Value = dt7;
+            //
+
+            SqlParameter param22 = new SqlParameter();
+            param22.ParameterName = "@LteSearch";
+            param22.Value = request.LteSearch;
+
+            //lteHigh
+            //
             SqlParameter param16 = new SqlParameter();
-            param16.ParameterName = "@OrderByType";
-            param16.Value = request.OrderByType;
+            param16.ParameterName = "@LteHigh";
+            param16.Value = request.LteHigh;
+            //
+
+            //lteLow
+            //
             SqlParameter param17 = new SqlParameter();
-            param17.ParameterName = "@OrderByAscOrDesc";
+            param17.ParameterName = "@LteLow";
+            param17.Value = request.LteLow;
+            //
+
+            SqlParameter param23 = new SqlParameter();
+            param23.ParameterName = "@InFoalSearch";
+            param23.Value = request.InFoalSearch;
+
+            //InFoal
+            //
+            SqlParameter param18 = new SqlParameter();
+            param18.ParameterName = "@InFoal";
+            param18.Value = request.InFoal;
+            //
+
+
+            SqlParameter param24 = new SqlParameter();
+            param24.ParameterName = "@ItemsPerPage";
+            param24.Value = request.ItemsPerPage;
+            SqlParameter param25 = new SqlParameter();
+            param25.ParameterName = "@Page";
+            param25.Value = request.Page;
+            SqlParameter param26 = new SqlParameter();
+            param26.ParameterName = "@OrderBy";
+            param26.Value = request.OrderBy;
+            SqlParameter param27 = new SqlParameter();
+            param27.ParameterName = "@OrderByType";
+            param27.Value = request.OrderByType;
+            SqlParameter param28 = new SqlParameter();
+            param28.ParameterName = "@OrderByDesc";
+            param28.Value = request.OrderByDesc;
 
 
             parameters.Add(param1);
@@ -965,6 +1135,17 @@ namespace HorseApp2.Controllers
             parameters.Add(param15);
             parameters.Add(param16);
             parameters.Add(param17);
+            parameters.Add(param18);
+            parameters.Add(param19);
+            parameters.Add(param20);
+            parameters.Add(param21);
+            parameters.Add(param22);
+            parameters.Add(param23);
+            parameters.Add(param24);
+            parameters.Add(param25);
+            parameters.Add(param26);
+            parameters.Add(param27);
+            parameters.Add(param28);
 
             return parameters;
         }
@@ -1778,7 +1959,19 @@ namespace HorseApp2.Controllers
             HorseListing listing = new HorseListing();
 
             listing.activeListingId = row["ActiveListingId"].ToString();
-            listing.age = row["Age"].ToString();
+            if(row["Age"].ToString() == "0")
+            {
+                listing.age = "weanling";
+            }
+            else if(row["Age"].ToString() == "1")
+            {
+                listing.age = "yearling";
+            }
+            else
+            {
+                listing.age = row["Age"].ToString();
+            }
+           
             listing.color = row["Color"].ToString();
             listing.dam = row["Dam"].ToString();
             listing.sire = row["Sire"].ToString();

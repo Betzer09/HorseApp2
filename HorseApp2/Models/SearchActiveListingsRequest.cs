@@ -42,7 +42,7 @@ namespace HorseApp2.Models
         public int Page { get; set; }
         public bool OrderBy { get; set; }
         public int OrderByType { get; set; }
-        public bool OrderByAsc { get; set; }
+        public bool OrderByDesc { get; set; }
 
     }
 }
