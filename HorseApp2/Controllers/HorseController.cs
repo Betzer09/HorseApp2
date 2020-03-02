@@ -18,7 +18,8 @@ namespace HorseApp2.Controllers
     public class HorseController : ApiController
     {
 
-        //WORKS WITH ROW IN HEADERS
+        //Test Endpoint to see if connection to the database is successful
+        //Enter a row number in the header and it will return true if the row exists in tblName
         [HttpGet]
         [Route("RowExists")]
         public bool Exists()
@@ -122,11 +123,18 @@ namespace HorseApp2.Controllers
             return response;
         }
 
-
+        /// <summary>
+        /// Updates an active listing given a particular ActiveListingId and a field to update
+        /// All fields are optional
+        /// This is also the proper endpoint where inserting photos should occur
+        /// </summary>
+        /// <param name="listing"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("UpdateActiveListing")]
         public HorseListing UpdateActiveListing(HorseListing listing)
         {
+            //Create and format Sql Parameters for stored procedure
             List<SqlParameter> parameters = new List<SqlParameter>();
 
             SqlParameter param0 = new SqlParameter();
@@ -331,12 +339,13 @@ namespace HorseApp2.Controllers
         }
 
         /// <summary>
-        /// Creates parameters for sp given a horseListing
+        /// Creates parameters for the stored procedure: usp_InsertAcitveListing given a horseListing
         /// </summary>
         /// <param name="listing"></param>
         /// <returns></returns>
         private List<SqlParameter> GetSqlParametersForInsert(HorseListing listing)
         {
+
             List<SqlParameter> parameters = new List<SqlParameter>();
 
             SqlParameter param0 = new SqlParameter();
@@ -833,6 +842,11 @@ namespace HorseApp2.Controllers
         }
 
 
+        /// <summary>
+        /// //Create and format Sql Parameters for stored procedure: usp_SearchActiveListings
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         private List<SqlParameter> GetSqlParametersForSearchListings(SearchActiveListingsRequest request)
         {
             List<SqlParameter> parameters = new List<SqlParameter>();
@@ -1253,7 +1267,7 @@ namespace HorseApp2.Controllers
             var headers = request.Headers;
             string name = "";
 
-            if (headers.Contains("Name")) ;
+            if (headers.Contains("Name")) 
             {
                 name = headers.GetValues("Name").First();
             }
@@ -1385,9 +1399,9 @@ namespace HorseApp2.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("SearchAllSiresElastically")]
-        public List<SireResponse> SearchAllSiresElastically()
+        public SireSearchResponse SearchAllSiresElastically()
         {
-            List<SireResponse> response = new List<SireResponse>();
+            SireSearchResponse response = new SireSearchResponse();
             var request = this.Request;
             var headers = request.Headers;
             string name = "";
@@ -1397,25 +1411,20 @@ namespace HorseApp2.Controllers
             int page = 0;
             int itemsPerPage = 0;
 
-            if (headers.Contains("NameSearch")) 
+            if (headers.Contains("Name")) 
             {
-                nameSearch = bool.Parse(headers.GetValues("nameSearch").First());
-                if(nameSearch)
-                {
-                    name = headers.GetValues("Name").First();
-                }
+                nameSearch = true;
+                name = headers.GetValues("Name").First();
+                
             }
             else
             {
                 nameSearch = false;
             }
-            if(headers.Contains("horseTypeSearch"))
+            if(headers.Contains("horseTypes"))
             {
-                horseTypeSearch = bool.Parse(headers.GetValues("horseTypeSearch").First());
-                if(horseTypeSearch)
-                {
-                    horseTypes = headers.GetValues("horseTypes").First().Split(' ');
-                }
+                horseTypeSearch = true;
+                horseTypes = headers.GetValues("horseTypes").First().Split(' ');
             }
             else
             {
@@ -1423,9 +1432,7 @@ namespace HorseApp2.Controllers
             }
             if (headers.Contains("page"))
             {
-                
-                    page = int.Parse(headers.GetValues("page").First());
-                
+                page = int.Parse(headers.GetValues("page").First());
             }
             else
             {
@@ -1433,7 +1440,7 @@ namespace HorseApp2.Controllers
             }
             if (headers.Contains("itemsPerPage"))
             {
-                   itemsPerPage = int.Parse(headers.GetValues("itemsPerPage").First());
+                itemsPerPage = int.Parse(headers.GetValues("itemsPerPage").First());
             }
             else
             {
@@ -1510,7 +1517,7 @@ namespace HorseApp2.Controllers
 
 
                     //convert data from stored procedure into Sire object
-                    response = SireTableToSireResponse(SireData);
+                    response = SireTableToSireSearchResponse(SireData, count);
 
                     //close connection
                     context.Database.Connection.Close();
@@ -1922,7 +1929,35 @@ namespace HorseApp2.Controllers
 
             return response;
         }
-        
+
+        private SireSearchResponse SireTableToSireSearchResponse(DataTable sireTable, DataTable count)
+        {
+            SireSearchResponse response = new SireSearchResponse();
+
+            foreach (DataRow row in sireTable.Rows)
+            {
+                response.sires.Add(PopulateSireSearchResponse(row));
+            }
+            foreach(DataRow row in count.Rows)
+            {
+                response.TotalResultCount = long.Parse(row[0].ToString());
+            }
+
+            return response;
+        }
+
+        private SireListing PopulateSireSearchResponse(DataRow row)
+        {
+            SireListing response = new SireListing();
+
+            response.sireServerId = long.Parse(row["SireServerId"].ToString());
+            response.name = row["Name"].ToString();
+            response.horseType = row["HorseType"].ToString();
+            response.createdOn = row["CreatedOn"].ToString();
+
+            return response;
+        }
+
 
         private List<SireResponse> SireTableToSireResponse(DataTable sireTable)
         {

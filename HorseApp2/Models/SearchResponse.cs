@@ -5,6 +5,7 @@ using System.Web;
 
 namespace HorseApp2.Models
 {
+    //Response object for searching active listings
     public class SearchResponse
     {
         public int totalNumOfListings { get; set; }

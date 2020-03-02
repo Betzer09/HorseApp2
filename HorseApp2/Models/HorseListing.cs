@@ -5,6 +5,7 @@ using System.Web;
 
 namespace HorseApp2.Models
 {
+    //1 horse listing that includes the photos for the post
     public class HorseListing
     {
         public HorseListing()

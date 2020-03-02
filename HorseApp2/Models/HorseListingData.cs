@@ -5,6 +5,7 @@ using System.Web;
 
 namespace HorseApp2.Models
 {
+    //Contains all the necessary fields to build a horse listing besides the photos
     public class HorseListingData
     {
         public long ActiveListingId { get; set; }
