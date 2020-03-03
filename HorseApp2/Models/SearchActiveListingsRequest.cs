@@ -39,7 +39,7 @@ namespace HorseApp2.Models
         //NOT REQUIRED
         public List<string> Genders { get; set; }
         //NOT REQUIRED
-        public List<string> Ages { get; set; }
+        public List<int> Ages { get; set; }
         //NOT REQUIRED
         public List<string> Dams { get; set; }
         //NOT REQUIRED

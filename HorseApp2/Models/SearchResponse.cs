@@ -9,6 +9,8 @@ namespace HorseApp2.Models
     public class SearchResponse
     {
         public int totalNumOfListings { get; set; }
+
+        public int pageNumber { get; set; }
         
         public List<HorseListing> listings { get; set; }
     }

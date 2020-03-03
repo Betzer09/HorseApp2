@@ -10,11 +10,11 @@ namespace HorseApp2.Models
     {
         public HorseListing()
         {
-            Photos = new List<HorseListingPhoto>();
+            photos = new List<HorseListingPhoto>();
         }
 
         public string activeListingId { get; set; }
-        public string age { get; set; }
+        public int age { get; set; }
         public string color { get; set; }
         public string dam { get; set; }
         public string sire { get; set; }
@@ -33,7 +33,7 @@ namespace HorseApp2.Models
         public string horseType { get; set; }
         public bool isSold { get; set; }
 
-        public List<HorseListingPhoto> Photos { get; set; }
+        public List<HorseListingPhoto> photos { get; set; }
 
     }
 }

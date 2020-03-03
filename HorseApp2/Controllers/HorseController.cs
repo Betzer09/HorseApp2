@@ -225,7 +225,7 @@ namespace HorseApp2.Controllers
             dt.Columns.Add(UpdatedOnColumn);
 
             List<DataRow> rows = new List<DataRow>();
-            int rowCount = listing.Photos.Count();
+            int rowCount = listing.photos.Count();
             for (int i = 0; i < rowCount; i++)
             {
                 rows.Add(dt.NewRow());
@@ -234,13 +234,14 @@ namespace HorseApp2.Controllers
             HorseListingPhoto photo;
             foreach (DataRow row in rows)
             {
-                photo = listing.Photos.ElementAt(j);
-                row["ActiveListingPhotoId"] = photo.ActiveListingPhotoId;
-                row["ActiveListingId"] = photo.ActiveListingId;
-                row["PhotoURL"] = photo.PhotoURL;
-                row["PhotoOrder"] = photo.PhotoOrder;
-                row["CreatedOn"] = photo.CreatedOn;
-                row["UpdatedOn"] = photo.UpdatedOn;
+                photo = listing.photos.ElementAt(j);
+                row["ActiveListingPhotoId"] = photo.activeListingPhotoId;
+                row["ActiveListingId"] = photo.activeListingId;
+                row["PhotoURL"] = photo.photoUrl;
+                row["PhotoOrder"] = photo.photoOrder;
+                row["CreatedOn"] = photo.createdOn;
+                row["UpdatedOn"] = DateTime.Now.ToString();
+
 
                 dt.Rows.Add(row);
 
@@ -353,6 +354,7 @@ namespace HorseApp2.Controllers
             param0.Value = listing.activeListingId;
             SqlParameter param1 = new SqlParameter();
             param1.ParameterName = "@Age";
+            /*
             if(listing.age == "weanling")
             {
                 listing.age = "0";
@@ -369,6 +371,7 @@ namespace HorseApp2.Controllers
             {
                 listing.age = "15";
             }
+            */
             param1.Value = listing.age;
             SqlParameter param2 = new SqlParameter();
             param2.ParameterName = "@Color";
@@ -613,16 +616,12 @@ namespace HorseApp2.Controllers
                     objRequest.PriceSearch = false;
                 }
 
-               
-            
-           
-    
                 if (headers.Contains("sires"))
                 {
                     objRequest.SireSearch = true;
                     input = headers.GetValues("sires").First().Trim(new Char[] { '{', '}', '[', ']' }).Replace(",", "").Replace("\"", "");
                     objRequest.Sires = input.Split(' ').ToList();
-            }
+                }
                 else
                 {
                     objRequest.SireSearch = false;
@@ -651,9 +650,10 @@ namespace HorseApp2.Controllers
                     
 
                     string[] ages = input.Split(' ');
-                    objRequest.Ages = new List<string>();
+                    objRequest.Ages = new List<int>();
                     for (int i = 0; i < ages.Length; i++)
                     {
+                        /*
                         if(ages[i] == "weanling")
                         {
                             ages[i] = "0";
@@ -662,14 +662,15 @@ namespace HorseApp2.Controllers
                         {
                             ages[i] = "1";
                         }
-                        objRequest.Ages.Add(ages[i]);
+                        */
+                        objRequest.Ages.Add(int.Parse(ages[i]));
                     }
 
                 }
                 else
                 {
                     objRequest.AgeSearch = false;
-                    objRequest.Ages = new List<string>();
+                    objRequest.Ages = new List<int>();
                 }
             
           
@@ -692,7 +693,7 @@ namespace HorseApp2.Controllers
                     objRequest.DamSireSearch = true;
                     input = headers.GetValues("damSires").First().Trim(new Char[] { '{', '}', '[', ']' }).Replace(",", "").Replace("\"", "");
                     objRequest.DamSires = input.Split(' ').ToList();
-            }
+                }
                 else
                 {
                     objRequest.DamSireSearch = false;
@@ -827,6 +828,7 @@ namespace HorseApp2.Controllers
                     //convert data from stored proceduure into ActiveListing object
                     response.listings = DataTablesToHorseListing(listingData, photos);
                     response.totalNumOfListings = total;
+                    response.pageNumber = objRequest.Page;
 
                     //close connection
                     context.Database.Connection.Close();
@@ -969,7 +971,7 @@ namespace HorseApp2.Controllers
 
             //DataTable dt = new DataTable();
             DataColumn ageColumn = new DataColumn("Age");
-            ageColumn.DataType = System.Type.GetType("System.String");
+            ageColumn.DataType = System.Type.GetType("System.Int32");
 
             dt4.Columns.Add(ageColumn);
 
@@ -1780,8 +1782,6 @@ namespace HorseApp2.Controllers
                 gender = headers.GetValues("Gender").First();
             }
 
-
-
             try
             {
                 using (var context = new HorseDatabaseEntities())
@@ -1843,7 +1843,7 @@ namespace HorseApp2.Controllers
             var headers = request.Headers;
 
             List<HorseListing> response = new List<HorseListing>();
-            List<string> ages = new List<string>();
+            List<int> ages = new List<int>();
 
 
             if (headers.Contains("Ages"))
@@ -1852,7 +1852,7 @@ namespace HorseApp2.Controllers
 
                 for(int i = 0; i < agesArray.Length; i++)
                 {
-                    ages.Add(agesArray[i]);
+                    ages.Add(int.Parse(agesArray[i]));
                 }
             }
 
@@ -1896,9 +1896,6 @@ namespace HorseApp2.Controllers
                     }
 
                     agesParam.Value = dt;
-
-                    
-
 
 
                     cmd.Parameters.Add(agesParam);
@@ -1994,6 +1991,7 @@ namespace HorseApp2.Controllers
             HorseListing listing = new HorseListing();
 
             listing.activeListingId = row["ActiveListingId"].ToString();
+            /*
             if(row["Age"].ToString() == "0")
             {
                 listing.age = "weanling";
@@ -2006,7 +2004,8 @@ namespace HorseApp2.Controllers
             {
                 listing.age = row["Age"].ToString();
             }
-           
+            */
+            listing.age = int.Parse(row["Age"].ToString());
             listing.color = row["Color"].ToString();
             listing.dam = row["Dam"].ToString();
             listing.sire = row["Sire"].ToString();
@@ -2015,7 +2014,7 @@ namespace HorseApp2.Controllers
             //listing.fireBaseId = row["FirebaseId"].ToString();
             listing.gender = row["Gender"].ToString();
             listing.horseName = row["HorseName"].ToString();
-            listing.inFoal = bool.Parse(row["InFoal"].ToString());
+            listing.inFoal = bool.Parse(row["InFoal"].ToString()); 
             listing.lte = decimal.Parse(row["Lte"].ToString());
             listing.originalDateListed = row["OriginalDateListed"].ToString();
             listing.price = decimal.Parse(row["Price"].ToString());
@@ -2023,18 +2022,18 @@ namespace HorseApp2.Controllers
             listing.ranchPhoto = row["RanchPhoto"].ToString();
             listing.sellerId = row["SellerId"].ToString();
             listing.horseType = row["HorseType"].ToString();
-            listing.isSold = bool.Parse(row["IsSold"].ToString());
+            listing.isSold = bool.Parse(row["IsSold"].ToString()); 
 
             int i = 0;
             foreach(DataRow dr in photos)
             {
-                listing.Photos.Add(new HorseListingPhoto());
-                listing.Photos.ElementAt(i).ActiveListingPhotoId = long.Parse(dr["ActiveListingPhotoId"].ToString());
-                listing.Photos.ElementAt(i).ActiveListingId = dr["ActiveListingId"].ToString();
-                listing.Photos.ElementAt(i).PhotoURL = dr["PhotoURL"].ToString();
-                listing.Photos.ElementAt(i).PhotoOrder = int.Parse(dr["PhotoOrder"].ToString());
-                listing.Photos.ElementAt(i).CreatedOn = dr["CreatedOn"].ToString();
-                listing.Photos.ElementAt(i).UpdatedOn = dr["UpdatedOn"].ToString();
+                listing.photos.Add(new HorseListingPhoto());
+                listing.photos.ElementAt(i).activeListingPhotoId = long.Parse(dr["ActiveListingPhotoId"].ToString());
+                listing.photos.ElementAt(i).activeListingId = dr["ActiveListingId"].ToString();
+                listing.photos.ElementAt(i).photoUrl = dr["PhotoURL"].ToString();
+                listing.photos.ElementAt(i).photoOrder = int.Parse(dr["PhotoOrder"].ToString());
+                listing.photos.ElementAt(i).createdOn = dr["CreatedOn"].ToString();
+                listing.photos.ElementAt(i).updatedOn = dr["UpdatedOn"].ToString();
 
                 i++;
             }
@@ -2168,10 +2167,10 @@ namespace HorseApp2.Controllers
             {
                 photo = photos.ElementAt(j);
 
-                row["PhotoURL"] = photo.PhotoURL;
-                row["PhotoOrder"] = photo.PhotoOrder;
-                row["CreatedOn"] = photo.CreatedOn;
-                row["UpdatedOn"] = photo.UpdatedOn;
+                row["PhotoURL"] = photo.photoUrl;
+                row["PhotoOrder"] = photo.photoOrder;
+                row["CreatedOn"] = photo.createdOn;
+                row["UpdatedOn"] = photo.updatedOn;
 
                 dt.Rows.Add(row);
 
