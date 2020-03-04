@@ -1523,6 +1523,8 @@ namespace HorseApp2.Controllers
 
                     //close connection
                     context.Database.Connection.Close();
+
+                    response.pageCount = page;
                 }
             }
             catch (Exception e)
@@ -1937,7 +1939,7 @@ namespace HorseApp2.Controllers
             }
             foreach(DataRow row in count.Rows)
             {
-                response.TotalResultCount = long.Parse(row[0].ToString());
+                response.totalResultCount = long.Parse(row[0].ToString());
             }
 
             return response;

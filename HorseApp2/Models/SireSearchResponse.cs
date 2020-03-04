@@ -13,6 +13,8 @@ namespace HorseApp2.Models
             sires = new List<SireListing>();
         }
         public List<SireListing> sires { get; set; }
-        public long TotalResultCount { get; set; }
+        public long totalResultCount { get; set; }
+
+        public  int pageCount { get; set; }
     }
 }
