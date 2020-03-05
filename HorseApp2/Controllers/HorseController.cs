@@ -749,6 +749,19 @@ namespace HorseApp2.Controllers
                     objRequest.InFoalSearch = false;
                     objRequest.InFoal = false;
                 }
+
+            if(headers.Contains("activeListingIds"))
+            {
+                objRequest.ActiveListingIdSearch = true;
+                string ids = headers.GetValues("activeListingIds").First().Trim(new Char[] { '{', '}', '[', ']' }).Replace(",", "").Replace("\"", "");
+                objRequest.ActiveListingIds = ids.Split(' ').ToList();
+            }
+            else
+            {
+                objRequest.ActiveListingIdSearch = false;
+                objRequest.ActiveListingIds = new List<string>();
+            }
+
          
             if (headers.Contains("itemsPerPage"))
             {
@@ -822,7 +835,7 @@ namespace HorseApp2.Controllers
                     int total = 0;
                     foreach(DataRow row in totalListings.Rows)
                     {
-                        total = int.Parse(row["RowCount"].ToString());
+                        total = int.Parse(row[0].ToString());
                     }
 
                     //convert data from stored proceduure into ActiveListing object
@@ -860,6 +873,7 @@ namespace HorseApp2.Controllers
             DataTable dt5 = new DataTable();
             DataTable dt6 = new DataTable();
             DataTable dt7 = new DataTable();
+            DataTable dt8 = new DataTable();
 
             SqlParameter param1 = new SqlParameter();
             param1.ParameterName = "@TypeSearch";
@@ -886,7 +900,15 @@ namespace HorseApp2.Controllers
             int j = 0;
             foreach (DataRow row in rows)
             {
-                row[0] = request.HorseTypes.ElementAt(j);
+                if(request.HorseTypes.ElementAt(j) == "cowHorse")
+                {
+                    row[0] = "cow horse";
+                }
+                else
+                {
+                    row[0] = request.HorseTypes.ElementAt(j);
+                }
+                
                 dt1.Rows.Add(row);
                 j++;
             }
@@ -1134,6 +1156,38 @@ namespace HorseApp2.Controllers
             param28.ParameterName = "@OrderByDesc";
             param28.Value = request.OrderByDesc;
 
+            SqlParameter param29 = new SqlParameter();
+            param29.ParameterName = "@ActiveListingIdSearch";
+            param29.Value = request.ActiveListingIdSearch;
+
+            SqlParameter param30 = new SqlParameter();
+            param30.ParameterName = "ActiveListingIds";
+
+            DataColumn idsColumn = new DataColumn("IDs");
+            colorsColumn.DataType = System.Type.GetType("System.String");
+
+            dt8.Columns.Add(idsColumn);
+
+            List<DataRow> rows8 = new List<DataRow>();
+            int rowCount8 = request.ActiveListingIds.Count();
+            for (int i = 0; i < rowCount8; i++)
+            {
+                rows8.Add(dt8.NewRow());
+            }
+            j = 0;
+            foreach (DataRow row in rows8)
+            {
+                row["IDs"] = request.ActiveListingIds.ElementAt(j);
+                dt8.Rows.Add(row);
+                j++;
+            }
+
+            param30.Value = dt8;
+
+
+
+
+
 
             parameters.Add(param1);
             parameters.Add(param2);
@@ -1162,6 +1216,9 @@ namespace HorseApp2.Controllers
             parameters.Add(param26);
             parameters.Add(param27);
             parameters.Add(param28);
+            parameters.Add(param29);
+            parameters.Add(param30);
+
 
             return parameters;
         }
@@ -1484,7 +1541,14 @@ namespace HorseApp2.Controllers
                     for(int i = 0; i < horseTypes.Length; i++)
                     {
                         DataRow dr = dt.NewRow();
-                        dr[0] = horseTypes[i];
+                        if(horseTypes[i] == "cowHorse")
+                        {
+                            dr[0] = "cow horse";
+                        }
+                        else
+                        {
+                            dr[0] = horseTypes[i];
+                        }
                         dt.Rows.Add(dr);
                     }
 
