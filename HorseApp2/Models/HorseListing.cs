@@ -12,6 +12,7 @@ namespace HorseApp2.Models
         {
             photos = new List<HorseListingPhoto>();
         }
+        //private int _price;
 
         public string activeListingId { get; set; }
         public int age { get; set; }

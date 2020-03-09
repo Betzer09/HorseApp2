@@ -18,5 +18,6 @@ namespace HorseApp2.Models
         public int photoOrder { get; set; }
         public string createdOn { get; set; }
         public string updatedOn { get; set; }
+        public bool isVideo { get; set; }
     }
 }

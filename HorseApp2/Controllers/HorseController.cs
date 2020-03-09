@@ -217,12 +217,15 @@ namespace HorseApp2.Controllers
             CreatedOnColumn.DataType = System.Type.GetType("System.DateTime");
             DataColumn UpdatedOnColumn = new DataColumn("UpdatedOn");
             UpdatedOnColumn.DataType = System.Type.GetType("System.DateTime");
+            DataColumn IsVideoColumn = new DataColumn("IsVideo");
+            IsVideoColumn.DataType = System.Type.GetType("System.Boolean");
             dt.Columns.Add(ActiveListingPhotoIdColumn);
             dt.Columns.Add(ActiveListingIdColumn);
             dt.Columns.Add(PhotoURLColumn);
             dt.Columns.Add(PhotoOrderColumn);
             dt.Columns.Add(CreatedOnColumn);
             dt.Columns.Add(UpdatedOnColumn);
+            dt.Columns.Add(IsVideoColumn);
 
             List<DataRow> rows = new List<DataRow>();
             int rowCount = listing.photos.Count();
@@ -241,6 +244,7 @@ namespace HorseApp2.Controllers
                 row["PhotoOrder"] = photo.photoOrder;
                 row["CreatedOn"] = photo.createdOn;
                 row["UpdatedOn"] = DateTime.Now.ToString();
+                row["IsVideo"] = photo.isVideo;
 
 
                 dt.Rows.Add(row);
@@ -2100,6 +2104,7 @@ namespace HorseApp2.Controllers
                 listing.photos.ElementAt(i).photoOrder = int.Parse(dr["PhotoOrder"].ToString());
                 listing.photos.ElementAt(i).createdOn = dr["CreatedOn"].ToString();
                 listing.photos.ElementAt(i).updatedOn = dr["UpdatedOn"].ToString();
+                listing.photos.ElementAt(i).isVideo = bool.Parse(dr["IsVideo"].ToString());
 
                 i++;
             }
@@ -2216,10 +2221,16 @@ namespace HorseApp2.Controllers
             CreatedOnColumn.DataType = System.Type.GetType("System.DateTime");
             DataColumn UpdatedOnColumn = new DataColumn("UpdatedOn");
             UpdatedOnColumn.DataType = System.Type.GetType("System.DateTime");
+
+            DataColumn IsVideoColumn = new DataColumn("IsVideo");
+            IsVideoColumn.DataType = System.Type.GetType("System.Boolean");
+
             dt.Columns.Add(PhotoURLColumn);
             dt.Columns.Add(PhotoOrderColumn);
             dt.Columns.Add(CreatedOnColumn);
             dt.Columns.Add(UpdatedOnColumn);
+
+            dt.Columns.Add(IsVideoColumn);
 
             List<DataRow> rows = new List<DataRow>();
             int rowCount = photos.Count();
@@ -2237,6 +2248,7 @@ namespace HorseApp2.Controllers
                 row["PhotoOrder"] = photo.photoOrder;
                 row["CreatedOn"] = photo.createdOn;
                 row["UpdatedOn"] = photo.updatedOn;
+                row["IsVideo"] = photo.isVideo;
 
                 dt.Rows.Add(row);
 
