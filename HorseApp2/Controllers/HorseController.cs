@@ -630,8 +630,15 @@ namespace HorseApp2.Controllers
                 if (headers.Contains("sires"))
                 {
                     objRequest.SireSearch = true;
-                    input = headers.GetValues("sires").First().Trim(new Char[] { '{', '}', '[', ']' }).Replace(",", "").Replace("\"", "");
-                    objRequest.Sires = input.Split(' ').ToList();
+                    input = headers.GetValues("sires").First().Trim(new Char[] { '{', '}', '[', ']' }).Replace("\"", "");
+                    objRequest.Sires = input.Split(',').ToList();
+                    for (int i = 0; i < objRequest.Sires.Count; i++)
+                    {
+                        if (objRequest.Sires[i][0] == ' ')
+                        {
+                            objRequest.Sires[i] = objRequest.Sires[i].Remove(0, 1);
+                        }
+                    }
                 }
                 else
                 {
@@ -688,8 +695,15 @@ namespace HorseApp2.Controllers
                 if (headers.Contains("dams"))
                 {
                     objRequest.DamSearch = true;
-                    input = headers.GetValues("dams").First().Trim(new Char[] { '{', '}', '[', ']' }).Replace(",", "").Replace("\"", "");
-                    objRequest.Dams = input.Split(' ').ToList();
+                    input = headers.GetValues("dams").First().Trim(new Char[] { '{', '}', '[', ']' }).Replace("\"", "");
+                    objRequest.Dams = input.Split(',').ToList();
+                    for (int i = 0; i < objRequest.Dams.Count; i++)
+                    {
+                        if (objRequest.Dams[i][0] == ' ')
+                        {
+                            objRequest.Dams[i] = objRequest.Dams[i].Remove(0, 1);
+                        }
+                    }
 
                 }
                 else
@@ -702,8 +716,15 @@ namespace HorseApp2.Controllers
                 if (headers.Contains("damSires"))
                 {
                     objRequest.DamSireSearch = true;
-                    input = headers.GetValues("damSires").First().Trim(new Char[] { '{', '}', '[', ']' }).Replace(",", "").Replace("\"", "");
-                    objRequest.DamSires = input.Split(' ').ToList();
+                    input = headers.GetValues("damSires").First().Trim(new Char[] { '{', '}', '[', ']' }).Replace("\"", "");
+                    objRequest.DamSires = input.Split(',').ToList();
+                    for (int i = 0; i < objRequest.DamSires.Count; i++)
+                    {
+                        if (objRequest.DamSires[i][0] == ' ')
+                        {
+                            objRequest.DamSires[i] = objRequest.DamSires[i].Remove(0, 1);
+                        }
+                    }
                 }
                 else
                 {
