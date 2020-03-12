@@ -583,8 +583,15 @@ namespace HorseApp2.Controllers
                 if (headers.Contains("types"))
                 {
                     objRequest.TypeSearch = true;
-                    input = headers.GetValues("types").First().Trim(new Char[] { '{', '}', '[',']' }).Replace(",","").Replace("\"", "");
-                    objRequest.HorseTypes = input.Split(' ').ToList();
+                    input = headers.GetValues("types").First().Trim(new Char[] { '{', '}', '[',']' }).Replace("\"", "");
+                    objRequest.HorseTypes = input.Split(',').ToList();
+                    for(int i = 0; i < objRequest.HorseTypes.Count; i++)
+                    {
+                        if(objRequest.HorseTypes[i][0] == ' ')
+                        {
+                            objRequest.HorseTypes[i] = objRequest.HorseTypes[i].Remove(0, 1);
+                        }
+                    }
                 }
                 else
                 {
