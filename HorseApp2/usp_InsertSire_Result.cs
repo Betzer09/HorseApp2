@@ -11,10 +11,11 @@ namespace HorseApp2
 {
     using System;
     
-    public partial class usp_SearchAllSiresElastically_Result
+    public partial class usp_InsertSire_Result
     {
         public Nullable<long> SireServerId { get; set; }
         public string Name { get; set; }
+        public string HorseType { get; set; }
         public Nullable<System.DateTime> CreatedOn { get; set; }
         public Nullable<System.DateTime> UpdatedOn { get; set; }
     }

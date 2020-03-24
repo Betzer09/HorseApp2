@@ -4,17 +4,18 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="HorseDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="HorseDatabaseModel1.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="tblActiveListingPhotos">
           <Key>
             <PropertyRef Name="ActiveListingPhotoId" />
           </Key>
           <Property Name="ActiveListingPhotoId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ActiveListingId" Type="bigint" />
+          <Property Name="ActiveListingId" Type="nvarchar(max)" />
           <Property Name="PhotoURL" Type="nvarchar(max)" />
           <Property Name="PhotoOrder" Type="int" />
           <Property Name="CreatedOn" Type="datetime" />
           <Property Name="UpdatedOn" Type="datetime" />
+          <Property Name="IsVideo" Type="bit" />
         </EntityType>
         <EntityType Name="tblActiveListings">
           <Key>
@@ -83,7 +84,7 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
         </Function>
         <Function Name="usp_InsertActiveListing" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ActiveListingId" Type="nvarchar" Mode="In" />
-          <Parameter Name="Age" Type="nvarchar" Mode="In" />
+          <Parameter Name="Age" Type="int" Mode="In" />
           <Parameter Name="Color" Type="nvarchar" Mode="In" />
           <Parameter Name="Dam" Type="nvarchar" Mode="In" />
           <Parameter Name="Sire" Type="nvarchar" Mode="In" />
@@ -104,6 +105,10 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
         </Function>
         <Function Name="usp_InsertSire" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Name" Type="nvarchar" Mode="In" />
+          <Parameter Name="horseType" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="usp_InsertSires" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Type" Type="nvarchar" Mode="In" />
         </Function>
         <Function Name="usp_RowExists" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="row" Type="bigint" Mode="In" />
@@ -128,13 +133,18 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
           <Parameter Name="Page" Type="int" Mode="In" />
           <Parameter Name="OrderBy" Type="bit" Mode="In" />
           <Parameter Name="OrderByType" Type="int" Mode="In" />
-          <Parameter Name="OrderByAscOrDesc" Type="bit" Mode="In" />
+          <Parameter Name="OrderByDesc" Type="bit" Mode="In" />
+          <Parameter Name="ActiveListingIdSearch" Type="bit" Mode="In" />
         </Function>
         <Function Name="usp_SearchAllSires" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Name" Type="nvarchar" Mode="In" />
         </Function>
         <Function Name="usp_SearchAllSiresElastically" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="NameSearch" Type="bit" Mode="In" />
+          <Parameter Name="HorseTypeSearch" Type="bit" Mode="In" />
           <Parameter Name="Name" Type="nvarchar" Mode="In" />
+          <Parameter Name="Page" Type="int" Mode="In" />
+          <Parameter Name="ItemsPerPage" Type="int" Mode="In" />
         </Function>
         <Function Name="usp_SearchByAge" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="usp_SearchByGender" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
@@ -151,7 +161,7 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
           <Parameter Name="Sire" Type="nvarchar" Mode="In" />
         </Function>
         <Function Name="usp_UpdateActiveListing" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="ActiveListingId" Type="bigint" Mode="In" />
+          <Parameter Name="ActiveListingId" Type="nvarchar(max)" Mode="In" />
           <Parameter Name="Age" Type="int" Mode="In" />
           <Parameter Name="Color" Type="nvarchar" Mode="In" />
           <Parameter Name="Dam" Type="nvarchar" Mode="In" />
@@ -168,8 +178,9 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
           <Parameter Name="RanchPhoto" Type="nvarchar(max)" Mode="In" />
           <Parameter Name="SellerId" Type="nvarchar(max)" Mode="In" />
           <Parameter Name="HorseType" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="IsSold" Type="bit" Mode="In" />
         </Function>
-        <EntityContainer Name="HorseDatabaseModelStoreContainer">
+        <EntityContainer Name="HorseDatabaseModel1StoreContainer">
           <EntitySet Name="tblActiveListingPhotos" EntityType="Self.tblActiveListingPhotos" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblActiveListings" EntityType="Self.tblActiveListings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblName" EntityType="Self.tblName" Schema="dbo" store:Type="Tables" />
@@ -197,17 +208,18 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="HorseDatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="HorseDatabaseModel1" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="tblActiveListingPhoto">
           <Key>
             <PropertyRef Name="ActiveListingPhotoId" />
           </Key>
           <Property Name="ActiveListingPhotoId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ActiveListingId" Type="Int64" />
+          <Property Name="ActiveListingId" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="PhotoURL" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="PhotoOrder" Type="Int32" />
           <Property Name="CreatedOn" Type="DateTime" Precision="3" />
           <Property Name="UpdatedOn" Type="DateTime" Precision="3" />
+          <Property Name="IsVideo" Type="Boolean" />
         </EntityType>
         <EntityType Name="tblActiveListing">
           <Key>
@@ -278,7 +290,7 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
           </FunctionImport>
           <FunctionImport Name="usp_InsertActiveListing">
             <Parameter Name="ActiveListingId" Mode="In" Type="String" />
-            <Parameter Name="Age" Mode="In" Type="String" />
+            <Parameter Name="Age" Mode="In" Type="Int32" />
             <Parameter Name="Color" Mode="In" Type="String" />
             <Parameter Name="Dam" Mode="In" Type="String" />
             <Parameter Name="Sire" Mode="In" Type="String" />
@@ -297,8 +309,12 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
             <Parameter Name="HorseType" Mode="In" Type="String" />
             <Parameter Name="IsSold" Mode="In" Type="Boolean" />
           </FunctionImport>
-          <FunctionImport Name="usp_InsertSire">
+          <FunctionImport Name="usp_InsertSire" ReturnType="Collection(HorseDatabaseModel1.usp_InsertSire_Result)">
             <Parameter Name="Name" Mode="In" Type="String" />
+            <Parameter Name="horseType" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="usp_InsertSires">
+            <Parameter Name="Type" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="usp_RowExists" ReturnType="Collection(Int32)">
             <Parameter Name="row" Mode="In" Type="Int64" />
@@ -323,13 +339,18 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
             <Parameter Name="Page" Mode="In" Type="Int32" />
             <Parameter Name="OrderBy" Mode="In" Type="Boolean" />
             <Parameter Name="OrderByType" Mode="In" Type="Int32" />
-            <Parameter Name="OrderByAscOrDesc" Mode="In" Type="Boolean" />
+            <Parameter Name="OrderByDesc" Mode="In" Type="Boolean" />
+            <Parameter Name="ActiveListingIdSearch" Mode="In" Type="Boolean" />
           </FunctionImport>
-          <FunctionImport Name="usp_SearchAllSires" ReturnType="Collection(HorseDatabaseModel.usp_SearchAllSires_Result)">
+          <FunctionImport Name="usp_SearchAllSires" ReturnType="Collection(HorseDatabaseModel1.usp_SearchAllSires_Result)">
             <Parameter Name="Name" Mode="In" Type="String" />
           </FunctionImport>
-          <FunctionImport Name="usp_SearchAllSiresElastically" ReturnType="Collection(HorseDatabaseModel.usp_SearchAllSiresElastically_Result)">
+          <FunctionImport Name="usp_SearchAllSiresElastically">
+            <Parameter Name="NameSearch" Mode="In" Type="Boolean" />
+            <Parameter Name="HorseTypeSearch" Mode="In" Type="Boolean" />
             <Parameter Name="Name" Mode="In" Type="String" />
+            <Parameter Name="Page" Mode="In" Type="Int32" />
+            <Parameter Name="ItemsPerPage" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="usp_SearchByAge" />
           <FunctionImport Name="usp_SearchByGender">
@@ -346,7 +367,7 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
             <Parameter Name="Sire" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="usp_UpdateActiveListing">
-            <Parameter Name="ActiveListingId" Mode="In" Type="Int64" />
+            <Parameter Name="ActiveListingId" Mode="In" Type="String" />
             <Parameter Name="Age" Mode="In" Type="Int32" />
             <Parameter Name="Color" Mode="In" Type="String" />
             <Parameter Name="Dam" Mode="In" Type="String" />
@@ -363,15 +384,17 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
             <Parameter Name="RanchPhoto" Mode="In" Type="String" />
             <Parameter Name="SellerId" Mode="In" Type="String" />
             <Parameter Name="HorseType" Mode="In" Type="String" />
+            <Parameter Name="IsSold" Mode="In" Type="Boolean" />
           </FunctionImport>
         </EntityContainer>
-        <ComplexType Name="usp_SearchAllSires_Result">
+        <ComplexType Name="usp_InsertSire_Result">
           <Property Type="Int64" Name="SireServerId" Nullable="true" />
           <Property Type="String" Name="Name" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="HorseType" Nullable="true" MaxLength="100" />
           <Property Type="DateTime" Name="CreatedOn" Nullable="true" Precision="23" />
           <Property Type="DateTime" Name="UpdatedOn" Nullable="true" Precision="23" />
         </ComplexType>
-        <ComplexType Name="usp_SearchAllSiresElastically_Result">
+        <ComplexType Name="usp_SearchAllSires_Result">
           <Property Type="Int64" Name="SireServerId" Nullable="true" />
           <Property Type="String" Name="Name" Nullable="true" MaxLength="100" />
           <Property Type="DateTime" Name="CreatedOn" Nullable="true" Precision="23" />
@@ -382,9 +405,9 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="HorseDatabaseModelStoreContainer" CdmEntityContainer="HorseDatabaseEntities">
+        <EntityContainerMapping StorageEntityContainer="HorseDatabaseModel1StoreContainer" CdmEntityContainer="HorseDatabaseEntities">
           <EntitySetMapping Name="tblActiveListingPhotos">
-            <EntityTypeMapping TypeName="HorseDatabaseModel.tblActiveListingPhoto">
+            <EntityTypeMapping TypeName="HorseDatabaseModel1.tblActiveListingPhoto">
               <MappingFragment StoreEntitySet="tblActiveListingPhotos">
                 <ScalarProperty Name="ActiveListingPhotoId" ColumnName="ActiveListingPhotoId" />
                 <ScalarProperty Name="ActiveListingId" ColumnName="ActiveListingId" />
@@ -392,11 +415,12 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
                 <ScalarProperty Name="PhotoOrder" ColumnName="PhotoOrder" />
                 <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
                 <ScalarProperty Name="UpdatedOn" ColumnName="UpdatedOn" />
+                <ScalarProperty Name="IsVideo" ColumnName="IsVideo" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblActiveListings">
-            <EntityTypeMapping TypeName="HorseDatabaseModel.tblActiveListing">
+            <EntityTypeMapping TypeName="HorseDatabaseModel1.tblActiveListing">
               <MappingFragment StoreEntitySet="tblActiveListings">
                 <ScalarProperty Name="ActiveListingId" ColumnName="ActiveListingId" />
                 <ScalarProperty Name="Age" ColumnName="Age" />
@@ -420,7 +444,7 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblNames">
-            <EntityTypeMapping TypeName="HorseDatabaseModel.tblName">
+            <EntityTypeMapping TypeName="HorseDatabaseModel1.tblName">
               <MappingFragment StoreEntitySet="tblName">
                 <ScalarProperty Name="tempId" ColumnName="tempId" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -428,7 +452,7 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblSires">
-            <EntityTypeMapping TypeName="HorseDatabaseModel.tblSire">
+            <EntityTypeMapping TypeName="HorseDatabaseModel1.tblSire">
               <MappingFragment StoreEntitySet="tblSire">
                 <ScalarProperty Name="SireServerId" ColumnName="SireServerId" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -439,7 +463,7 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="database_firewall_rules">
-            <EntityTypeMapping TypeName="HorseDatabaseModel.database_firewall_rules">
+            <EntityTypeMapping TypeName="HorseDatabaseModel1.database_firewall_rules">
               <MappingFragment StoreEntitySet="database_firewall_rules">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
@@ -450,15 +474,26 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="usp_DeleteActiveListing" FunctionName="HorseDatabaseModel.Store.usp_DeleteActiveListing" />
-          <FunctionImportMapping FunctionImportName="usp_DeleteSire" FunctionName="HorseDatabaseModel.Store.usp_DeleteSire" />
-          <FunctionImportMapping FunctionImportName="usp_InsertActiveListing" FunctionName="HorseDatabaseModel.Store.usp_InsertActiveListing" />
-          <FunctionImportMapping FunctionImportName="usp_InsertSire" FunctionName="HorseDatabaseModel.Store.usp_InsertSire" />
-          <FunctionImportMapping FunctionImportName="usp_RowExists" FunctionName="HorseDatabaseModel.Store.usp_RowExists" />
-          <FunctionImportMapping FunctionImportName="usp_SearchActiveListings" FunctionName="HorseDatabaseModel.Store.usp_SearchActiveListings" />
-          <FunctionImportMapping FunctionImportName="usp_SearchAllSires" FunctionName="HorseDatabaseModel.Store.usp_SearchAllSires">
+          <FunctionImportMapping FunctionImportName="usp_DeleteActiveListing" FunctionName="HorseDatabaseModel1.Store.usp_DeleteActiveListing" />
+          <FunctionImportMapping FunctionImportName="usp_DeleteSire" FunctionName="HorseDatabaseModel1.Store.usp_DeleteSire" />
+          <FunctionImportMapping FunctionImportName="usp_InsertActiveListing" FunctionName="HorseDatabaseModel1.Store.usp_InsertActiveListing" />
+          <FunctionImportMapping FunctionImportName="usp_InsertSire" FunctionName="HorseDatabaseModel1.Store.usp_InsertSire">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="HorseDatabaseModel.usp_SearchAllSires_Result">
+              <ComplexTypeMapping TypeName="HorseDatabaseModel1.usp_InsertSire_Result">
+                <ScalarProperty Name="SireServerId" ColumnName="SireServerId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="HorseType" ColumnName="HorseType" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="UpdatedOn" ColumnName="UpdatedOn" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="usp_InsertSires" FunctionName="HorseDatabaseModel1.Store.usp_InsertSires" />
+          <FunctionImportMapping FunctionImportName="usp_RowExists" FunctionName="HorseDatabaseModel1.Store.usp_RowExists" />
+          <FunctionImportMapping FunctionImportName="usp_SearchActiveListings" FunctionName="HorseDatabaseModel1.Store.usp_SearchActiveListings" />
+          <FunctionImportMapping FunctionImportName="usp_SearchAllSires" FunctionName="HorseDatabaseModel1.Store.usp_SearchAllSires">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="HorseDatabaseModel1.usp_SearchAllSires_Result">
                 <ScalarProperty Name="SireServerId" ColumnName="SireServerId" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
@@ -466,22 +501,13 @@ warning 6002: The table/view 'HorseDatabase.sys.database_firewall_rules' does no
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="usp_SearchAllSiresElastically" FunctionName="HorseDatabaseModel.Store.usp_SearchAllSiresElastically">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="HorseDatabaseModel.usp_SearchAllSiresElastically_Result">
-                <ScalarProperty Name="SireServerId" ColumnName="SireServerId" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-                <ScalarProperty Name="UpdatedOn" ColumnName="UpdatedOn" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="usp_SearchByAge" FunctionName="HorseDatabaseModel.Store.usp_SearchByAge" />
-          <FunctionImportMapping FunctionImportName="usp_SearchByGender" FunctionName="HorseDatabaseModel.Store.usp_SearchByGender" />
-          <FunctionImportMapping FunctionImportName="usp_SearchByHorseType" FunctionName="HorseDatabaseModel.Store.usp_SearchByHorseType" />
-          <FunctionImportMapping FunctionImportName="usp_searchByPrice" FunctionName="HorseDatabaseModel.Store.usp_searchByPrice" />
-          <FunctionImportMapping FunctionImportName="usp_SearchBySire" FunctionName="HorseDatabaseModel.Store.usp_SearchBySire" />
-          <FunctionImportMapping FunctionImportName="usp_UpdateActiveListing" FunctionName="HorseDatabaseModel.Store.usp_UpdateActiveListing" />
+          <FunctionImportMapping FunctionImportName="usp_SearchAllSiresElastically" FunctionName="HorseDatabaseModel1.Store.usp_SearchAllSiresElastically" />
+          <FunctionImportMapping FunctionImportName="usp_SearchByAge" FunctionName="HorseDatabaseModel1.Store.usp_SearchByAge" />
+          <FunctionImportMapping FunctionImportName="usp_SearchByGender" FunctionName="HorseDatabaseModel1.Store.usp_SearchByGender" />
+          <FunctionImportMapping FunctionImportName="usp_SearchByHorseType" FunctionName="HorseDatabaseModel1.Store.usp_SearchByHorseType" />
+          <FunctionImportMapping FunctionImportName="usp_searchByPrice" FunctionName="HorseDatabaseModel1.Store.usp_searchByPrice" />
+          <FunctionImportMapping FunctionImportName="usp_SearchBySire" FunctionName="HorseDatabaseModel1.Store.usp_SearchBySire" />
+          <FunctionImportMapping FunctionImportName="usp_UpdateActiveListing" FunctionName="HorseDatabaseModel1.Store.usp_UpdateActiveListing" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

@@ -252,14 +252,6 @@ namespace HorseApp2.Controllers
                 j++;
             }
 
-            
-
-
-
-
-
-
-
             photos.Value = dt;
             
 
@@ -502,24 +494,21 @@ namespace HorseApp2.Controllers
         public List<HorseListing> DeleteActiveListings()
         {
             List<HorseListing> deleteHorseListings = new List<HorseListing>();
-            List<long> ActiveListingIds = new List<long>();
+            List<string> ActiveListingIds = new List<string>();
 
             var request = this.Request;
             var headers = request.Headers;
 
 
-            if (headers.Contains("ActiveListingIds")) ;
+            if (headers.Contains("ActiveListingIds")) 
             {
-                string ids = headers.GetValues("ActiveListingIds").First();
+                string ids = headers.GetValues("ActiveListingIds").First().Trim(new Char[] { '{', '}', '[', ']' }).Replace("\"", "");
 
                 //ids = ids.ToString();
 
-                string[] idString = ids.ToString().Split(' ');
+                 ActiveListingIds = ids.ToString().Split(',').ToList();
 
-                for(int i = 0; i < idString.Length; i++)
-                {
-                    ActiveListingIds.Add(long.Parse(idString[i]));
-                }
+                
             }
 
             try
@@ -2288,12 +2277,12 @@ namespace HorseApp2.Controllers
 
         
 
-        private DataTable ListingIdListToDatatable(List<long> Ids)
+        private DataTable ListingIdListToDatatable(List<string> Ids)
         {
 
             DataTable dt = new DataTable();
             DataColumn column = new DataColumn("ActiveListingId");
-            column.DataType = System.Type.GetType("System.Int64");
+            column.DataType = System.Type.GetType("System.String");
             dt.Columns.Add(column);
 
             List<DataRow> rows = new List<DataRow>();
