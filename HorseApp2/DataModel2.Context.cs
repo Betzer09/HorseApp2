@@ -51,7 +51,7 @@ namespace HorseApp2
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_DeleteSire", sireServerIdParameter, nameParameter);
         }
     
-        public virtual int usp_InsertActiveListing(string activeListingId, Nullable<int> age, string color, string dam, string sire, string damSire, string description, string firebaseId, string gender, string horseName, Nullable<bool> inFoal, Nullable<decimal> lte, Nullable<System.DateTime> originalDateListed, Nullable<decimal> price, string purchaseListingType, string ranchPhoto, string sellerId, string horseType, Nullable<bool> isSold)
+        public virtual int usp_InsertActiveListing(string activeListingId, Nullable<int> age, string color, string dam, string sire, string damSire, string description, string firebaseId, string gender, string horseName, Nullable<bool> inFoal, Nullable<decimal> lte, Nullable<System.DateTime> originalDateListed, Nullable<decimal> price, string purchaseListingType, string ranchPhoto, string sellerId, string horseType, Nullable<bool> isSold, string inFoalTo)
         {
             var activeListingIdParameter = activeListingId != null ?
                 new ObjectParameter("ActiveListingId", activeListingId) :
@@ -129,7 +129,11 @@ namespace HorseApp2
                 new ObjectParameter("IsSold", isSold) :
                 new ObjectParameter("IsSold", typeof(bool));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_InsertActiveListing", activeListingIdParameter, ageParameter, colorParameter, damParameter, sireParameter, damSireParameter, descriptionParameter, firebaseIdParameter, genderParameter, horseNameParameter, inFoalParameter, lteParameter, originalDateListedParameter, priceParameter, purchaseListingTypeParameter, ranchPhotoParameter, sellerIdParameter, horseTypeParameter, isSoldParameter);
+            var inFoalToParameter = inFoalTo != null ?
+                new ObjectParameter("InFoalTo", inFoalTo) :
+                new ObjectParameter("InFoalTo", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_InsertActiveListing", activeListingIdParameter, ageParameter, colorParameter, damParameter, sireParameter, damSireParameter, descriptionParameter, firebaseIdParameter, genderParameter, horseNameParameter, inFoalParameter, lteParameter, originalDateListedParameter, priceParameter, purchaseListingTypeParameter, ranchPhotoParameter, sellerIdParameter, horseTypeParameter, isSoldParameter, inFoalToParameter);
         }
     
         public virtual ObjectResult<usp_InsertSire_Result> usp_InsertSire(string name, string horseType)

@@ -33,6 +33,7 @@ namespace HorseApp2.Models
         public string sellerId { get; set; }
         public string horseType { get; set; }
         public bool isSold { get; set; }
+        public string InFoalTo { get; set; }
 
         public List<HorseListingPhoto> photos { get; set; }
 

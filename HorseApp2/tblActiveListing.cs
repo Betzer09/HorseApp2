@@ -32,5 +32,6 @@ namespace HorseApp2
         public string SellerId { get; set; }
         public string HorseType { get; set; }
         public Nullable<bool> IsSold { get; set; }
+        public string InFoalTo { get; set; }
     }
 }

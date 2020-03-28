@@ -196,6 +196,9 @@ namespace HorseApp2.Controllers
             SqlParameter param19 = new SqlParameter();
             param19.ParameterName = "@IsSold";
             param19.Value = listing.isSold;
+            SqlParameter param20 = new SqlParameter();
+            param20.ParameterName = "@InFoalTo";
+            param20.Value = listing.InFoalTo;
 
             
             SqlParameter photos = new SqlParameter();
@@ -276,6 +279,7 @@ namespace HorseApp2.Controllers
             parameters.Add(param17);
             parameters.Add(param18);
             parameters.Add(param19);
+            parameters.Add(param20);
             parameters.Add(photos);
 
 
@@ -422,6 +426,9 @@ namespace HorseApp2.Controllers
             SqlParameter param19 = new SqlParameter();
             param19.ParameterName = "@IsSold";
             param19.Value = listing.isSold;
+            SqlParameter param20 = new SqlParameter();
+            param20.ParameterName = "InFoalTo";
+            param20.Value = listing.InFoalTo;
 
             /*
             SqlParameter photos = new SqlParameter();
@@ -450,6 +457,7 @@ namespace HorseApp2.Controllers
             parameters.Add(param17);
             parameters.Add(param18);
             parameters.Add(param19);
+            parameters.Add(param20);
             //parameters.Add(photos);
 
             return parameters;
@@ -2109,7 +2117,8 @@ namespace HorseApp2.Controllers
             listing.ranchPhoto = row["RanchPhoto"].ToString();
             listing.sellerId = row["SellerId"].ToString();
             listing.horseType = row["HorseType"].ToString();
-            listing.isSold = bool.Parse(row["IsSold"].ToString()); 
+            listing.isSold = bool.Parse(row["IsSold"].ToString());
+            listing.InFoalTo = row["InFoalTo"].ToString();
 
             int i = 0;
             foreach(DataRow dr in photos)
