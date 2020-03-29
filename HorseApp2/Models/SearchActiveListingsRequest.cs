@@ -28,6 +28,8 @@ namespace HorseApp2.Models
         public bool LteSearch { get; set; }
         //NOT REQUIRED
         public bool InFoalSearch { get; set; }
+        public bool InFoalToSearch { get; set; }
+        public bool isSoldSearch { get; set; }
         public bool ActiveListingIdSearch { get; set; }
         //NOT REQUIRED
         public List<string> HorseTypes { get; set; }
@@ -53,6 +55,8 @@ namespace HorseApp2.Models
         public decimal LteLow { get; set; }
         //NOT REQUIRED
         public bool InFoal { get; set; }
+        public string InFoalTo { get; set; }
+        public bool IsSold { get; set; }
         public List<string> ActiveListingIds { get; set; }
         //REQUIRED
         public int ItemsPerPage { get; set; }

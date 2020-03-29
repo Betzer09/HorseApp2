@@ -791,7 +791,29 @@ namespace HorseApp2.Controllers
                 objRequest.ActiveListingIds = new List<string>();
             }
 
-         
+            if (headers.Contains("inFoalTo"))
+            {
+                objRequest.InFoalToSearch = true;
+                objRequest.InFoalTo = headers.GetValues("inFoalTo").First().Replace("\"", "");
+            }
+            else
+            {
+                objRequest.InFoalSearch = false;
+                objRequest.InFoalTo = "";
+            }
+
+            //IsSold
+            if(headers.Contains("isSold"))
+            {
+                objRequest.isSoldSearch = true;
+                objRequest.IsSold = bool.Parse(headers.GetValues("isSold").First());
+            }
+            else
+            {
+                objRequest.isSoldSearch = false;
+                objRequest.IsSold = false;
+            }
+
             if (headers.Contains("itemsPerPage"))
             {
                 objRequest.ItemsPerPage = int.Parse(headers.GetValues("itemsPerPage").First());
@@ -832,6 +854,7 @@ namespace HorseApp2.Controllers
             {
                 objRequest.OrderByDesc = false;
             }
+            
 
             try
             {
@@ -1213,6 +1236,22 @@ namespace HorseApp2.Controllers
 
             param30.Value = dt8;
 
+            SqlParameter param31 = new SqlParameter();
+            param31.ParameterName = "@InFoalToSearch";
+            param31.Value = request.InFoalToSearch;
+
+            SqlParameter param32 = new SqlParameter();
+            param32.ParameterName = "@InFoalTo";
+            param32.Value = request.InFoalTo;
+
+            SqlParameter param33 = new SqlParameter();
+            param33.ParameterName = "@IsSoldSearch";
+            param33.Value = request.isSoldSearch;
+
+            SqlParameter param34 = new SqlParameter();
+            param34.ParameterName = "@IsSold";
+            param34.Value = request.IsSold;
+
 
 
 
@@ -1247,7 +1286,10 @@ namespace HorseApp2.Controllers
             parameters.Add(param28);
             parameters.Add(param29);
             parameters.Add(param30);
-
+            parameters.Add(param31);
+            parameters.Add(param32);
+            parameters.Add(param33);
+            parameters.Add(param34);
 
             return parameters;
         }
