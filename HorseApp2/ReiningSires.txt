@@ -1,57 +1,18 @@
-﻿Hollywood Jac 86
-Be Aech Enterprise
-Hollywood Dun It
-Topsail Cody
-Smart Chic Olena
-Topsail Whiz
-Shining Spark
-Reminic
-Gallo Del Cielo
-Custom Crome
-Lil Ruf Peppy
-Boomernic
-Grays Starlight
-Colonels Smoking Gun
-Nu Chex To Cash
-Smart Like Juice
-Wimpys Little Step
-Smart Starbuck
-Magnum Chic Dream
-Conquistador Whiz
-West Coast Whiz
-Rowdy Yankee
-Smart Spook
-Whizard Jac
-Whiz N Tag Chex
-Jacs Electric Spark
-Einstein
-Einsteins Revolution
-Walla Walla Whiz
-Spooks Gotta Gun
-Starlights Wrangler
-Like A Diamond
-A Sparkling Vintage
-Gunnatrashya
-Chocolate Chic Olena
-Hollywoodstinseltown
-Gunners Special Nite
-Spooks Gotta Whiz
-Pale Face Dunnit
-Cromed Out Mercedes
-Spat Olena
-Big Chex To Cash
-A Shiner Named Sioux
-A Sparkling Vintage
+﻿A Sparkling Vintage
+A Vintage Smoke
 All American Vintage
 AlwaysShineYerGunsUp
-ARC Gunna Sparka
+ARC Gunna Sparkya
 ARC Gunnabeabigstar
 Arlosa Whiz
+Armani Cat
 Banjo Whiz
+Be Aech Enterprise
 Big Chex To Cash
 Boom Shernic
 Boomboomvoodoodaddy
 Boomernic
+Boon N Crockett
 Captain Barbossa
 Cat Man Do
 CD Diamond
@@ -65,102 +26,141 @@ Colonels Smart Spook
 Colonels Smoking Gun
 Conquistador Whiz
 Country Bay Berry
+Cowboy Smarts
 Cromed Out Mercedes
 Custom Cash Advance
 Custom Crome
 Custom Legend
 Custom Made Gun
+Customs Pistol Pete
 Daddy Day Care
+Dual Reyish
 Dun It For Whizkey
 Dun It Gotta Gun
+Dun It Regally
+Einstein
 Einsteins Revolution
 Electric Code
 Electric Snow
 Epic Titan
 Finest China Rose
+FM Cottonwood
 Footwork Revolution
 Freckles Got Ashiner
 Friday Night Shiner
+Gallo Del Cielo
+Grays Starlight
 Got Guns A Blazin
+Gotta Nifty Gun
 Gotta Twist It Up
+Gunna Stop
 Gunnatrashya
 Gunner Boy
 Gunner Dun It Again
 Gunner On Ice
+Gunners Enterprise
 Gunners Indian
 Gunners Last Dance
 Gunners Special Nite
 Gunners Tinseltown
+Gunners Trashman
 Gunnin For Chicks
 Gunnit
 Guns R For Shootin
-Hang Ten Surprise
+Hang Ten Surprize
+Hashtags
 Heavy Duty Chex
+Hes Write On
 Heza Shiney Kodo
 HF Mobster
 Hickory Chic Olena
 Hickory Holly Time
 High Brow CD
 High Roller Whiz
+Hollywood Cool Gun
 Hollywood Dun It
+Hollywood Jac 86
 Hollywood Reminic
 Hollywoodstinseltown
+Im The Chic Magnet
 In Like Flinn
 Inferno Sixty Six
 Inwhizable
 Its All About Smart
 Jacs Electric Spark
 Jerry Lees Surprise
+Ju Juzz Gunslinger
 Late Nite Stopper
+Legendary Jac
 Lena Spark
+Leta Lena Whiz
 Like A Diamond
 Lil Dreamin Magnum
 Lil Joe Cash
+Lil Ruf Peppy
 Magicality
 Magnum Chic Dream
 Magnum With A Dream
+Malt Whizkey
+Marthas Mega Jac
 Mega Watt Shine
 Memorable Revolution
 Metallic Rebel
 Mister Montana Nic
 Mister Nicadual
 Mister Smarts
+Modern Gun
 Mr Electric Spark
+Must Have Guns
 My Royal Gun
 Nic It In The Bud
+Nacnac Enterprise Jr
 Nice Little Bud
 No Guns Please
 Not Ruf At All
+Nu Chex To Cash
 Once A Von A Time
 Once In A Blu Boon
 One Time Pepto
 Outta Dough
 Pale Face Dunnit
+Payaso Rojo Gunner
+Peptos Boon Shadow
 Platinum Vintage
+Pretty Peppy Chec
 PS Mega Shine Chic
 REF Black Mamba
-Rooster Spark
+REF Camafeo
+Reminic
+Rooster Sparks
 Rowdy Yankee
+Ruf Lil Magnum
 Ruf Hearted Jac
 Rufanicki
 Ruff Spook
-SG Frozen Enterprise
+SG Frozen Enterprize
 Shady Lil Starlight
 Shine Big Time
 Shine Chic Shine
 Shine N Spook
 Shine On Line
+Shiners Nickle
 Shiners Voodoo Dr
-Shine Outlaw
+Shiney Outlaw
 Shining Spark
 Show Me The Buckles
+SHR QTs Diamondcutter
+SM Steping Junior
 Smart And Shiney
 Smart Boons
 Smart Chic Olena
 Smart Like Juice
+Smart Lil Roos
 Smart Luck
+Smart Santana
 Smart Shiners Spook
 Smart Spook
+Smart Starbuck
 Smoking Whiz
 Snap Dun The Bases
 Snip O Lution
@@ -168,29 +168,47 @@ Snipers Smoking Gun
 Solano Cat
 Sparkling Major
 Sparks Of Glory
+Spat Olena
+Special Made Whiskey
 Spooks Gotta Gun
 Spooks Gotta Run
 Spooks Gotta Whiz
 Star Spangled Whiz
 Starlights Wrangler
+Step It Up Jak
 Steppin On Sparks
+Stevie Rey Von
+Strum Me A Banjo
 Sugar Little Step
+The Chex Factor
 The Crow Bar
 The Kids Gotta Gun
 The Rey Gun
+The Sweet Spot
+Time For The Diamond
 Tinker With Guns
 Tinsel Jac
+Tinseltown Flash
 Tinseltown Fly Guy
+Topsail Cody
 Topsail Whiz
+Trashadeous
 TR Smokin Dually
+Travelin Jonez
 Tricked Out Spook
+Walla Walla Starbuck
 Walla Walla Whiz
 Wallawalla Bangbang
+West Coast Whiz
+Whitey N Hollywood
 Whiz N Tag Chex
 Whiz Van Winkle
-Whiskey N Diamonds
-Whiskey On The Rocks
+Whizard Jac
+Whizkey N Diamonds
+Whizkey On The Rocks
+Whizs Chic A Dee
 Whodini
+Whos The Whiz Kid
 Wimps Cool Breeze
 Wimpy Chic
 Wimpyneedsacocktail
@@ -198,6 +216,7 @@ Wimpys High Bid
 Wimpys Little Step
 Wimpys Littlecolonel
 Wimpys Tinseltown
+Woody Be Tuff
 WR This Cats Smart
 Wranglered
 Wranglin In Chex
