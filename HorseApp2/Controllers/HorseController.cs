@@ -648,8 +648,8 @@ namespace HorseApp2.Controllers
                 if (headers.Contains("genders"))
                 {
                     objRequest.GenderSearch = true;
-                    input = headers.GetValues("genders").First().Trim(new Char[] { '{', '}', '[', ']' }).Replace(",", "").Replace("\"", "");
-                    objRequest.Genders = input.Split(' ').ToList();
+                    input = headers.GetValues("genders").First().Trim(new Char[] { '{', '}', '[', ']' }).Replace("\"", "");
+                    objRequest.Genders = input.Split(',').ToList();
                 }
                 else
                 {
