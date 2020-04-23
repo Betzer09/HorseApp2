@@ -1254,9 +1254,6 @@ namespace HorseApp2.Controllers
 
 
 
-
-
-
             parameters.Add(param1);
             parameters.Add(param2);
             parameters.Add(param3);
@@ -1379,6 +1376,79 @@ namespace HorseApp2.Controllers
             {
                 e.ToString();
             }
+
+            return response;
+        }
+
+        [HttpPut]
+        [Route("UpdateSireName")]
+        public SireResponse UpdateSireName(UpdateSireNameRequest objRequest)
+        {
+            SireResponse response = new SireResponse();
+
+
+            try
+            {
+                using(var context = new HorseDatabaseEntities())
+                {
+                    //Initializing sql command, parameters, and connection
+                    SqlCommand cmd = new SqlCommand("usp_UpdateSireName");
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+
+                    SqlParameter param = new SqlParameter();
+                    param.ParameterName = "@oldName";
+                    param.Value = objRequest.oldName;
+                    cmd.Parameters.Add(param);
+
+                    SqlParameter param2 = new SqlParameter();
+                    param2.ParameterName = "@newName";
+                    param2.Value = objRequest.newName;
+                    cmd.Parameters.Add(param2);
+
+                    System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection(context.Database.Connection.ConnectionString);
+                    cmd.Connection = conn;
+
+                    //open connection
+                    context.Database.Connection.Open();
+
+                    //execute and retrieve data from stored procedure
+                    System.Data.SqlClient.SqlDataAdapter adapter = new System.Data.SqlClient.SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    adapter.Fill(ds);
+                    DataTable SireData;
+                    if (ds.Tables[0] != null)
+                    {
+                        SireData = ds.Tables[0];
+                    }
+                    else
+                    {
+                        SireData = new DataTable();
+                    }
+
+                    //convert data from stored procedure into Sire object
+                    if (SireTableToSireResponse(SireData).Count() > 0)
+                    {
+                        response = SireTableToSireResponse(SireData).ElementAt(0);
+                    }
+                    else
+                    {
+                        response = new SireResponse();
+                    }
+
+
+
+                    //close connection
+                    context.Database.Connection.Close();
+
+                }
+            }
+            catch(Exception ex)
+            {
+                ex.ToString();
+                response = null;
+            }
+
 
             return response;
         }
