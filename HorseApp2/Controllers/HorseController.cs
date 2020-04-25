@@ -199,6 +199,9 @@ namespace HorseApp2.Controllers
             SqlParameter param20 = new SqlParameter();
             param20.ParameterName = "@InFoalTo";
             param20.Value = listing.InFoalTo;
+            SqlParameter param21 = new SqlParameter();
+            param21.ParameterName = "@IsRegistered";
+            param21.Value = listing.IsRegistered;
 
             
             SqlParameter photos = new SqlParameter();
@@ -280,6 +283,7 @@ namespace HorseApp2.Controllers
             parameters.Add(param18);
             parameters.Add(param19);
             parameters.Add(param20);
+            parameters.Add(param21);
             parameters.Add(photos);
 
 
@@ -429,6 +433,9 @@ namespace HorseApp2.Controllers
             SqlParameter param20 = new SqlParameter();
             param20.ParameterName = "InFoalTo";
             param20.Value = listing.InFoalTo;
+            SqlParameter param21 = new SqlParameter();
+            param21.ParameterName = "@IsRegistered";
+            param21.Value = listing.IsRegistered;
 
             /*
             SqlParameter photos = new SqlParameter();
@@ -458,6 +465,7 @@ namespace HorseApp2.Controllers
             parameters.Add(param18);
             parameters.Add(param19);
             parameters.Add(param20);
+            parameters.Add(param21);
             //parameters.Add(photos);
 
             return parameters;
@@ -813,6 +821,18 @@ namespace HorseApp2.Controllers
                 objRequest.isSoldSearch = false;
                 objRequest.IsSold = false;
             }
+
+            if(headers.Contains("isRegistered"))
+            {
+                objRequest.isRegisteredSearch = true;
+                objRequest.isRegistered = bool.Parse(headers.GetValues("isRegistered").First());
+            }
+            else
+            {
+                objRequest.isRegisteredSearch = false;
+                objRequest.isRegistered = false;
+            }
+
 
             if (headers.Contains("itemsPerPage"))
             {
@@ -1190,7 +1210,7 @@ namespace HorseApp2.Controllers
             param18.ParameterName = "@InFoal";
             param18.Value = request.InFoal;
             //
-
+            
 
             SqlParameter param24 = new SqlParameter();
             param24.ParameterName = "@ItemsPerPage";
@@ -1252,6 +1272,13 @@ namespace HorseApp2.Controllers
             param34.ParameterName = "@IsSold";
             param34.Value = request.IsSold;
 
+            SqlParameter param35 = new SqlParameter();
+            param35.ParameterName = "@IsRegisteredSearch";
+            param35.Value = request.isRegisteredSearch;
+
+            SqlParameter param36 = new SqlParameter();
+            param36.ParameterName = "@IsRegistered";
+            param36.Value = request.isRegistered;
 
 
             parameters.Add(param1);
@@ -1287,6 +1314,8 @@ namespace HorseApp2.Controllers
             parameters.Add(param32);
             parameters.Add(param33);
             parameters.Add(param34);
+            parameters.Add(param35);
+            parameters.Add(param36);
 
             return parameters;
         }
@@ -2231,6 +2260,7 @@ namespace HorseApp2.Controllers
             listing.horseType = row["HorseType"].ToString();
             listing.isSold = bool.Parse(row["IsSold"].ToString());
             listing.InFoalTo = row["InFoalTo"].ToString();
+            listing.IsRegistered = bool.Parse(row["IsRegistered"].ToString());
 
             int i = 0;
             foreach(DataRow dr in photos)
@@ -2297,6 +2327,8 @@ namespace HorseApp2.Controllers
             HorseTypeColumn.DataType = System.Type.GetType("System.String");
             DataColumn IsSoldColumn = new DataColumn("IsSold");
             IsSoldColumn.DataType = System.Type.GetType("System.Boolean");
+            DataColumn IsRegisteredColumn = new DataColumn("IsRegistered");
+            IsRegisteredColumn.DataType = System.Type.GetType("System.Boolean");
 
             dt.Columns.Add(AgeColumn);
             dt.Columns.Add(ColorColumn);
@@ -2316,6 +2348,7 @@ namespace HorseApp2.Controllers
             dt.Columns.Add(SellerIdColumn);
             dt.Columns.Add(HorseTypeColumn);
             dt.Columns.Add(IsSoldColumn);
+            dt.Columns.Add(IsRegisteredColumn);
 
             var newRow = dt.NewRow();
             newRow["Age"] = listing.age;
@@ -2336,6 +2369,7 @@ namespace HorseApp2.Controllers
             newRow["SellerId"] = listing.sellerId;
             newRow["HorseType"] = listing.horseType;
             newRow["IsSold"] = listing.isSold;
+            newRow["IsRegistered"] = listing.IsRegistered;
 
             dt.Rows.Add(newRow);
 

@@ -31,6 +31,7 @@ namespace HorseApp2.Models
         public bool InFoalToSearch { get; set; }
         public bool isSoldSearch { get; set; }
         public bool ActiveListingIdSearch { get; set; }
+        public bool isRegisteredSearch { get; set; }
         //NOT REQUIRED
         public List<string> HorseTypes { get; set; }
         //NOT REQUIRED
@@ -57,6 +58,7 @@ namespace HorseApp2.Models
         public bool InFoal { get; set; }
         public string InFoalTo { get; set; }
         public bool IsSold { get; set; }
+        public bool isRegistered { get; set; }
         public List<string> ActiveListingIds { get; set; }
         //REQUIRED
         public int ItemsPerPage { get; set; }
