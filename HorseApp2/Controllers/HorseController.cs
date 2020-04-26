@@ -2515,7 +2515,12 @@ namespace HorseApp2.Controllers
                     lines = System.IO.File.ReadAllLines(@"C:\Users\Aric\Source\repos\HorseApp2\HorseApp2\BarrelSires.txt");
                     horseType = "Barrel";
                     break;
-
+                
+                case 5:
+                    lines = System.IO.File.ReadAllLines(@"C:\Users\Aric\Source\repos\HorseApp2\HorseApp2\RopingSires.txt");
+                    horseType = "Roping";
+                    break;
+                
                 default:
                     lines = new string[0];
                     break;
