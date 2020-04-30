@@ -59,6 +59,10 @@ namespace HorseApp2.Models
         public string InFoalTo { get; set; }
         public bool IsSold { get; set; }
         public bool isRegistered { get; set; }
+        //Might need, not sure yet
+        //public bool callForPrice { get; set }
+        public bool HeightSearch { get; set; }
+        public List<double> Heights { get; set; }
         public List<string> ActiveListingIds { get; set; }
         //REQUIRED
         public int ItemsPerPage { get; set; }
