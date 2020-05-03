@@ -63,6 +63,12 @@ namespace HorseApp2.Models
         //public bool callForPrice { get; set }
         public bool HeightSearch { get; set; }
         public List<double> Heights { get; set; }
+
+        public bool IsSireRegisteredSearch { get; set; }
+        public bool IsDamSireRegisteredSearch { get; set; }
+        public bool IsSireRegistered { get; set; }
+        public bool IsDamSireRegistered { get; set; }
+
         public List<string> ActiveListingIds { get; set; }
         //REQUIRED
         public int ItemsPerPage { get; set; }

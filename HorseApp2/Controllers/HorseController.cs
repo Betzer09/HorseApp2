@@ -194,15 +194,22 @@ namespace HorseApp2.Controllers
             SqlParameter param20 = new SqlParameter();
             param20.ParameterName = "@InFoalTo";
             param20.Value = listing.InFoalTo;
-            SqlParameter param21 = new SqlParameter();
-            param21.ParameterName = "@IsRegistered";
-            param21.Value = listing.IsRegistered;
             SqlParameter param22 = new SqlParameter();
             param22.ParameterName = "@CallForPrice";
             param22.Value = listing.CallForPrice;
             SqlParameter param23 = new SqlParameter();
             param23.ParameterName = "@Height";
             param23.Value = listing.Height;
+            
+            /*
+            SqlParameter param24 = new SqlParameter();
+            param24.ParameterName = "@IsSireRegistered";
+            param24.Value = listing.IsSireRegistered;
+
+            SqlParameter param25 = new SqlParameter();
+            param25.ParameterName = "@IsDamSireRegistered";
+            param25.Value = listing.IsDamSireRegistered;
+            */
 
 
 
@@ -282,9 +289,12 @@ namespace HorseApp2.Controllers
             parameters.Add(param18);
             parameters.Add(param19);
             parameters.Add(param20);
-            parameters.Add(param21);
             parameters.Add(param22);
             parameters.Add(param23);
+            /*
+            parameters.Add(param24);
+            parameters.Add(param25);
+            */
             parameters.Add(photos);
 
 
@@ -411,9 +421,6 @@ namespace HorseApp2.Controllers
             SqlParameter param20 = new SqlParameter();
             param20.ParameterName = "InFoalTo";
             param20.Value = listing.InFoalTo;
-            SqlParameter param21 = new SqlParameter();
-            param21.ParameterName = "@IsRegistered";
-            param21.Value = listing.IsRegistered;
             SqlParameter param22 = new SqlParameter();
             param22.ParameterName = "@CallForPrice";
             param22.Value = listing.CallForPrice;
@@ -441,7 +448,6 @@ namespace HorseApp2.Controllers
             parameters.Add(param18);
             parameters.Add(param19);
             parameters.Add(param20);
-            parameters.Add(param21);
             parameters.Add(param22);
             parameters.Add(param23);
 
@@ -814,6 +820,28 @@ namespace HorseApp2.Controllers
             {
                 objRequest.HeightSearch = false;
                 objRequest.Heights = new List<double>();
+            }
+
+            if (headers.Contains("isSireRegistered"))
+            {
+                objRequest.IsSireRegisteredSearch = true;
+                objRequest.IsSireRegistered = bool.Parse(headers.GetValues("isSireRegistered").First());
+            }
+            else
+            {
+                objRequest.IsSireRegisteredSearch = false;
+                objRequest.IsSireRegistered = false;
+            }
+
+            if (headers.Contains("isDamSireRegistered"))
+            {
+                objRequest.IsDamSireRegisteredSearch = true;
+                objRequest.IsDamSireRegistered = bool.Parse(headers.GetValues("isDamSireRegistered").First());
+            }
+            else
+            {
+                objRequest.IsDamSireRegisteredSearch = false;
+                objRequest.IsDamSireRegistered = false;
             }
 
 
@@ -1256,14 +1284,6 @@ namespace HorseApp2.Controllers
             param34.ParameterName = "@IsSold";
             param34.Value = request.IsSold;
 
-            SqlParameter param35 = new SqlParameter();
-            param35.ParameterName = "@IsRegisteredSearch";
-            param35.Value = request.isRegisteredSearch;
-
-            SqlParameter param36 = new SqlParameter();
-            param36.ParameterName = "@IsRegistered";
-            param36.Value = request.isRegistered;
-
             SqlParameter param37 = new SqlParameter();
             param37.ParameterName = "@HeightSearch";
             param37.Value = request.HeightSearch;
@@ -1290,6 +1310,22 @@ namespace HorseApp2.Controllers
                 j++;
             }
             param38.Value = dt9;
+
+            SqlParameter param39 = new SqlParameter();
+            param39.ParameterName = "IsSireRegisteredSearch";
+            param39.Value = request.IsSireRegisteredSearch;
+
+            SqlParameter param40 = new SqlParameter();
+            param40.ParameterName = "IsSireRegistered";
+            param40.Value = request.IsSireRegistered;
+
+            SqlParameter param41 = new SqlParameter();
+            param41.ParameterName = "IsDamSireRegisteredSearch";
+            param41.Value = request.IsDamSireRegisteredSearch;
+
+            SqlParameter param42 = new SqlParameter();
+            param42.ParameterName = "IsDamSireRegistered";
+            param42.Value = request.IsDamSireRegistered;
 
 
             parameters.Add(param1);
@@ -1325,10 +1361,12 @@ namespace HorseApp2.Controllers
             parameters.Add(param32);
             parameters.Add(param33);
             parameters.Add(param34);
-            parameters.Add(param35);
-            parameters.Add(param36);
             parameters.Add(param37);
             parameters.Add(param38);
+            parameters.Add(param39);
+            parameters.Add(param40);
+            parameters.Add(param41);
+            parameters.Add(param42);
 
             return parameters;
         }
@@ -2258,9 +2296,10 @@ namespace HorseApp2.Controllers
             listing.horseType = row["HorseType"].ToString();
             listing.isSold = bool.Parse(row["IsSold"].ToString());
             listing.InFoalTo = row["InFoalTo"].ToString();
-            listing.IsRegistered = bool.Parse(row["IsRegistered"].ToString());
             listing.CallForPrice = bool.Parse(row["CallForPrice"].ToString());
             listing.Height = double.Parse(row["Height"].ToString());
+            listing.IsSireRegistered = bool.Parse(row["IsSireRegistered"].ToString());
+            listing.IsDamSireRegistered = bool.Parse(row["IsDamSireRegistered"].ToString());
 
             int i = 0;
             foreach(DataRow dr in photos)
@@ -2329,6 +2368,10 @@ namespace HorseApp2.Controllers
             CallForPriceColumn.DataType = System.Type.GetType("System.Boolean");
             DataColumn HeightColumn = new DataColumn("Height");
             HeightColumn.DataType = System.Type.GetType("System.Double");
+            DataColumn IsSireRegisteredColumn = new DataColumn("IsSireRegistered");
+            IsSireRegisteredColumn.DataType = System.Type.GetType("System.Boolean");
+            DataColumn IsDamSireRegisteredColumn = new DataColumn("IsDamSireRegistered");
+            IsDamSireRegisteredColumn.DataType = System.Type.GetType("System.Boolean");
 
 
             dt.Columns.Add(AgeColumn);
@@ -2351,6 +2394,8 @@ namespace HorseApp2.Controllers
             dt.Columns.Add(IsRegisteredColumn);
             dt.Columns.Add(CallForPriceColumn);
             dt.Columns.Add(HeightColumn);
+            dt.Columns.Add(IsSireRegisteredColumn);
+            dt.Columns.Add(IsDamSireRegisteredColumn);
 
             var newRow = dt.NewRow();
             newRow["Age"] = listing.age;
@@ -2359,7 +2404,6 @@ namespace HorseApp2.Controllers
             newRow["Sire"] = listing.sire;
             newRow["DamSire"] = listing.damSire;
             newRow["Description"] = listing.description;
-            //newRow["FirebaseId"] = listing.fireBaseId;
             newRow["Gender"] = listing.gender;
             newRow["HorseName"] = listing.horseName;
             newRow["InFoal"] = listing.inFoal;
@@ -2371,9 +2415,11 @@ namespace HorseApp2.Controllers
             newRow["SellerId"] = listing.sellerId;
             newRow["HorseType"] = listing.horseType;
             newRow["IsSold"] = listing.isSold;
-            newRow["IsRegistered"] = listing.IsRegistered;
             newRow["CallForPrice"] = listing.CallForPrice;
             newRow["Height"] = listing.Height;
+            newRow["IsSireRegistered"] = listing.IsSireRegistered;
+            newRow["IsDamSireRegistered"] = listing.IsDamSireRegistered;
+
 
             dt.Rows.Add(newRow);
 
