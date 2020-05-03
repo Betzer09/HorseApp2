@@ -196,7 +196,7 @@ namespace HorseApp2.Controllers
             param20.Value = listing.InFoalTo;
             SqlParameter param22 = new SqlParameter();
             param22.ParameterName = "@CallForPrice";
-            param22.Value = listing.CallForPrice;
+            param22.Value = listing.callForPrice;
             SqlParameter param23 = new SqlParameter();
             param23.ParameterName = "@Height";
             param23.Value = listing.Height;
@@ -423,7 +423,7 @@ namespace HorseApp2.Controllers
             param20.Value = listing.InFoalTo;
             SqlParameter param22 = new SqlParameter();
             param22.ParameterName = "@CallForPrice";
-            param22.Value = listing.CallForPrice;
+            param22.Value = listing.callForPrice;
             SqlParameter param23 = new SqlParameter();
             param23.ParameterName = "@Height";
             param23.Value = listing.Height;
@@ -2296,7 +2296,7 @@ namespace HorseApp2.Controllers
             listing.horseType = row["HorseType"].ToString();
             listing.isSold = bool.Parse(row["IsSold"].ToString());
             listing.InFoalTo = row["InFoalTo"].ToString();
-            listing.CallForPrice = bool.Parse(row["CallForPrice"].ToString());
+            listing.callForPrice = bool.Parse(row["CallForPrice"].ToString());
             listing.Height = double.Parse(row["Height"].ToString());
             listing.IsSireRegistered = bool.Parse(row["IsSireRegistered"].ToString());
             listing.IsDamSireRegistered = bool.Parse(row["IsDamSireRegistered"].ToString());
@@ -2415,7 +2415,7 @@ namespace HorseApp2.Controllers
             newRow["SellerId"] = listing.sellerId;
             newRow["HorseType"] = listing.horseType;
             newRow["IsSold"] = listing.isSold;
-            newRow["CallForPrice"] = listing.CallForPrice;
+            newRow["CallForPrice"] = listing.callForPrice;
             newRow["Height"] = listing.Height;
             newRow["IsSireRegistered"] = listing.IsSireRegistered;
             newRow["IsDamSireRegistered"] = listing.IsDamSireRegistered;

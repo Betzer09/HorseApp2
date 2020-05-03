@@ -35,7 +35,7 @@ namespace HorseApp2.Models
         public string InFoalTo { get; set; }
         public bool IsSireRegistered { get; set; }
         public bool IsDamSireRegistered { get; set; }
-        public bool CallForPrice { get; set; }
+        public bool callForPrice { get; set; }
         public double Height { get; set; }
 
         public List<HorseListingPhoto> photos { get; set; }
