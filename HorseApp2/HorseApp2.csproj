@@ -200,6 +200,12 @@
     <Compile Include="tblActiveListingPhoto.cs">
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="tblActiveListingPhotosData.cs">
+      <DependentUpon>DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tblActiveListingsData.cs">
+      <DependentUpon>DataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="tblName.cs">
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>

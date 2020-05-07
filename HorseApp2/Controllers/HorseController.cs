@@ -775,12 +775,22 @@ namespace HorseApp2.Controllers
             if (headers.Contains("inFoalTo"))
             {
                 objRequest.InFoalToSearch = true;
-                objRequest.InFoalTo = headers.GetValues("inFoalTo").First().Replace("\"", "");
+                string inFoalTos = headers.GetValues("inFoalTo").First().Trim(new Char[] { '{', '}', '[', ']' }).Replace("\"", "");
+                objRequest.InFoalTo = inFoalTos.Split(',').ToList();
+                List<int> indexes = new List<int>();
+                for(int i = 0; i < objRequest.InFoalTo.Count; i++)
+                {
+                    if(objRequest.InFoalTo[i][0] == ' ')
+                    {
+                        
+                        objRequest.InFoalTo[i] = objRequest.InFoalTo[i].Remove(0, 1);
+                    }
+                }
             }
             else
             {
                 objRequest.InFoalSearch = false;
-                objRequest.InFoalTo = "";
+                objRequest.InFoalTo = new List<string>();
             }
 
             //IsSold
@@ -958,6 +968,7 @@ namespace HorseApp2.Controllers
             DataTable dt7 = new DataTable();
             DataTable dt8 = new DataTable();
             DataTable dt9 = new DataTable();
+            DataTable dt10 = new DataTable();
 
             SqlParameter param1 = new SqlParameter();
             param1.ParameterName = "@TypeSearch";
@@ -1274,7 +1285,30 @@ namespace HorseApp2.Controllers
 
             SqlParameter param32 = new SqlParameter();
             param32.ParameterName = "@InFoalTo";
-            param32.Value = request.InFoalTo;
+
+            ////////////////////////////////////////////////////////////////////////////////////
+            DataColumn inFoalToColumn = new DataColumn("InFoalTo");
+            colorsColumn.DataType = System.Type.GetType("System.String");
+
+            dt10.Columns.Add(inFoalToColumn);
+
+            List<DataRow> rows10 = new List<DataRow>();
+            int rowCount10 = request.InFoalTo.Count();
+            for (int i = 0; i < rowCount10; i++)
+            {
+                rows10.Add(dt10.NewRow());
+            }
+            j = 0;
+            foreach (DataRow row in rows10)
+            {
+                row["InFoalTo"] = request.InFoalTo.ElementAt(j);
+                dt10.Rows.Add(row);
+                j++;
+            }
+            ////////////////////////////////////////////////////////////////////////////////////
+
+
+            param32.Value = dt10;
 
             SqlParameter param33 = new SqlParameter();
             param33.ParameterName = "@IsSoldSearch";

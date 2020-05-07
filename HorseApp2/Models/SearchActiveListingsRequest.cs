@@ -56,7 +56,7 @@ namespace HorseApp2.Models
         public decimal LteLow { get; set; }
         //NOT REQUIRED
         public bool InFoal { get; set; }
-        public string InFoalTo { get; set; }
+        public List<string> InFoalTo { get; set; }
         public bool IsSold { get; set; }
         public bool isRegistered { get; set; }
         //Might need, not sure yet
