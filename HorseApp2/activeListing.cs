@@ -12,10 +12,10 @@ namespace HorseApp2
     using System;
     using System.Collections.Generic;
     
-    public partial class tblActiveListingsData
+    public partial class activeListing
     {
         public string ActiveListingId { get; set; }
-        public byte Age { get; set; }
+        public string Age { get; set; }
         public string Color { get; set; }
         public string Dam { get; set; }
         public string Sire { get; set; }
@@ -23,7 +23,7 @@ namespace HorseApp2
         public string Description { get; set; }
         public string Gender { get; set; }
         public string HorseName { get; set; }
-        public byte InFoal { get; set; }
+        public string InFoal { get; set; }
         public double Lte { get; set; }
         public System.DateTime OriginalDateListed { get; set; }
         public double Price { get; set; }
@@ -31,11 +31,7 @@ namespace HorseApp2
         public string RanchPhoto { get; set; }
         public string SellerId { get; set; }
         public string HorseType { get; set; }
-        public bool IsSold { get; set; }
+        public string IsSold { get; set; }
         public string InFoalTo { get; set; }
-        public string CallForPrice { get; set; }
-        public string Height { get; set; }
-        public string isSireRegistered { get; set; }
-        public string isDamSireRegistered { get; set; }
     }
 }

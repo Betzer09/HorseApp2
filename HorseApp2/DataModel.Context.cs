@@ -30,8 +30,8 @@ namespace HorseApp2
         public virtual DbSet<tblActiveListingPhoto> tblActiveListingPhotos { get; set; }
         public virtual DbSet<tblActiveListing> tblActiveListings { get; set; }
         public virtual DbSet<tblName> tblNames { get; set; }
-        public virtual DbSet<tblActiveListingPhotosData> tblActiveListingPhotosDatas { get; set; }
-        public virtual DbSet<tblActiveListingsData> tblActiveListingsDatas { get; set; }
+        public virtual DbSet<activeListingPhoto> activeListingPhotos { get; set; }
+        public virtual DbSet<activeListing> activeListings { get; set; }
         public virtual DbSet<tblSire> tblSires { get; set; }
         public virtual DbSet<database_firewall_rules> database_firewall_rules { get; set; }
     
@@ -181,7 +181,7 @@ namespace HorseApp2
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("usp_RowExists", rowParameter);
         }
     
-        public virtual int usp_SearchActiveListings(Nullable<bool> typeSearch, Nullable<bool> priceSearch, Nullable<decimal> priceLow, Nullable<decimal> priceHigh, Nullable<bool> sireSearch, Nullable<bool> damSearch, Nullable<bool> damSireSearch, Nullable<bool> genderSearch, Nullable<bool> ageSearch, Nullable<bool> colorSearch, Nullable<bool> lteSearch, Nullable<decimal> lteHigh, Nullable<decimal> lteLow, Nullable<bool> inFoalSearch, Nullable<bool> inFoal, Nullable<bool> inFoalToSearch, string inFoalTo, Nullable<bool> isSoldSearch, Nullable<bool> isSold, Nullable<int> itemsPerPage, Nullable<int> page, Nullable<bool> orderBy, Nullable<int> orderByType, Nullable<bool> orderByDesc, Nullable<bool> activeListingIdSearch, Nullable<bool> heightSearch, Nullable<bool> isSireRegisteredSearch, Nullable<bool> isSireRegistered, Nullable<bool> isDamSireRegisteredSearch, Nullable<bool> isDamSireRegistered)
+        public virtual int usp_SearchActiveListings(Nullable<bool> typeSearch, Nullable<bool> priceSearch, Nullable<decimal> priceLow, Nullable<decimal> priceHigh, Nullable<bool> sireSearch, Nullable<bool> damSearch, Nullable<bool> damSireSearch, Nullable<bool> genderSearch, Nullable<bool> ageSearch, Nullable<bool> colorSearch, Nullable<bool> lteSearch, Nullable<decimal> lteHigh, Nullable<decimal> lteLow, Nullable<bool> inFoalSearch, Nullable<bool> inFoal, Nullable<bool> inFoalToSearch, Nullable<bool> isSoldSearch, Nullable<bool> isSold, Nullable<int> itemsPerPage, Nullable<int> page, Nullable<bool> orderBy, Nullable<int> orderByType, Nullable<bool> orderByDesc, Nullable<bool> activeListingIdSearch, Nullable<bool> heightSearch, Nullable<bool> isSireRegisteredSearch, Nullable<bool> isSireRegistered, Nullable<bool> isDamSireRegisteredSearch, Nullable<bool> isDamSireRegistered)
         {
             var typeSearchParameter = typeSearch.HasValue ?
                 new ObjectParameter("TypeSearch", typeSearch) :
@@ -247,10 +247,6 @@ namespace HorseApp2
                 new ObjectParameter("InFoalToSearch", inFoalToSearch) :
                 new ObjectParameter("InFoalToSearch", typeof(bool));
     
-            var inFoalToParameter = inFoalTo != null ?
-                new ObjectParameter("InFoalTo", inFoalTo) :
-                new ObjectParameter("InFoalTo", typeof(string));
-    
             var isSoldSearchParameter = isSoldSearch.HasValue ?
                 new ObjectParameter("IsSoldSearch", isSoldSearch) :
                 new ObjectParameter("IsSoldSearch", typeof(bool));
@@ -303,7 +299,7 @@ namespace HorseApp2
                 new ObjectParameter("IsDamSireRegistered", isDamSireRegistered) :
                 new ObjectParameter("IsDamSireRegistered", typeof(bool));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_SearchActiveListings", typeSearchParameter, priceSearchParameter, priceLowParameter, priceHighParameter, sireSearchParameter, damSearchParameter, damSireSearchParameter, genderSearchParameter, ageSearchParameter, colorSearchParameter, lteSearchParameter, lteHighParameter, lteLowParameter, inFoalSearchParameter, inFoalParameter, inFoalToSearchParameter, inFoalToParameter, isSoldSearchParameter, isSoldParameter, itemsPerPageParameter, pageParameter, orderByParameter, orderByTypeParameter, orderByDescParameter, activeListingIdSearchParameter, heightSearchParameter, isSireRegisteredSearchParameter, isSireRegisteredParameter, isDamSireRegisteredSearchParameter, isDamSireRegisteredParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_SearchActiveListings", typeSearchParameter, priceSearchParameter, priceLowParameter, priceHighParameter, sireSearchParameter, damSearchParameter, damSireSearchParameter, genderSearchParameter, ageSearchParameter, colorSearchParameter, lteSearchParameter, lteHighParameter, lteLowParameter, inFoalSearchParameter, inFoalParameter, inFoalToSearchParameter, isSoldSearchParameter, isSoldParameter, itemsPerPageParameter, pageParameter, orderByParameter, orderByTypeParameter, orderByDescParameter, activeListingIdSearchParameter, heightSearchParameter, isSireRegisteredSearchParameter, isSireRegisteredParameter, isDamSireRegisteredSearchParameter, isDamSireRegisteredParameter);
         }
     
         public virtual ObjectResult<usp_SearchAllSires_Result> usp_SearchAllSires(string name)

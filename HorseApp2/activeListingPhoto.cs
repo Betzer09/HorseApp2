@@ -12,7 +12,7 @@ namespace HorseApp2
     using System;
     using System.Collections.Generic;
     
-    public partial class tblActiveListingPhotosData
+    public partial class activeListingPhoto
     {
         public int ActiveListingPhotoId { get; set; }
         public string ActiveListingId { get; set; }
