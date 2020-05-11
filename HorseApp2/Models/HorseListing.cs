@@ -21,7 +21,6 @@ namespace HorseApp2.Models
         public string sire { get; set; }
         public string damSire { get; set; }
         public string description { get; set; }
-        //public string fireBaseId { get; set; }
         public string gender { get; set; }
         public string horseName { get; set; }
         public bool inFoal { get; set; }
@@ -34,6 +33,10 @@ namespace HorseApp2.Models
         public string horseType { get; set; }
         public bool isSold { get; set; }
         public string InFoalTo { get; set; }
+        public bool IsSireRegistered { get; set; }
+        public bool IsDamSireRegistered { get; set; }
+        public bool callForPrice { get; set; }
+        public double Height { get; set; }
 
         public List<HorseListingPhoto> photos { get; set; }
 

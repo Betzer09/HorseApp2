@@ -12,7 +12,7 @@ namespace HorseApp2
     using System;
     using System.Collections.Generic;
     
-    public partial class tblActiveListing
+    public partial class activeListing
     {
         public string ActiveListingId { get; set; }
         public string Age { get; set; }
@@ -23,19 +23,15 @@ namespace HorseApp2
         public string Description { get; set; }
         public string Gender { get; set; }
         public string HorseName { get; set; }
-        public Nullable<bool> InFoal { get; set; }
-        public Nullable<decimal> Lte { get; set; }
-        public Nullable<System.DateTime> OriginalDateListed { get; set; }
-        public Nullable<decimal> Price { get; set; }
+        public string InFoal { get; set; }
+        public double Lte { get; set; }
+        public System.DateTime OriginalDateListed { get; set; }
+        public double Price { get; set; }
         public string PurchaseListingType { get; set; }
         public string RanchPhoto { get; set; }
         public string SellerId { get; set; }
         public string HorseType { get; set; }
-        public Nullable<bool> IsSold { get; set; }
+        public string IsSold { get; set; }
         public string InFoalTo { get; set; }
-        public Nullable<bool> CallForPrice { get; set; }
-        public Nullable<double> Height { get; set; }
-        public Nullable<bool> isSireRegistered { get; set; }
-        public Nullable<bool> isDamSireRegistered { get; set; }
     }
 }

@@ -158,11 +158,6 @@ namespace HorseApp2.Controllers
             SqlParameter param7 = new SqlParameter();
             param7.ParameterName = "@Description";
             param7.Value = listing.description;
-            //////////////////////////////////////////////////////////
-            //SqlParameter param8 = new SqlParameter();
-            //param8.ParameterName = "@FirebaseId";
-            //param8.Value = listing.FireBaseId;
-            //////////////////////////////////////////////////////////
             SqlParameter param9 = new SqlParameter();
             param9.ParameterName = "@Gender";
             param9.Value = listing.gender;
@@ -199,8 +194,25 @@ namespace HorseApp2.Controllers
             SqlParameter param20 = new SqlParameter();
             param20.ParameterName = "@InFoalTo";
             param20.Value = listing.InFoalTo;
-
+            SqlParameter param22 = new SqlParameter();
+            param22.ParameterName = "@CallForPrice";
+            param22.Value = listing.callForPrice;
+            SqlParameter param23 = new SqlParameter();
+            param23.ParameterName = "@Height";
+            param23.Value = listing.Height;
             
+            /*
+            SqlParameter param24 = new SqlParameter();
+            param24.ParameterName = "@IsSireRegistered";
+            param24.Value = listing.IsSireRegistered;
+
+            SqlParameter param25 = new SqlParameter();
+            param25.ParameterName = "@IsDamSireRegistered";
+            param25.Value = listing.IsDamSireRegistered;
+            */
+
+
+
             SqlParameter photos = new SqlParameter();
             photos.ParameterName = "@Photos";
 
@@ -265,9 +277,6 @@ namespace HorseApp2.Controllers
             parameters.Add(param5);
             parameters.Add(param6);
             parameters.Add(param7);
-            //////////////////////////////////////////////////////////////////////////
-            //parameters.Add(param8);
-            /////////////////////////////////////////////////////////////////////////
             parameters.Add(param9);
             parameters.Add(param10);
             parameters.Add(param11);
@@ -280,6 +289,12 @@ namespace HorseApp2.Controllers
             parameters.Add(param18);
             parameters.Add(param19);
             parameters.Add(param20);
+            parameters.Add(param22);
+            parameters.Add(param23);
+            /*
+            parameters.Add(param24);
+            parameters.Add(param25);
+            */
             parameters.Add(photos);
 
 
@@ -354,24 +369,6 @@ namespace HorseApp2.Controllers
             param0.Value = listing.activeListingId;
             SqlParameter param1 = new SqlParameter();
             param1.ParameterName = "@Age";
-            /*
-            if(listing.age == "weanling")
-            {
-                listing.age = "0";
-            }
-            else if(listing.age == "yearling")
-            {
-                listing.age = "1";
-            }
-            else if(listing.age[listing.age.Length - 1] == 'o')
-            {
-                listing.age = listing.age.Split(' ').ElementAt(0);
-            }
-            else if(listing.age[listing.age.Length - 1] == '+')
-            {
-                listing.age = "15";
-            }
-            */
             param1.Value = listing.age;
             SqlParameter param2 = new SqlParameter();
             param2.ParameterName = "@Color";
@@ -388,11 +385,6 @@ namespace HorseApp2.Controllers
             SqlParameter param7 = new SqlParameter();
             param7.ParameterName = "@Description";
             param7.Value = listing.description;
-            //////////////////////////////////////////////////////////
-            //SqlParameter param8 = new SqlParameter();
-            //param8.ParameterName = "@FirebaseId";
-            //param8.Value = listing.FireBaseId;
-            //////////////////////////////////////////////////////////
             SqlParameter param9 = new SqlParameter();
             param9.ParameterName = "@Gender";
             param9.Value = listing.gender;
@@ -429,12 +421,13 @@ namespace HorseApp2.Controllers
             SqlParameter param20 = new SqlParameter();
             param20.ParameterName = "InFoalTo";
             param20.Value = listing.InFoalTo;
+            SqlParameter param22 = new SqlParameter();
+            param22.ParameterName = "@CallForPrice";
+            param22.Value = listing.callForPrice;
+            SqlParameter param23 = new SqlParameter();
+            param23.ParameterName = "@Height";
+            param23.Value = listing.Height;
 
-            /*
-            SqlParameter photos = new SqlParameter();
-            photos.ParameterName = "@Photos";
-            photos.Value = ListingPhotoRequestToDataTable(listing.Photos);
-            */
 
             parameters.Add(param0);
             parameters.Add(param1);
@@ -443,9 +436,6 @@ namespace HorseApp2.Controllers
             parameters.Add(param5);
             parameters.Add(param6);
             parameters.Add(param7);
-            //////////////////////////////////////////////////////////////////////////
-            //parameters.Add(param8);
-            /////////////////////////////////////////////////////////////////////////
             parameters.Add(param9);
             parameters.Add(param10);
             parameters.Add(param11);
@@ -458,7 +448,8 @@ namespace HorseApp2.Controllers
             parameters.Add(param18);
             parameters.Add(param19);
             parameters.Add(param20);
-            //parameters.Add(photos);
+            parameters.Add(param22);
+            parameters.Add(param23);
 
             return parameters;
         }
@@ -668,16 +659,6 @@ namespace HorseApp2.Controllers
                     objRequest.Ages = new List<int>();
                     for (int i = 0; i < ages.Length; i++)
                     {
-                        /*
-                        if(ages[i] == "weanling")
-                        {
-                            ages[i] = "0";
-                        }
-                        else if(ages[i] == "yearling")
-                        {
-                            ages[i] = "1";
-                        }
-                        */
                         objRequest.Ages.Add(int.Parse(ages[i]));
                     }
 
@@ -794,12 +775,22 @@ namespace HorseApp2.Controllers
             if (headers.Contains("inFoalTo"))
             {
                 objRequest.InFoalToSearch = true;
-                objRequest.InFoalTo = headers.GetValues("inFoalTo").First().Replace("\"", "");
+                string inFoalTos = headers.GetValues("inFoalTo").First().Trim(new Char[] { '{', '}', '[', ']' }).Replace("\"", "");
+                objRequest.InFoalTo = inFoalTos.Split(',').ToList();
+                List<int> indexes = new List<int>();
+                for(int i = 0; i < objRequest.InFoalTo.Count; i++)
+                {
+                    if(objRequest.InFoalTo[i][0] == ' ')
+                    {
+                        
+                        objRequest.InFoalTo[i] = objRequest.InFoalTo[i].Remove(0, 1);
+                    }
+                }
             }
             else
             {
                 objRequest.InFoalSearch = false;
-                objRequest.InFoalTo = "";
+                objRequest.InFoalTo = new List<string>();
             }
 
             //IsSold
@@ -813,6 +804,56 @@ namespace HorseApp2.Controllers
                 objRequest.isSoldSearch = false;
                 objRequest.IsSold = false;
             }
+
+            if(headers.Contains("isRegistered"))
+            {
+                objRequest.isRegisteredSearch = true;
+                objRequest.isRegistered = bool.Parse(headers.GetValues("isRegistered").First());
+            }
+            else
+            {
+                objRequest.isRegisteredSearch = false;
+                objRequest.isRegistered = false;
+            }
+
+            if(headers.Contains("heights"))
+            {
+                objRequest.HeightSearch = true;
+                string[] heights = headers.GetValues("heights").First().Trim(new Char[] { '{', '}', '[', ']' }).Replace("\"", "").Split(',');
+                objRequest.Heights = new List<double>();
+                for(int i = 0; i < heights.Length; i++)
+                {
+                    objRequest.Heights.Add(double.Parse(heights[i]));
+                }
+            }
+            else
+            {
+                objRequest.HeightSearch = false;
+                objRequest.Heights = new List<double>();
+            }
+
+            if (headers.Contains("isSireRegistered"))
+            {
+                objRequest.IsSireRegisteredSearch = true;
+                objRequest.IsSireRegistered = bool.Parse(headers.GetValues("isSireRegistered").First());
+            }
+            else
+            {
+                objRequest.IsSireRegisteredSearch = false;
+                objRequest.IsSireRegistered = false;
+            }
+
+            if (headers.Contains("isDamSireRegistered"))
+            {
+                objRequest.IsDamSireRegisteredSearch = true;
+                objRequest.IsDamSireRegistered = bool.Parse(headers.GetValues("isDamSireRegistered").First());
+            }
+            else
+            {
+                objRequest.IsDamSireRegisteredSearch = false;
+                objRequest.IsDamSireRegistered = false;
+            }
+
 
             if (headers.Contains("itemsPerPage"))
             {
@@ -926,6 +967,8 @@ namespace HorseApp2.Controllers
             DataTable dt6 = new DataTable();
             DataTable dt7 = new DataTable();
             DataTable dt8 = new DataTable();
+            DataTable dt9 = new DataTable();
+            DataTable dt10 = new DataTable();
 
             SqlParameter param1 = new SqlParameter();
             param1.ParameterName = "@TypeSearch";
@@ -1190,7 +1233,7 @@ namespace HorseApp2.Controllers
             param18.ParameterName = "@InFoal";
             param18.Value = request.InFoal;
             //
-
+         
 
             SqlParameter param24 = new SqlParameter();
             param24.ParameterName = "@ItemsPerPage";
@@ -1242,7 +1285,30 @@ namespace HorseApp2.Controllers
 
             SqlParameter param32 = new SqlParameter();
             param32.ParameterName = "@InFoalTo";
-            param32.Value = request.InFoalTo;
+
+            ////////////////////////////////////////////////////////////////////////////////////
+            DataColumn inFoalToColumn = new DataColumn("InFoalTo");
+            colorsColumn.DataType = System.Type.GetType("System.String");
+
+            dt10.Columns.Add(inFoalToColumn);
+
+            List<DataRow> rows10 = new List<DataRow>();
+            int rowCount10 = request.InFoalTo.Count();
+            for (int i = 0; i < rowCount10; i++)
+            {
+                rows10.Add(dt10.NewRow());
+            }
+            j = 0;
+            foreach (DataRow row in rows10)
+            {
+                row["InFoalTo"] = request.InFoalTo.ElementAt(j);
+                dt10.Rows.Add(row);
+                j++;
+            }
+            ////////////////////////////////////////////////////////////////////////////////////
+
+
+            param32.Value = dt10;
 
             SqlParameter param33 = new SqlParameter();
             param33.ParameterName = "@IsSoldSearch";
@@ -1252,9 +1318,48 @@ namespace HorseApp2.Controllers
             param34.ParameterName = "@IsSold";
             param34.Value = request.IsSold;
 
+            SqlParameter param37 = new SqlParameter();
+            param37.ParameterName = "@HeightSearch";
+            param37.Value = request.HeightSearch;
 
+            SqlParameter param38 = new SqlParameter();
+            param38.ParameterName = "@Heights";
 
+            DataColumn heightColumn = new DataColumn("Height");
+            heightColumn.DataType = System.Type.GetType("System.Double");
 
+            dt9.Columns.Add(heightColumn);
+
+            List<DataRow> rows9 = new List<DataRow>();
+            int rowCount9 = request.Heights.Count();
+            for (int i = 0; i < rowCount9; i++)
+            {
+                rows9.Add(dt9.NewRow());
+            }
+            j = 0;
+            foreach (DataRow row in rows9)
+            {
+                row["Height"] = request.Heights.ElementAt(j);
+                dt9.Rows.Add(row);
+                j++;
+            }
+            param38.Value = dt9;
+
+            SqlParameter param39 = new SqlParameter();
+            param39.ParameterName = "IsSireRegisteredSearch";
+            param39.Value = request.IsSireRegisteredSearch;
+
+            SqlParameter param40 = new SqlParameter();
+            param40.ParameterName = "IsSireRegistered";
+            param40.Value = request.IsSireRegistered;
+
+            SqlParameter param41 = new SqlParameter();
+            param41.ParameterName = "IsDamSireRegisteredSearch";
+            param41.Value = request.IsDamSireRegisteredSearch;
+
+            SqlParameter param42 = new SqlParameter();
+            param42.ParameterName = "IsDamSireRegistered";
+            param42.Value = request.IsDamSireRegistered;
 
 
             parameters.Add(param1);
@@ -1290,6 +1395,12 @@ namespace HorseApp2.Controllers
             parameters.Add(param32);
             parameters.Add(param33);
             parameters.Add(param34);
+            parameters.Add(param37);
+            parameters.Add(param38);
+            parameters.Add(param39);
+            parameters.Add(param40);
+            parameters.Add(param41);
+            parameters.Add(param42);
 
             return parameters;
         }
@@ -1379,6 +1490,79 @@ namespace HorseApp2.Controllers
             {
                 e.ToString();
             }
+
+            return response;
+        }
+
+        [HttpPut]
+        [Route("UpdateSireName")]
+        public SireResponse UpdateSireName(UpdateSireNameRequest objRequest)
+        {
+            SireResponse response = new SireResponse();
+
+
+            try
+            {
+                using(var context = new HorseDatabaseEntities())
+                {
+                    //Initializing sql command, parameters, and connection
+                    SqlCommand cmd = new SqlCommand("usp_UpdateSireName");
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+
+                    SqlParameter param = new SqlParameter();
+                    param.ParameterName = "@oldName";
+                    param.Value = objRequest.oldName;
+                    cmd.Parameters.Add(param);
+
+                    SqlParameter param2 = new SqlParameter();
+                    param2.ParameterName = "@newName";
+                    param2.Value = objRequest.newName;
+                    cmd.Parameters.Add(param2);
+
+                    System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection(context.Database.Connection.ConnectionString);
+                    cmd.Connection = conn;
+
+                    //open connection
+                    context.Database.Connection.Open();
+
+                    //execute and retrieve data from stored procedure
+                    System.Data.SqlClient.SqlDataAdapter adapter = new System.Data.SqlClient.SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    adapter.Fill(ds);
+                    DataTable SireData;
+                    if (ds.Tables[0] != null)
+                    {
+                        SireData = ds.Tables[0];
+                    }
+                    else
+                    {
+                        SireData = new DataTable();
+                    }
+
+                    //convert data from stored procedure into Sire object
+                    if (SireTableToSireResponse(SireData).Count() > 0)
+                    {
+                        response = SireTableToSireResponse(SireData).ElementAt(0);
+                    }
+                    else
+                    {
+                        response = new SireResponse();
+                    }
+
+
+
+                    //close connection
+                    context.Database.Connection.Close();
+
+                }
+            }
+            catch(Exception ex)
+            {
+                ex.ToString();
+                response = null;
+            }
+
 
             return response;
         }
@@ -2128,27 +2312,12 @@ namespace HorseApp2.Controllers
             HorseListing listing = new HorseListing();
 
             listing.activeListingId = row["ActiveListingId"].ToString();
-            /*
-            if(row["Age"].ToString() == "0")
-            {
-                listing.age = "weanling";
-            }
-            else if(row["Age"].ToString() == "1")
-            {
-                listing.age = "yearling";
-            }
-            else
-            {
-                listing.age = row["Age"].ToString();
-            }
-            */
             listing.age = int.Parse(row["Age"].ToString());
             listing.color = row["Color"].ToString();
             listing.dam = row["Dam"].ToString();
             listing.sire = row["Sire"].ToString();
             listing.damSire = row["DamSire"].ToString();
             listing.description = row["Description"].ToString();
-            //listing.fireBaseId = row["FirebaseId"].ToString();
             listing.gender = row["Gender"].ToString();
             listing.horseName = row["HorseName"].ToString();
             listing.inFoal = bool.Parse(row["InFoal"].ToString()); 
@@ -2161,6 +2330,10 @@ namespace HorseApp2.Controllers
             listing.horseType = row["HorseType"].ToString();
             listing.isSold = bool.Parse(row["IsSold"].ToString());
             listing.InFoalTo = row["InFoalTo"].ToString();
+            listing.callForPrice = bool.Parse(row["CallForPrice"].ToString());
+            listing.Height = double.Parse(row["Height"].ToString());
+            listing.IsSireRegistered = bool.Parse(row["IsSireRegistered"].ToString());
+            listing.IsDamSireRegistered = bool.Parse(row["IsDamSireRegistered"].ToString());
 
             int i = 0;
             foreach(DataRow dr in photos)
@@ -2201,10 +2374,6 @@ namespace HorseApp2.Controllers
             DamSireColumn.DataType = System.Type.GetType("System.String"); 
             DataColumn DescriptionColumn = new DataColumn("Description");
             DescriptionColumn.DataType = System.Type.GetType("System.String");
-            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            DataColumn FirebaseIdColumn = new DataColumn("FirebaseId");
-            FirebaseIdColumn.DataType = System.Type.GetType("System.String"); 
-            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             DataColumn GenderColumn = new DataColumn("Gender");
             GenderColumn.DataType = System.Type.GetType("System.String"); 
             DataColumn HorseNameColumn = new DataColumn("HorseName");
@@ -2227,6 +2396,17 @@ namespace HorseApp2.Controllers
             HorseTypeColumn.DataType = System.Type.GetType("System.String");
             DataColumn IsSoldColumn = new DataColumn("IsSold");
             IsSoldColumn.DataType = System.Type.GetType("System.Boolean");
+            DataColumn IsRegisteredColumn = new DataColumn("IsRegistered");
+            IsRegisteredColumn.DataType = System.Type.GetType("System.Boolean");
+            DataColumn CallForPriceColumn = new DataColumn("CallForPrice");
+            CallForPriceColumn.DataType = System.Type.GetType("System.Boolean");
+            DataColumn HeightColumn = new DataColumn("Height");
+            HeightColumn.DataType = System.Type.GetType("System.Double");
+            DataColumn IsSireRegisteredColumn = new DataColumn("IsSireRegistered");
+            IsSireRegisteredColumn.DataType = System.Type.GetType("System.Boolean");
+            DataColumn IsDamSireRegisteredColumn = new DataColumn("IsDamSireRegistered");
+            IsDamSireRegisteredColumn.DataType = System.Type.GetType("System.Boolean");
+
 
             dt.Columns.Add(AgeColumn);
             dt.Columns.Add(ColorColumn);
@@ -2234,7 +2414,6 @@ namespace HorseApp2.Controllers
             dt.Columns.Add(SireColumn);
             dt.Columns.Add(DamSireColumn);
             dt.Columns.Add(DescriptionColumn);
-            dt.Columns.Add(FirebaseIdColumn);
             dt.Columns.Add(GenderColumn);
             dt.Columns.Add(HorseNameColumn);
             dt.Columns.Add(InForalColumn);
@@ -2246,6 +2425,11 @@ namespace HorseApp2.Controllers
             dt.Columns.Add(SellerIdColumn);
             dt.Columns.Add(HorseTypeColumn);
             dt.Columns.Add(IsSoldColumn);
+            dt.Columns.Add(IsRegisteredColumn);
+            dt.Columns.Add(CallForPriceColumn);
+            dt.Columns.Add(HeightColumn);
+            dt.Columns.Add(IsSireRegisteredColumn);
+            dt.Columns.Add(IsDamSireRegisteredColumn);
 
             var newRow = dt.NewRow();
             newRow["Age"] = listing.age;
@@ -2254,7 +2438,6 @@ namespace HorseApp2.Controllers
             newRow["Sire"] = listing.sire;
             newRow["DamSire"] = listing.damSire;
             newRow["Description"] = listing.description;
-            //newRow["FirebaseId"] = listing.fireBaseId;
             newRow["Gender"] = listing.gender;
             newRow["HorseName"] = listing.horseName;
             newRow["InFoal"] = listing.inFoal;
@@ -2266,6 +2449,11 @@ namespace HorseApp2.Controllers
             newRow["SellerId"] = listing.sellerId;
             newRow["HorseType"] = listing.horseType;
             newRow["IsSold"] = listing.isSold;
+            newRow["CallForPrice"] = listing.callForPrice;
+            newRow["Height"] = listing.Height;
+            newRow["IsSireRegistered"] = listing.IsSireRegistered;
+            newRow["IsDamSireRegistered"] = listing.IsDamSireRegistered;
+
 
             dt.Rows.Add(newRow);
 
@@ -2411,7 +2599,12 @@ namespace HorseApp2.Controllers
                     lines = System.IO.File.ReadAllLines(@"C:\Users\Aric\Source\repos\HorseApp2\HorseApp2\BarrelSires.txt");
                     horseType = "Barrel";
                     break;
-
+                
+                case 5:
+                    lines = System.IO.File.ReadAllLines(@"C:\Users\Aric\Source\repos\HorseApp2\HorseApp2\RopingSires.txt");
+                    horseType = "Roping";
+                    break;
+                
                 default:
                     lines = new string[0];
                     break;
