@@ -30,8 +30,6 @@ namespace HorseApp2
         public virtual DbSet<tblActiveListingPhoto> tblActiveListingPhotos { get; set; }
         public virtual DbSet<tblActiveListing> tblActiveListings { get; set; }
         public virtual DbSet<tblName> tblNames { get; set; }
-        public virtual DbSet<activeListingPhoto> activeListingPhotos { get; set; }
-        public virtual DbSet<activeListing> activeListings { get; set; }
         public virtual DbSet<tblSire> tblSires { get; set; }
         public virtual DbSet<database_firewall_rules> database_firewall_rules { get; set; }
     

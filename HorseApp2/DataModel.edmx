@@ -4,68 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="DevHorseDatabase2Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'DevHorseDatabase2.dbo.activeListingPhotos' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="activeListingPhotos">
-          <Key>
-            <PropertyRef Name="ActiveListingPhotoId" />
-            <PropertyRef Name="ActiveListingId" />
-            <PropertyRef Name="PhotoURL" />
-            <PropertyRef Name="PhotoOrder" />
-            <PropertyRef Name="CreatedOn" />
-            <PropertyRef Name="UpdatedOn" />
-            <PropertyRef Name="IsVideo" />
-          </Key>
-          <Property Name="ActiveListingPhotoId" Type="int" Nullable="false" />
-          <Property Name="ActiveListingId" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="PhotoURL" Type="nvarchar" MaxLength="250" Nullable="false" />
-          <Property Name="PhotoOrder" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="CreatedOn" Type="datetime2" Precision="7" Nullable="false" />
-          <Property Name="UpdatedOn" Type="datetime2" Precision="7" Nullable="false" />
-          <Property Name="IsVideo" Type="nvarchar" MaxLength="50" Nullable="false" />
-        </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'DevHorseDatabase2.dbo.activeListings' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="activeListings">
-          <Key>
-            <PropertyRef Name="ActiveListingId" />
-            <PropertyRef Name="Age" />
-            <PropertyRef Name="Color" />
-            <PropertyRef Name="Dam" />
-            <PropertyRef Name="Sire" />
-            <PropertyRef Name="DamSire" />
-            <PropertyRef Name="Gender" />
-            <PropertyRef Name="HorseName" />
-            <PropertyRef Name="InFoal" />
-            <PropertyRef Name="Lte" />
-            <PropertyRef Name="OriginalDateListed" />
-            <PropertyRef Name="Price" />
-            <PropertyRef Name="PurchaseListingType" />
-            <PropertyRef Name="SellerId" />
-            <PropertyRef Name="HorseType" />
-            <PropertyRef Name="IsSold" />
-          </Key>
-          <Property Name="ActiveListingId" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Age" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Color" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Dam" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Sire" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="DamSire" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Description" Type="nvarchar" MaxLength="550" />
-          <Property Name="Gender" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="HorseName" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="InFoal" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Lte" Type="float" Nullable="false" />
-          <Property Name="OriginalDateListed" Type="datetime2" Precision="7" Nullable="false" />
-          <Property Name="Price" Type="float" Nullable="false" />
-          <Property Name="PurchaseListingType" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="RanchPhoto" Type="nvarchar" MaxLength="1" />
-          <Property Name="SellerId" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="HorseType" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="IsSold" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="InFoalTo" Type="nvarchar" MaxLength="50" />
-        </EntityType>
+      <Schema Namespace="DevHorseDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="tblActiveListingPhotos">
           <Key>
             <PropertyRef Name="ActiveListingPhotoId" />
@@ -114,7 +53,7 @@ warning 6002: The table/view 'DevHorseDatabase2.dbo.activeListings' does not hav
           <Property Name="Name" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'DevHorseDatabase2.dbo.tblSire' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'DevHorseDatabase.dbo.tblSire' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="tblSire">
           <Key>
             <PropertyRef Name="SireServerId" />
@@ -126,7 +65,7 @@ warning 6002: The table/view 'DevHorseDatabase2.dbo.tblSire' does not have a pri
           <Property Name="UpdatedOn" Type="datetime" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'DevHorseDatabase2.sys.database_firewall_rules' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'DevHorseDatabase.sys.database_firewall_rules' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="database_firewall_rules">
           <Key>
             <PropertyRef Name="id" />
@@ -251,44 +190,10 @@ warning 6002: The table/view 'DevHorseDatabase2.sys.database_firewall_rules' doe
           <Parameter Name="oldName" Type="nvarchar" Mode="In" />
           <Parameter Name="newName" Type="nvarchar" Mode="In" />
         </Function>
-        <EntityContainer Name="DevHorseDatabase2ModelStoreContainer">
+        <EntityContainer Name="DevHorseDatabaseModelStoreContainer">
           <EntitySet Name="tblActiveListingPhotos" EntityType="Self.tblActiveListingPhotos" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblActiveListings" EntityType="Self.tblActiveListings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tblName" EntityType="Self.tblName" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="activeListingPhotos" EntityType="Self.activeListingPhotos" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [activeListingPhotos].[ActiveListingPhotoId] AS [ActiveListingPhotoId], 
-    [activeListingPhotos].[ActiveListingId] AS [ActiveListingId], 
-    [activeListingPhotos].[PhotoURL] AS [PhotoURL], 
-    [activeListingPhotos].[PhotoOrder] AS [PhotoOrder], 
-    [activeListingPhotos].[CreatedOn] AS [CreatedOn], 
-    [activeListingPhotos].[UpdatedOn] AS [UpdatedOn], 
-    [activeListingPhotos].[IsVideo] AS [IsVideo]
-    FROM [dbo].[activeListingPhotos] AS [activeListingPhotos]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="activeListings" EntityType="Self.activeListings" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [activeListings].[ActiveListingId] AS [ActiveListingId], 
-    [activeListings].[Age] AS [Age], 
-    [activeListings].[Color] AS [Color], 
-    [activeListings].[Dam] AS [Dam], 
-    [activeListings].[Sire] AS [Sire], 
-    [activeListings].[DamSire] AS [DamSire], 
-    [activeListings].[Description] AS [Description], 
-    [activeListings].[Gender] AS [Gender], 
-    [activeListings].[HorseName] AS [HorseName], 
-    [activeListings].[InFoal] AS [InFoal], 
-    [activeListings].[Lte] AS [Lte], 
-    [activeListings].[OriginalDateListed] AS [OriginalDateListed], 
-    [activeListings].[Price] AS [Price], 
-    [activeListings].[PurchaseListingType] AS [PurchaseListingType], 
-    [activeListings].[RanchPhoto] AS [RanchPhoto], 
-    [activeListings].[SellerId] AS [SellerId], 
-    [activeListings].[HorseType] AS [HorseType], 
-    [activeListings].[IsSold] AS [IsSold], 
-    [activeListings].[InFoalTo] AS [InFoalTo]
-    FROM [dbo].[activeListings] AS [activeListings]</DefiningQuery>
-          </EntitySet>
           <EntitySet Name="tblSire" EntityType="Self.tblSire" store:Type="Tables" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [tblSire].[SireServerId] AS [SireServerId], 
@@ -313,7 +218,7 @@ warning 6002: The table/view 'DevHorseDatabase2.sys.database_firewall_rules' doe
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="DevHorseDatabase2Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="DevHorseDatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="tblActiveListingPhoto">
           <Key>
             <PropertyRef Name="ActiveListingPhotoId" />
@@ -361,63 +266,6 @@ warning 6002: The table/view 'DevHorseDatabase2.sys.database_firewall_rules' doe
           <Property Name="tempId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="activeListingPhoto">
-          <Key>
-            <PropertyRef Name="ActiveListingPhotoId" />
-            <PropertyRef Name="ActiveListingId" />
-            <PropertyRef Name="PhotoURL" />
-            <PropertyRef Name="PhotoOrder" />
-            <PropertyRef Name="CreatedOn" />
-            <PropertyRef Name="UpdatedOn" />
-            <PropertyRef Name="IsVideo" />
-          </Key>
-          <Property Name="ActiveListingPhotoId" Type="Int32" Nullable="false" />
-          <Property Name="ActiveListingId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="PhotoURL" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="PhotoOrder" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="7" />
-          <Property Name="UpdatedOn" Type="DateTime" Nullable="false" Precision="7" />
-          <Property Name="IsVideo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-        </EntityType>
-        <EntityType Name="activeListing">
-          <Key>
-            <PropertyRef Name="ActiveListingId" />
-            <PropertyRef Name="Age" />
-            <PropertyRef Name="Color" />
-            <PropertyRef Name="Dam" />
-            <PropertyRef Name="Sire" />
-            <PropertyRef Name="DamSire" />
-            <PropertyRef Name="Gender" />
-            <PropertyRef Name="HorseName" />
-            <PropertyRef Name="InFoal" />
-            <PropertyRef Name="Lte" />
-            <PropertyRef Name="OriginalDateListed" />
-            <PropertyRef Name="Price" />
-            <PropertyRef Name="PurchaseListingType" />
-            <PropertyRef Name="SellerId" />
-            <PropertyRef Name="HorseType" />
-            <PropertyRef Name="IsSold" />
-          </Key>
-          <Property Name="ActiveListingId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Age" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Color" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Dam" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Sire" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="DamSire" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Description" Type="String" MaxLength="550" FixedLength="false" Unicode="true" />
-          <Property Name="Gender" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="HorseName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="InFoal" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Lte" Type="Double" Nullable="false" />
-          <Property Name="OriginalDateListed" Type="DateTime" Nullable="false" Precision="7" />
-          <Property Name="Price" Type="Double" Nullable="false" />
-          <Property Name="PurchaseListingType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="RanchPhoto" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
-          <Property Name="SellerId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="HorseType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="IsSold" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="InFoalTo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-        </EntityType>
         <EntityType Name="tblSire">
           <Key>
             <PropertyRef Name="SireServerId" />
@@ -448,8 +296,6 @@ warning 6002: The table/view 'DevHorseDatabase2.sys.database_firewall_rules' doe
           <EntitySet Name="tblActiveListingPhotos" EntityType="Self.tblActiveListingPhoto" />
           <EntitySet Name="tblActiveListings" EntityType="Self.tblActiveListing" />
           <EntitySet Name="tblNames" EntityType="Self.tblName" />
-          <EntitySet Name="activeListingPhotos" EntityType="Self.activeListingPhoto" />
-          <EntitySet Name="activeListings" EntityType="Self.activeListing" />
           <EntitySet Name="tblSires" EntityType="Self.tblSire" />
           <EntitySet Name="database_firewall_rules" EntityType="Self.database_firewall_rules" />
           <FunctionImport Name="usp_DeleteActiveListing" />
@@ -482,7 +328,7 @@ warning 6002: The table/view 'DevHorseDatabase2.sys.database_firewall_rules' doe
             <Parameter Name="CallForPrice" Mode="In" Type="Boolean" />
             <Parameter Name="Height" Mode="In" Type="Double" />
           </FunctionImport>
-          <FunctionImport Name="usp_InsertSire" ReturnType="Collection(DevHorseDatabase2Model.usp_InsertSire_Result)">
+          <FunctionImport Name="usp_InsertSire" ReturnType="Collection(DevHorseDatabaseModel.usp_InsertSire_Result)">
             <Parameter Name="Name" Mode="In" Type="String" />
             <Parameter Name="horseType" Mode="In" Type="String" />
           </FunctionImport>
@@ -523,7 +369,7 @@ warning 6002: The table/view 'DevHorseDatabase2.sys.database_firewall_rules' doe
             <Parameter Name="IsDamSireRegisteredSearch" Mode="In" Type="Boolean" />
             <Parameter Name="IsDamSireRegistered" Mode="In" Type="Boolean" />
           </FunctionImport>
-          <FunctionImport Name="usp_SearchAllSires" ReturnType="Collection(DevHorseDatabase2Model.usp_SearchAllSires_Result)">
+          <FunctionImport Name="usp_SearchAllSires" ReturnType="Collection(DevHorseDatabaseModel.usp_SearchAllSires_Result)">
             <Parameter Name="Name" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="usp_SearchAllSiresElastically">
@@ -556,7 +402,7 @@ warning 6002: The table/view 'DevHorseDatabase2.sys.database_firewall_rules' doe
             <Parameter Name="CallForPrice" Mode="In" Type="Boolean" />
             <Parameter Name="Height" Mode="In" Type="Double" />
           </FunctionImport>
-          <FunctionImport Name="usp_UpdateSireName" ReturnType="Collection(DevHorseDatabase2Model.usp_UpdateSireName_Result)">
+          <FunctionImport Name="usp_UpdateSireName" ReturnType="Collection(DevHorseDatabaseModel.usp_UpdateSireName_Result)">
             <Parameter Name="oldName" Mode="In" Type="String" />
             <Parameter Name="newName" Mode="In" Type="String" />
           </FunctionImport>
@@ -586,9 +432,9 @@ warning 6002: The table/view 'DevHorseDatabase2.sys.database_firewall_rules' doe
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="DevHorseDatabase2ModelStoreContainer" CdmEntityContainer="HorseDatabaseEntities">
+        <EntityContainerMapping StorageEntityContainer="DevHorseDatabaseModelStoreContainer" CdmEntityContainer="HorseDatabaseEntities">
           <EntitySetMapping Name="tblActiveListingPhotos">
-            <EntityTypeMapping TypeName="DevHorseDatabase2Model.tblActiveListingPhoto">
+            <EntityTypeMapping TypeName="DevHorseDatabaseModel.tblActiveListingPhoto">
               <MappingFragment StoreEntitySet="tblActiveListingPhotos">
                 <ScalarProperty Name="ActiveListingPhotoId" ColumnName="ActiveListingPhotoId" />
                 <ScalarProperty Name="ActiveListingId" ColumnName="ActiveListingId" />
@@ -601,7 +447,7 @@ warning 6002: The table/view 'DevHorseDatabase2.sys.database_firewall_rules' doe
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblActiveListings">
-            <EntityTypeMapping TypeName="DevHorseDatabase2Model.tblActiveListing">
+            <EntityTypeMapping TypeName="DevHorseDatabaseModel.tblActiveListing">
               <MappingFragment StoreEntitySet="tblActiveListings">
                 <ScalarProperty Name="ActiveListingId" ColumnName="ActiveListingId" />
                 <ScalarProperty Name="Age" ColumnName="Age" />
@@ -630,53 +476,15 @@ warning 6002: The table/view 'DevHorseDatabase2.sys.database_firewall_rules' doe
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tblNames">
-            <EntityTypeMapping TypeName="DevHorseDatabase2Model.tblName">
+            <EntityTypeMapping TypeName="DevHorseDatabaseModel.tblName">
               <MappingFragment StoreEntitySet="tblName">
                 <ScalarProperty Name="tempId" ColumnName="tempId" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="activeListingPhotos">
-            <EntityTypeMapping TypeName="DevHorseDatabase2Model.activeListingPhoto">
-              <MappingFragment StoreEntitySet="activeListingPhotos">
-                <ScalarProperty Name="ActiveListingPhotoId" ColumnName="ActiveListingPhotoId" />
-                <ScalarProperty Name="ActiveListingId" ColumnName="ActiveListingId" />
-                <ScalarProperty Name="PhotoURL" ColumnName="PhotoURL" />
-                <ScalarProperty Name="PhotoOrder" ColumnName="PhotoOrder" />
-                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-                <ScalarProperty Name="UpdatedOn" ColumnName="UpdatedOn" />
-                <ScalarProperty Name="IsVideo" ColumnName="IsVideo" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="activeListings">
-            <EntityTypeMapping TypeName="DevHorseDatabase2Model.activeListing">
-              <MappingFragment StoreEntitySet="activeListings">
-                <ScalarProperty Name="ActiveListingId" ColumnName="ActiveListingId" />
-                <ScalarProperty Name="Age" ColumnName="Age" />
-                <ScalarProperty Name="Color" ColumnName="Color" />
-                <ScalarProperty Name="Dam" ColumnName="Dam" />
-                <ScalarProperty Name="Sire" ColumnName="Sire" />
-                <ScalarProperty Name="DamSire" ColumnName="DamSire" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Gender" ColumnName="Gender" />
-                <ScalarProperty Name="HorseName" ColumnName="HorseName" />
-                <ScalarProperty Name="InFoal" ColumnName="InFoal" />
-                <ScalarProperty Name="Lte" ColumnName="Lte" />
-                <ScalarProperty Name="OriginalDateListed" ColumnName="OriginalDateListed" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="PurchaseListingType" ColumnName="PurchaseListingType" />
-                <ScalarProperty Name="RanchPhoto" ColumnName="RanchPhoto" />
-                <ScalarProperty Name="SellerId" ColumnName="SellerId" />
-                <ScalarProperty Name="HorseType" ColumnName="HorseType" />
-                <ScalarProperty Name="IsSold" ColumnName="IsSold" />
-                <ScalarProperty Name="InFoalTo" ColumnName="InFoalTo" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="tblSires">
-            <EntityTypeMapping TypeName="DevHorseDatabase2Model.tblSire">
+            <EntityTypeMapping TypeName="DevHorseDatabaseModel.tblSire">
               <MappingFragment StoreEntitySet="tblSire">
                 <ScalarProperty Name="SireServerId" ColumnName="SireServerId" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -687,7 +495,7 @@ warning 6002: The table/view 'DevHorseDatabase2.sys.database_firewall_rules' doe
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="database_firewall_rules">
-            <EntityTypeMapping TypeName="DevHorseDatabase2Model.database_firewall_rules">
+            <EntityTypeMapping TypeName="DevHorseDatabaseModel.database_firewall_rules">
               <MappingFragment StoreEntitySet="database_firewall_rules">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
@@ -698,12 +506,12 @@ warning 6002: The table/view 'DevHorseDatabase2.sys.database_firewall_rules' doe
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="usp_DeleteActiveListing" FunctionName="DevHorseDatabase2Model.Store.usp_DeleteActiveListing" />
-          <FunctionImportMapping FunctionImportName="usp_DeleteSire" FunctionName="DevHorseDatabase2Model.Store.usp_DeleteSire" />
-          <FunctionImportMapping FunctionImportName="usp_InsertActiveListing" FunctionName="DevHorseDatabase2Model.Store.usp_InsertActiveListing" />
-          <FunctionImportMapping FunctionImportName="usp_InsertSire" FunctionName="DevHorseDatabase2Model.Store.usp_InsertSire">
+          <FunctionImportMapping FunctionImportName="usp_DeleteActiveListing" FunctionName="DevHorseDatabaseModel.Store.usp_DeleteActiveListing" />
+          <FunctionImportMapping FunctionImportName="usp_DeleteSire" FunctionName="DevHorseDatabaseModel.Store.usp_DeleteSire" />
+          <FunctionImportMapping FunctionImportName="usp_InsertActiveListing" FunctionName="DevHorseDatabaseModel.Store.usp_InsertActiveListing" />
+          <FunctionImportMapping FunctionImportName="usp_InsertSire" FunctionName="DevHorseDatabaseModel.Store.usp_InsertSire">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="DevHorseDatabase2Model.usp_InsertSire_Result">
+              <ComplexTypeMapping TypeName="DevHorseDatabaseModel.usp_InsertSire_Result">
                 <ScalarProperty Name="SireServerId" ColumnName="SireServerId" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="HorseType" ColumnName="HorseType" />
@@ -712,12 +520,12 @@ warning 6002: The table/view 'DevHorseDatabase2.sys.database_firewall_rules' doe
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="usp_InsertSires" FunctionName="DevHorseDatabase2Model.Store.usp_InsertSires" />
-          <FunctionImportMapping FunctionImportName="usp_RowExists" FunctionName="DevHorseDatabase2Model.Store.usp_RowExists" />
-          <FunctionImportMapping FunctionImportName="usp_SearchActiveListings" FunctionName="DevHorseDatabase2Model.Store.usp_SearchActiveListings" />
-          <FunctionImportMapping FunctionImportName="usp_SearchAllSires" FunctionName="DevHorseDatabase2Model.Store.usp_SearchAllSires">
+          <FunctionImportMapping FunctionImportName="usp_InsertSires" FunctionName="DevHorseDatabaseModel.Store.usp_InsertSires" />
+          <FunctionImportMapping FunctionImportName="usp_RowExists" FunctionName="DevHorseDatabaseModel.Store.usp_RowExists" />
+          <FunctionImportMapping FunctionImportName="usp_SearchActiveListings" FunctionName="DevHorseDatabaseModel.Store.usp_SearchActiveListings" />
+          <FunctionImportMapping FunctionImportName="usp_SearchAllSires" FunctionName="DevHorseDatabaseModel.Store.usp_SearchAllSires">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="DevHorseDatabase2Model.usp_SearchAllSires_Result">
+              <ComplexTypeMapping TypeName="DevHorseDatabaseModel.usp_SearchAllSires_Result">
                 <ScalarProperty Name="SireServerId" ColumnName="SireServerId" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
@@ -725,11 +533,11 @@ warning 6002: The table/view 'DevHorseDatabase2.sys.database_firewall_rules' doe
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="usp_SearchAllSiresElastically" FunctionName="DevHorseDatabase2Model.Store.usp_SearchAllSiresElastically" />
-          <FunctionImportMapping FunctionImportName="usp_UpdateActiveListing" FunctionName="DevHorseDatabase2Model.Store.usp_UpdateActiveListing" />
-          <FunctionImportMapping FunctionImportName="usp_UpdateSireName" FunctionName="DevHorseDatabase2Model.Store.usp_UpdateSireName">
+          <FunctionImportMapping FunctionImportName="usp_SearchAllSiresElastically" FunctionName="DevHorseDatabaseModel.Store.usp_SearchAllSiresElastically" />
+          <FunctionImportMapping FunctionImportName="usp_UpdateActiveListing" FunctionName="DevHorseDatabaseModel.Store.usp_UpdateActiveListing" />
+          <FunctionImportMapping FunctionImportName="usp_UpdateSireName" FunctionName="DevHorseDatabaseModel.Store.usp_UpdateSireName">
             <ResultMapping>
-              <ComplexTypeMapping TypeName="DevHorseDatabase2Model.usp_UpdateSireName_Result">
+              <ComplexTypeMapping TypeName="DevHorseDatabaseModel.usp_UpdateSireName_Result">
                 <ScalarProperty Name="SireServerId" ColumnName="SireServerId" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="HorseType" ColumnName="HorseType" />
