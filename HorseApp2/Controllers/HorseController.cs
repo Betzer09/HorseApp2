@@ -551,6 +551,53 @@ namespace HorseApp2.Controllers
             return deleteHorseListings;
         }
 
+        [HttpGet]
+        [Route("GetDeletedListings")]
+        public List<HorseListing> GetDeletedListings()
+        {
+            List<HorseListing> response = new List<HorseListing>();
+
+
+            try
+            {
+                using (var context = new HorseDatabaseEntities())
+                {
+                    //Initializing sql command, parameters, and connection
+                    SqlCommand cmd = new SqlCommand("usp_GetDeletedListings");
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    SqlParameter param = new SqlParameter();
+                    
+                    System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection(context.Database.Connection.ConnectionString);
+                    cmd.Connection = conn;
+
+                    //open connection
+                    context.Database.Connection.Open();
+
+                    //execute and retrieve data from stored procedure
+                    System.Data.SqlClient.SqlDataAdapter adapter = new System.Data.SqlClient.SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    adapter.Fill(ds);
+                    DataTable listingData = ds.Tables[0];
+                    DataTable photos = ds.Tables[1];
+
+                    //convert data from stored proceduure into ActiveListing object
+                    response = DataTablesToHorseListing(listingData, photos);
+
+                    //close connection
+                    context.Database.Connection.Close();
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                e.ToString();
+            }
+
+            return response;
+
+        }
+
         /// <summary>
         /// Searches though active listings given filter fields
         /// TESTED AND WORKING
