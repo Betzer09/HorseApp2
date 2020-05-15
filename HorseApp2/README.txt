@@ -5,6 +5,7 @@ A Web API to support:
 -searching these listings
 -saving, deleting specific sires
 -searching these sires
+-Finding zip codes within a given radius from a provided zip code to find listings with
 
 This API is intended to be used through Microsoft Azure Portal
 Current URL: https://horseappservice.azurewebsites.net
@@ -16,6 +17,7 @@ Important Client Routes:
 /InsertSire
 /DeleteSire
 /SearchAllSiresElastically
+/ZipCodesInRange
 
 
 Logging into Azure Portal:
