@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 
@@ -63,6 +64,8 @@ namespace HorseApp2.Models
         //public bool callForPrice { get; set }
         public bool HeightSearch { get; set; }
         public List<double> Heights { get; set; }
+        public bool LocationsSearch { get; set; }
+        public List<string> Locations { get; set; }
 
         public bool IsSireRegisteredSearch { get; set; }
         public bool IsDamSireRegisteredSearch { get; set; }

@@ -58,16 +58,31 @@ namespace HorseApp2.Controllers
                 using (var context = new HorseDatabaseEntities())
                 {
                     // Initialize command
-                    var searchCmd = new SqlCommand("usp_searchByZip");
+                    var searchCmd = new SqlCommand("usp_SearchActiveListings");
                     searchCmd.CommandType = CommandType.StoredProcedure;
 
                     // Initialize Parameters
-                    var parameters = new List<SqlParameter>();
+                    var dbHelper = new DatabaseHelper();
                     // TODO: Finish param setup
+                    var objRequest = new SearchActiveListingsRequest();
+                    var zipCodes = new List<string>();
+                    foreach (var result in dtoResults)
+                    {
+                        zipCodes.Add(result.ZipCode);
+                    }
+
+                    // objRequest.Locations = zipCodes;
+                    // objRequest.LocationsSearch = true;
+                    
+                    var parameters = dbHelper.GetSqlParametersForSearchListings(objRequest);
 
                     // Set up connection
-                    var connection = new SqlConnection(context.Database.Connection.ConnectionString);
-                    // TODO: Add parameters to the connection
+                    searchCmd.Connection = new SqlConnection(context.Database.Connection.ConnectionString);
+                    foreach (var param in parameters)
+                    {
+                        searchCmd.Parameters.Add(param);
+                    }
+
                     context.Database.Connection.Open();
                     var adapter = new SqlDataAdapter(searchCmd);
                     var dataSet = new DataSet();
@@ -76,7 +91,6 @@ namespace HorseApp2.Controllers
                     var photos = dataSet.Tables[1];
 
                     // Convert result data to Active Listing
-                    var dbHelper = new DatabaseHelper();
 
                     var results = dbHelper.DataTablesToHorseListing(listingData, photos);
 
