@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using HorseApp2.Models;
+using HorseApp2.Models.Geography;
 
 namespace HorseApp2.Controllers
 {
     public class DatabaseHelper
     {
+        #region Public Methods
+
         /// <summary>
         /// Converts data from stored procedure into horse listing object
         /// </summary>
@@ -19,78 +24,133 @@ namespace HorseApp2.Controllers
         {
             try
             {
-                using (var context = new HorseDatabaseEntities())
+                var listings = new List<HorseListing>();
+                foreach (DataRow row in data.Rows)
                 {
-                    var listings = new List<HorseListing>();
-                    foreach (DataRow row in data.Rows)
-                    {
-                        List<DataRow> photosForRow = (from myRow in photos.AsEnumerable()
-                            where myRow.Field<string>("ActiveListingId") == row["ActiveListingId"].ToString()
-                            select myRow).ToList();
+                    List<DataRow> photosForRow = (from myRow in photos.AsEnumerable()
+                        where myRow.Field<string>("ActiveListingId") == row["ActiveListingId"].ToString()
+                        select myRow).ToList();
 
-                        listings.Add(PopulateListing(row, photosForRow));
-                    }
-
-                    return listings;
+                    listings.Add(PopulateListing(row, photosForRow));
                 }
+                return listings;
             }
             catch (Exception exception)
             {
-                Console.WriteLine(exception.Message);
                 return new List<HorseListing>();
             }
         }
-
+        
         /// <summary>
-        /// Populates an Active Listing object with data rows
+        /// Builds an active listings search request from the given data source
         /// </summary>
-        /// <param name="row"></param>
-        /// <param name="photos"></param>
-        /// <returns></returns>
-        private HorseListing PopulateListing(DataRow row, List<DataRow> photos)
+        /// <param name="headers">Data source to search for parameters</param>
+        /// <returns>Initialized search active listings request from the given data source</returns>
+        public async Task<SearchActiveListingsRequest> BuildListingRequest(HttpHeaders headers)
         {
-            HorseListing listing = new HorseListing();
-
-            listing.activeListingId = row["ActiveListingId"].ToString();
-            listing.age = int.Parse(row["Age"].ToString());
-            listing.color = row["Color"].ToString();
-            listing.dam = row["Dam"].ToString();
-            listing.sire = row["Sire"].ToString();
-            listing.damSire = row["DamSire"].ToString();
-            listing.description = row["Description"].ToString();
-            listing.gender = row["Gender"].ToString();
-            listing.horseName = row["HorseName"].ToString();
-            listing.inFoal = bool.Parse(row["InFoal"].ToString());
-            listing.lte = decimal.Parse(row["Lte"].ToString());
-            listing.originalDateListed = row["OriginalDateListed"].ToString();
-            listing.price = decimal.Parse(row["Price"].ToString());
-            listing.purchaseListingType = row["PurchaseListingType"].ToString();
-            listing.ranchPhoto = row["RanchPhoto"].ToString();
-            listing.sellerId = row["SellerId"].ToString();
-            listing.horseType = row["HorseType"].ToString();
-            listing.isSold = bool.Parse(row["IsSold"].ToString());
-            listing.InFoalTo = row["InFoalTo"].ToString();
-            listing.callForPrice = bool.Parse(row["CallForPrice"].ToString());
-            listing.Height = double.Parse(row["Height"].ToString());
-            listing.IsSireRegistered = bool.Parse(row["IsSireRegistered"].ToString());
-            listing.IsDamSireRegistered = bool.Parse(row["IsDamSireRegistered"].ToString());
-
-            int i = 0;
-            foreach (DataRow dr in photos)
+            var request = new SearchActiveListingsRequest();
+            
+            // Handle Simple Parameters
+            (request.TypeSearch, request.HorseTypes) = CheckStringListParam(headers, "types"); 
+            (request.SireSearch, request.Sires) = CheckStringListParam(headers, "sires");
+            (request.GenderSearch, request.Genders) = CheckStringListParam(headers, "genders");
+            (request.AgeSearch, request.Ages) = CheckIntListParam(headers, "ages", ' ');
+            (request.DamSearch, request.Dams) = CheckStringListParam(headers, "dams");
+            (request.DamSireSearch, request.DamSires) = CheckStringListParam(headers, "damSires");
+            (request.ColorSearch, request.Colors) = CheckStringListParam(headers, "colors", ' ');
+            (request.InFoalSearch, request.InFoal) = CheckBoolParam(headers, "inFoal");
+            (request.ActiveListingIdSearch, request.ActiveListingIds) =
+                CheckStringListParam(headers, "activeListingIds", ' ');
+            (request.InFoalToSearch, request.InFoalTo) = CheckStringListParam(headers, "inFoalTo");
+            (request.isSoldSearch, request.IsSold) = CheckBoolParam(headers, "isSold");
+            (request.isRegisteredSearch, request.isRegistered) = CheckBoolParam(headers, "isRegistered");
+            (request.HeightSearch, request.Heights) = CheckDoubleListParam(headers, "heights");
+            (request.IsSireRegisteredSearch, request.IsSireRegistered) = CheckBoolParam(headers, "isSireRegistered");
+            (request.IsDamSireRegisteredSearch, request.IsDamSireRegistered) =
+                CheckBoolParam(headers, "isDamSireRegistered");
+            request.ItemsPerPage = CheckIntParam(headers, "itemsPerPage", 20).Item2;
+            request.Page = CheckIntParam(headers, "page", 1).Item2;
+            request.OrderBy = CheckBoolParam(headers, "orderBy").Item2;
+            request.OrderByType = CheckIntParam(headers, "orderByType", 1).Item2;
+            request.OrderByDesc = CheckBoolParam(headers, "orderByDesc").Item2;
+            
+            // Handle Zip Code
+            var (zipCodeExists, zipCode) = CheckStringParam(headers, "zip");
+            request.LocationsSearch = zipCodeExists;
+            if (zipCodeExists)
             {
-                listing.photos.Add(new HorseListingPhoto());
-                listing.photos.ElementAt(i).activeListingPhotoId = long.Parse(dr["ActiveListingPhotoId"].ToString());
-                listing.photos.ElementAt(i).activeListingId = dr["ActiveListingId"].ToString();
-                listing.photos.ElementAt(i).photoUrl = dr["PhotoURL"].ToString();
-                listing.photos.ElementAt(i).photoOrder = int.Parse(dr["PhotoOrder"].ToString());
-                listing.photos.ElementAt(i).createdOn = dr["CreatedOn"].ToString();
-                listing.photos.ElementAt(i).updatedOn = dr["UpdatedOn"].ToString();
-                listing.photos.ElementAt(i).isVideo = bool.Parse(dr["IsVideo"].ToString());
-
-                i++;
+                var distance = CheckIntParam(headers, "dist", 25).Item2;
+                var unit = CheckStringParam(headers, "unit", "mile").Item2;
+                var geographyController = new GeographyRequestController();
+                var zipCodeRequest = new ZipCodeSearchRequestDto()
+                {
+                    zip = zipCode,
+                    units = unit,
+                    dist = distance
+                };
+                var zipCodeResults = await geographyController.FetchZipCodesInRange(zipCodeRequest);
+                var results = new List<string>();
+                foreach (var result in zipCodeResults)
+                {
+                    results.Add(result.ZipCode);
+                } 
+                request.Locations = results;
             }
 
-            return listing;
+            // Handle Range Parameters
+            var (priceSearch, priceMin, priceMax) = CheckDecimalRangeParam(headers, "priceLow", "priceHigh");
+            if (priceSearch)
+            {
+                request.PriceSearch = true;
+                request.PriceLow = priceMin;
+                request.PriceHigh = priceMax;
+            }
+            
+            var (lteSearch, lteMin, lteMax) = CheckDecimalRangeParam(headers, "lteLow", "lteHigh");
+            if (lteSearch)
+            {
+                request.LteSearch = true;
+                request.LteLow = lteMin;
+                request.LteHigh = lteMax;
+            }
+
+            // Return the results
+            return request;
+        }
+        
+        /// <summary>
+        /// Creates parameters for the stored procedure: usp_InsertAcitveListing given a horseListing
+        /// </summary>
+        /// <param name="listing"></param>
+        /// <returns></returns>
+        public List<SqlParameter> GetSqlParametersForInsert(HorseListing listing)
+        {
+            List<SqlParameter> parameters = new List<SqlParameter>();
+
+            parameters.Add(BuildSqlParameter("@ActiveListingId", listing.activeListingId));
+            parameters.Add(BuildSqlParameter("@Age", listing.age));
+            parameters.Add(BuildSqlParameter("@Color", listing.color));
+            parameters.Add(BuildSqlParameter("@Dam", listing.dam));
+            parameters.Add(BuildSqlParameter("@Sire", listing.sire));
+            parameters.Add(BuildSqlParameter("@DamSire", listing.damSire));
+            parameters.Add(BuildSqlParameter("@Description", listing.description));
+            parameters.Add(BuildSqlParameter("@Gender", listing.gender));
+            parameters.Add(BuildSqlParameter("@HorseName", listing.horseName));
+            parameters.Add(BuildSqlParameter("@InFoal", listing.inFoal));
+            parameters.Add(BuildSqlParameter("@Lte", listing.lte));
+            parameters.Add(BuildSqlParameter("@OriginalDateListed", listing.originalDateListed));
+            parameters.Add(BuildSqlParameter("@Price", listing.price));
+            parameters.Add(BuildSqlParameter("@PurchaseListingType", listing.purchaseListingType));
+            parameters.Add(BuildSqlParameter("@RanchPhoto", listing.ranchPhoto));
+            parameters.Add(BuildSqlParameter("@SellerId", listing.sellerId));
+            parameters.Add(BuildSqlParameter("@HorseType", listing.horseType));
+            parameters.Add(BuildSqlParameter("@IsSold", listing.isSold));
+            parameters.Add(BuildSqlParameter("InFoalTo", listing.InFoalTo));
+            parameters.Add(BuildSqlParameter("@CallForPrice", listing.callForPrice));
+            parameters.Add(BuildSqlParameter("@Height", listing.Height));
+            parameters.Add(BuildSqlParameter("@Zip", listing.Zip));
+
+            return parameters;
         }
         
         /// <summary>
@@ -142,17 +202,290 @@ namespace HorseApp2.Controllers
             parameters.Add(BuildSqlParameter("IsSireRegistered", request.IsSireRegistered));
             parameters.Add(BuildSqlParameter("IsDamSireRegisteredSearch", request.IsDamSireRegisteredSearch));
             parameters.Add(BuildSqlParameter("IsDamSireRegistered", request.IsDamSireRegistered));
-            // parameters.Add(BuildSqlParameter("@LocationsSearch", request.LocationsSearch));
-            // parameters.Add(BuildSqlParameter("@Locations", BuildSqlParameterValue(request.Locations, "string", "System.String")));
+            parameters.Add(BuildSqlParameter("@LocationsSearch", request.LocationsSearch));
+            parameters.Add(BuildSqlParameter("@Locations", BuildSqlParameterValue(request.Locations, "string", "System.String")));
 
             return parameters;
         }
 
+        #endregion
+
+        #region Private Methods
+
+         /// <summary>
+        /// Populates an Active Listing object with data rows
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="photos"></param>
+        /// <returns></returns>
+        private HorseListing PopulateListing(DataRow row, List<DataRow> photos)
+        {
+            HorseListing listing = new HorseListing();
+
+            listing.activeListingId = row["ActiveListingId"].ToString();
+            listing.age = int.Parse(row["Age"].ToString());
+            listing.color = row["Color"].ToString();
+            listing.dam = row["Dam"].ToString();
+            listing.sire = row["Sire"].ToString();
+            listing.damSire = row["DamSire"].ToString();
+            listing.description = row["Description"].ToString();
+            listing.gender = row["Gender"].ToString();
+            listing.horseName = row["HorseName"].ToString();
+            listing.inFoal = bool.Parse(row["InFoal"].ToString());
+            listing.lte = decimal.Parse(row["Lte"].ToString());
+            listing.originalDateListed = row["OriginalDateListed"].ToString();
+            listing.price = decimal.Parse(row["Price"].ToString());
+            listing.purchaseListingType = row["PurchaseListingType"].ToString();
+            listing.ranchPhoto = row["RanchPhoto"].ToString();
+            listing.sellerId = row["SellerId"].ToString();
+            listing.horseType = row["HorseType"].ToString();
+            listing.isSold = bool.Parse(row["IsSold"].ToString());
+            listing.InFoalTo = row["InFoalTo"].ToString();
+            listing.callForPrice = bool.Parse(row["CallForPrice"].ToString());
+            listing.Height = double.Parse(row["Height"].ToString());
+            listing.IsSireRegistered = bool.Parse(row["IsSireRegistered"].ToString());
+            listing.IsDamSireRegistered = bool.Parse(row["IsDamSireRegistered"].ToString());
+            listing.Zip = row["Zip"].ToString();
+
+            int i = 0;
+            foreach (DataRow dr in photos)
+            {
+                listing.photos.Add(new HorseListingPhoto());
+                listing.photos.ElementAt(i).activeListingPhotoId = long.Parse(dr["ActiveListingPhotoId"].ToString());
+                listing.photos.ElementAt(i).activeListingId = dr["ActiveListingId"].ToString();
+                listing.photos.ElementAt(i).photoUrl = dr["PhotoURL"].ToString();
+                listing.photos.ElementAt(i).photoOrder = int.Parse(dr["PhotoOrder"].ToString());
+                listing.photos.ElementAt(i).createdOn = dr["CreatedOn"].ToString();
+                listing.photos.ElementAt(i).updatedOn = dr["UpdatedOn"].ToString();
+                listing.photos.ElementAt(i).isVideo = bool.Parse(dr["IsVideo"].ToString());
+
+                i++;
+            }
+
+            return listing;
+        }
+
+        /// <summary>
+        /// Checks if the given parameter name exists as a list of strings in the source
+        /// </summary>
+        /// <remarks>Broken into a List of Type version instead of templates to avoid unnecessary complexity and risk with type comparisons</remarks>
+        /// <param name="headers">Parameter source</param>
+        /// <param name="parameterName">Parameter to check for</param>
+        /// <param name="separator">Separator used to split the given list</param>
+        /// <returns>Tuple listing whether the given parameter exists and the associated value</returns>
+        private Tuple<bool, List<string>> CheckStringListParam(HttpHeaders headers, string parameterName,
+            char separator = ',')
+        {
+            if (!headers.Contains(parameterName))
+            {
+                return new Tuple<bool, List<string>>(false, new List<string>());
+            }
+            
+            var input = headers.GetValues(parameterName).First().Trim('{', '}', '[', ']').Replace("\"", "");
+            var searchValue = input.Split(separator).ToList();
+            for (int i = 0; i < searchValue.Count; i++)
+            {
+                searchValue[i] = searchValue[i].TrimStart(' ');
+            }
+
+            return new Tuple<bool, List<string>>(true, searchValue);
+        }
+        
+        /// <summary>
+        /// Checks if the given parameter name exists as a list of integers in the source
+        /// </summary>
+        /// <remarks>Broken into a List of Type version instead of templates to avoid unnecessary complexity and risk with type comparisons</remarks>
+        /// <param name="headers">Parameter source</param>
+        /// <param name="parameterName">Parameter to check for</param>
+        /// <param name="separator">Separator used to split the given list in its string form</param>
+        /// <returns>Tuple listing whether the given parameter exists and the associated value</returns>
+        private Tuple<bool, List<int>> CheckIntListParam(HttpHeaders headers, string parameterName,
+            char separator = ',')
+        {
+            var (exists, stringValues) = CheckStringListParam(headers, parameterName, separator);
+            if (!exists)
+            {
+                return new Tuple<bool, List<int>>(false, new List<int>());
+            }
+            
+            var results = new List<int>();
+            foreach (var stringValue in stringValues)
+            {
+                var valid = int.TryParse(stringValue, out var value);
+                if (valid)
+                {
+                    results.Add(value);
+                }
+            }
+
+            return new Tuple<bool, List<int>>(true, results);
+        }
+        
+        /// <summary>
+        /// Checks if the given parameter name exists as a list of doubles in the source
+        /// </summary>
+        /// <remarks>Broken into a List of Type version instead of templates to avoid unnecessary complexity and risk with type comparisons</remarks>
+        /// <param name="headers">Parameter source</param>
+        /// <param name="parameterName">Parameter to check for</param>
+        /// <param name="separator">Separator used to split the given list in its string form</param>
+        /// <returns>Tuple listing whether the given parameter exists and the associated value</returns>
+        private Tuple<bool, List<double>> CheckDoubleListParam(HttpHeaders headers, string parameterName,
+            char separator = ',')
+        {
+            var (exists, stringValues) = CheckStringListParam(headers, parameterName, separator);
+            if (!exists)
+            {
+                return new Tuple<bool, List<double>>(false, new List<double>());
+            }
+            
+            var results = new List<double>();
+            foreach (var stringValue in stringValues)
+            {
+                var valid = double.TryParse(stringValue, out var value);
+                if (valid)
+                {
+                    results.Add(value);
+                }
+            }
+
+            return new Tuple<bool, List<double>>(true, results);
+        }
+
+        /// <summary>
+        /// Checks if the given parameter name exists as a string in the source
+        /// </summary>
+        /// <remarks>Broken into a Type version instead of templates to avoid unnecessary complexity and risk with type comparisons</remarks>
+        /// <param name="headers">Parameter source</param>
+        /// <param name="parameterName">Parameter to check for</param>
+        /// <param name="defaultValue">Default value in case one does not exist</param>
+        /// <returns>Tuple listing whether the given parameter exists and the associated value</returns>
+        private Tuple<bool, string> CheckStringParam(HttpHeaders headers, string parameterName, string defaultValue = "")
+        {
+            if (!headers.Contains(parameterName))
+            {
+                return new Tuple<bool, string>(false, defaultValue);
+            }
+
+            var param = headers.GetValues(parameterName).First();
+            return new Tuple<bool, string>(true, param);
+        }
+
+        /// <summary>
+        /// Checks if the given parameter name exists as an integer in the source
+        /// </summary>
+        /// <remarks>Broken into a Type version instead of templates to avoid unnecessary complexity and risk with type comparisons</remarks>
+        /// <param name="headers">Parameter source</param>
+        /// <param name="parameterName">Parameter to check for</param>
+        /// <param name="defaultValue">Default value in case one does not exist</param>
+        /// <returns>Tuple listing whether the given parameter exists and the associated value</returns>
+        private Tuple<bool, int> CheckIntParam(HttpHeaders headers, string parameterName, int defaultValue = 0)
+        {
+            var (exists, stringValue) = CheckStringParam(headers, parameterName);
+            if (!exists)
+            {
+                return new Tuple<bool, int>(false, defaultValue);
+            }
+            
+            var valid = int.TryParse(stringValue, out var value);
+            return new Tuple<bool, int>(true, valid ? value : defaultValue);
+        }
+        
+        /// <summary>
+        /// Checks if the given parameter name exists as a double in the source
+        /// </summary>
+        /// <remarks>Broken into a Type version instead of templates to avoid unnecessary complexity and risk with type comparisons</remarks>
+        /// <param name="headers">Parameter source</param>
+        /// <param name="parameterName">Parameter to check for</param>
+        /// <param name="defaultValue">Default value in case one does not exist</param>
+        /// <returns>Tuple listing whether the given parameter exists and the associated value</returns>
+        private Tuple<bool, double> CheckDoubleParam(HttpHeaders headers, string parameterName, double defaultValue = 0)
+        {
+            var (exists, stringValue) = CheckStringParam(headers, parameterName);
+            if (!exists)
+            {
+                return new Tuple<bool, double>(false, defaultValue);
+            }
+            
+            var valid = double.TryParse(stringValue, out var value);
+            return new Tuple<bool, double>(true, valid ? value : defaultValue);
+        }
+        
+        /// <summary>
+        /// Checks if the given parameter name exists as a decimal in the source
+        /// </summary>
+        /// <remarks>Broken into a Type version instead of templates to avoid unnecessary complexity and risk with type comparisons</remarks>
+        /// <param name="headers">Parameter source</param>
+        /// <param name="parameterName">Parameter to check for</param>
+        /// <param name="defaultValue">Default value in case one does not exist</param>
+        /// <returns>Tuple listing whether the given parameter exists and the associated value</returns>
+        private Tuple<bool, decimal> CheckDecimalParam(HttpHeaders headers, string parameterName, decimal defaultValue = 0)
+        {
+            var (exists, stringValue) = CheckStringParam(headers, parameterName);
+            if (!exists)
+            {
+                return new Tuple<bool, decimal>(false, defaultValue);
+            }
+            
+            var valid = decimal.TryParse(stringValue, out var value);
+            return new Tuple<bool, decimal>(true, valid ? value : defaultValue);
+        }
+        
+        /// <summary>
+        /// Checks if the given parameter name exists as a boolean in the source
+        /// </summary>
+        /// <remarks>Broken into a Type version instead of templates to avoid unnecessary complexity and risk with type comparisons</remarks>
+        /// <param name="headers">Parameter source</param>
+        /// <param name="parameterName">Parameter to check for</param>
+        /// <param name="defaultValue">Default value in case one does not exist</param>
+        /// <returns>Tuple listing whether the given parameter exists and the associated value</returns>
+        private Tuple<bool, bool> CheckBoolParam(HttpHeaders headers, string parameterName, bool defaultValue = false)
+        {
+            var (exists, stringValue) = CheckStringParam(headers, parameterName);
+            if (!exists)
+            {
+                return new Tuple<bool, bool>(false, defaultValue);
+            }
+            
+            var valid = bool.TryParse(stringValue, out var value);
+            return new Tuple<bool, bool>(true, valid ? value : defaultValue);
+        }
+
+        /// <summary>
+        /// Checks if the given parameter name exists as a decimal in the source
+        /// </summary>
+        /// <remarks>Broken into a Type version instead of templates to avoid unnecessary complexity and risk with type comparisons</remarks>
+        /// <param name="headers">Parameter source</param>
+        /// <param name="parameterName">Parameter to check for</param>
+        /// <param name="defaultValue">Default value in case one does not exist</param>
+        /// <returns>Tuple listing whether the given parameter exists and the associated value</returns>
+        private Tuple<bool, decimal, decimal> CheckDecimalRangeParam(HttpHeaders headers, string minParamName, string maxParamName,
+            decimal minDefault = 0, decimal maxDefault = 10000000)
+        {
+            var exists = headers.Contains(minParamName) || headers.Contains(maxParamName);
+
+            var min = CheckDecimalParam(headers, minParamName, minDefault);
+            var max = CheckDecimalParam(headers, maxParamName, maxDefault);
+            return new Tuple<bool, decimal, decimal>(exists, min.Item2, max.Item2);
+        }
+        
+        /// <summary>
+        /// Convenience function used to build a SQL Parameter
+        /// </summary>
+        /// <param name="name">Name of the parameter</param>
+        /// <param name="value">Value of the parameter</param>
+        /// <returns>Initialized SQL parameter</returns>
         private SqlParameter BuildSqlParameter(string name, object value)
         {
             return new SqlParameter(name, value);
         }
 
+        /// <summary>
+        /// Convenience function used to build a SQL Parameter
+        /// </summary>
+        /// <param name="name">Name of the parameter</param>
+        /// <param name="value">Value of the parameter</param>
+        /// <param name="type">DB Type of the parameter</param>
+        /// <returns>Initialized SQL parameter</returns>
         private SqlParameter BuildSqlParameter(string name, object value, SqlDbType type)
         {
             var param = BuildSqlParameter(name, value);
@@ -160,6 +493,11 @@ namespace HorseApp2.Controllers
             return param;
         }
 
+        /// <summary>
+        /// Convenience function used to build the Horse Type parameter for database requests
+        /// </summary>
+        /// <param name="horseTypes">List of horse types to include in the search request</param>
+        /// <returns>Data table representing the list of horse types</returns>
         private DataTable BuildHorseTypeValue(List<string> horseTypes)
         {
             var dataTable = new DataTable();
@@ -197,6 +535,14 @@ namespace HorseApp2.Controllers
             return dataTable;
         }
 
+        /// <summary>
+        /// Convenience function used to build out SQL parameter values for database requests from a list
+        /// </summary>
+        /// <param name="list">List of values to assign to the parameter</param>
+        /// <param name="columnName">Name of the database type column</param>
+        /// <param name="typeName">Database system type to associate to the parameter</param>
+        /// <typeparam name="T">Type of the associated list</typeparam>
+        /// <returns>Data table representing the given list</returns>
         private DataTable BuildSqlParameterValue<T>(List<T> list, string columnName, string typeName)
         {
             var column = new DataColumn(columnName);
@@ -225,5 +571,8 @@ namespace HorseApp2.Controllers
 
             return dataTable;
         }
+
+        #endregion
+        
     }
 }

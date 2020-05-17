@@ -24,17 +24,23 @@ namespace HorseApp2.Controllers
         /// <summary>
         /// Search for horses within a provided range of a given zip code.
         /// </summary>
-        /// <param name="requestDto">Zip code request object used for search</param>
+        /// <remarks>Kept active to provide easy access for validation and testing</remarks>
         /// <returns>HTTP response, which includes the search results on success</returns>
         [HttpGet]
-        [Route("ListingsInRange")]
-        public async Task<IHttpActionResult> GetListingsInZipCodeRange([FromUri] ZipCodeSearchRequestDTO requestDto)
+        [Route("SearchByZip")]
+        public async Task<IHttpActionResult> GetListingsInZipCodeRange()
         {
-            var dtoResults = new List<ZipCodeSearchResult>();
+            var request = Request;
+            if (!request.Headers.Contains("zip"))
+            {
+                return BadRequest("'zip' parameter is required to search by zip code. 'dist' and 'units' are optional.");
+            }
+            
+            var dbHelper = new DatabaseHelper();
+            var objRequest = new SearchActiveListingsRequest();
             try
             {
-                var requestResults = await FetchZipCodesInRange(requestDto);
-                dtoResults.AddRange(requestResults);
+                objRequest = await dbHelper.BuildListingRequest(request.Headers);
             }
             catch (HttpRequestException exception)
             {
@@ -42,11 +48,11 @@ namespace HorseApp2.Controllers
             }
             catch (HttpException exception)
             {
-                return InternalServerError(new HttpException(exception.Message));
+                return InternalServerError(exception);
             }
-
+            
             // If no zip codes are found, then there will be no results so we can skip the db query
-            if (dtoResults.Count <= 0)
+            if (objRequest.Locations.Count <= 0)
             {
                 var horseResults = new HorseListing[] { };
                 return Ok(horseResults);
@@ -62,41 +68,34 @@ namespace HorseApp2.Controllers
                     searchCmd.CommandType = CommandType.StoredProcedure;
 
                     // Initialize Parameters
-                    var dbHelper = new DatabaseHelper();
-                    // TODO: Finish param setup
-                    var objRequest = new SearchActiveListingsRequest();
-                    var zipCodes = new List<string>();
-                    foreach (var result in dtoResults)
-                    {
-                        zipCodes.Add(result.ZipCode);
-                    }
-
-                    // objRequest.Locations = zipCodes;
-                    // objRequest.LocationsSearch = true;
-                    
                     var parameters = dbHelper.GetSqlParametersForSearchListings(objRequest);
 
                     // Set up connection
                     searchCmd.Connection = new SqlConnection(context.Database.Connection.ConnectionString);
-                    foreach (var param in parameters)
-                    {
-                        searchCmd.Parameters.Add(param);
-                    }
-
+                    searchCmd.Parameters.AddRange(parameters.ToArray());
                     context.Database.Connection.Open();
                     var adapter = new SqlDataAdapter(searchCmd);
                     var dataSet = new DataSet();
                     adapter.Fill(dataSet);
                     var listingData = dataSet.Tables[0];
                     var photos = dataSet.Tables[1];
+                    var totalListings = dataSet.Tables[2];
 
-                    // Convert result data to Active Listing
+                    int total = 0;
+                    foreach (DataRow row in totalListings.Rows)
+                    {
+                        total = int.Parse(row[0].ToString());
+                    }
 
-                    var results = dbHelper.DataTablesToHorseListing(listingData, photos);
+                    //convert data from stored proceduure into ActiveListing object
+                    var response = new SearchResponse();
+                    response.listings = dbHelper.DataTablesToHorseListing(listingData, photos);
+                    response.totalNumOfListings = total;
+                    response.pageNumber = objRequest.Page;
 
-                    // Cleanup and Return
+                    //close connection and return
                     context.Database.Connection.Close();
-                    return Ok(results);
+                    return Ok(response);
                 }
             }
             catch (Exception exception)
@@ -116,7 +115,7 @@ namespace HorseApp2.Controllers
         /// <returns>Array of relevant zip codes and their associated data</returns>
         /// <exception cref="HttpRequestException"></exception>
         /// <exception cref="HttpException"></exception>
-        private async Task<ZipCodeSearchResult[]> FetchZipCodesInRange(ZipCodeSearchRequestDTO requestDto)
+        public async Task<ZipCodeSearchResult[]> FetchZipCodesInRange(ZipCodeSearchRequestDto requestDto)
         {
             var request = new ZipCodeSearchRequest()
             {
@@ -129,7 +128,6 @@ namespace HorseApp2.Controllers
             if (!IsZipCode(request.OriginZipCode))
             {
                 throw new HttpRequestException("Invalid Zip Code");
-                // return BadRequest("Invalid Zip Code");
             }
 
             if (request.Units != "mile" && request.Units != "km")
@@ -140,8 +138,7 @@ namespace HorseApp2.Controllers
             // Build API Request
             var client = new HttpClient();
             var baseUrl = "https://www.zipcodeapi.com/rest";
-            // TODO: Replace this with the company one when I'm done
-            var authToken = "0rVJ830UQmMfUSFq8aatxDldCp9LOwVpTnjWgXpblrEtcQSTkmrYjQHc2dm2yyiB";
+            var authToken = Keystore.ZipCodeApiKey;
             var endpoint = "radius.json";
             var completeUrl =
                 $"{baseUrl}/{authToken}/{endpoint}/{request.OriginZipCode}/{request.Distance.ToString()}/{request.Units}";
@@ -170,7 +167,7 @@ namespace HorseApp2.Controllers
             }
 
             // Parse and return the zip code results from the API
-            var data = await result.Content.ReadAsAsync<ZipCodeSearchRequestResultsDTO>();
+            var data = await result.Content.ReadAsAsync<ZipCodeSearchRequestResultsDto>();
             var zipCodeResults = new List<ZipCodeSearchResult>();
             foreach (var dto in data.zip_codes)
             {

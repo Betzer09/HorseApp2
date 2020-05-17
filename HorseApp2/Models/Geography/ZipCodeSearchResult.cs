@@ -44,27 +44,12 @@ namespace HorseApp2.Models.Geography
         /// Constructor to build ZipCodeSearchResult from the third-party API's DTO
         /// </summary>
         /// <param name="dto">Data Transfer Object to convert</param>
-        public ZipCodeSearchResult(ZipCodeSearchRequestResultDTO dto)
+        public ZipCodeSearchResult(ZipCodeSearchRequestResultDto dto)
         {
             ZipCode = dto.zip_code;
             City = dto.city;
             State = dto.state;
             Distance = dto.distance;
-        }
-
-        /// <summary>
-        /// Converts the ZipCodeSearchResult object into a DTO to send to the requesting client
-        /// </summary>
-        /// <returns>Outgoing DTO</returns>
-        public ZipCodeSearchResponseDTO ToDto()
-        {
-            return new ZipCodeSearchResponseDTO()
-            {
-                zipCode = ZipCode,
-                city = City,
-                state = State,
-                distance = Distance
-            };
         }
     }
 }

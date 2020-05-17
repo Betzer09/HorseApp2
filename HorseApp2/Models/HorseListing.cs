@@ -37,6 +37,7 @@ namespace HorseApp2.Models
         public bool IsDamSireRegistered { get; set; }
         public bool? callForPrice { get; set; }
         public double Height { get; set; }
+        public string Zip { get; set; }
 
         public List<HorseListingPhoto> photos { get; set; }
 
