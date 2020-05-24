@@ -1,24 +1,56 @@
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Net;
+using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using HorseApp2.Models;
-using HorseApp2.Models.Geography;
 
 namespace HorseApp2.Controllers
 {
     /// <summary>
-    /// API Controller handling geography-based such as zip code search, 
+    /// API Controller handling geography-based such as zip code search
     /// </summary>
     [Route("api/[controller]")]
     public class GeographyRequestController : ApiController
     {
+
+        #region Class Variables
+        
+        /// <summary>
+        /// List of zip code options
+        /// </summary>
+        private readonly string[] _supportedZipCodes =
+        {
+            "US",
+            "CA"
+        };
+        
+        /// <summary>
+        /// List of unit type options
+        /// </summary>
+        private readonly string[] _supportedUnitTypes =
+        {
+            "MILE",
+            "KM"
+        };
+
+        /// <summary>
+        /// Minimum accepted value for range
+        /// </summary>
+        private readonly int _minRange = 0;
+        
+        /// <summary>
+        /// Maximum accepted value for range
+        /// </summary>
+        private readonly int _maxRange = 250;
+        
+        #endregion
+        
         #region Get Requests
 
         /// <summary>
@@ -50,12 +82,15 @@ namespace HorseApp2.Controllers
             {
                 return InternalServerError(exception);
             }
-            
-            // If no zip codes are found, then there will be no results so we can skip the db query
-            if (objRequest.Locations.Count <= 0)
+
+            if (!IsValidZipCode(objRequest.PostalCode))
             {
-                var horseResults = new HorseListing[] { };
-                return Ok(horseResults);
+                return BadRequest("Invalid postal code format provided.");
+            }
+
+            if (!IsSupportedCountryCode(objRequest.CountryCode))
+            {
+                return BadRequest($"Invalid country code. {objRequest.CountryCode} is not supported.");
             }
 
             // Connect to the db and search for relevant listings
@@ -107,90 +142,103 @@ namespace HorseApp2.Controllers
         #endregion
 
         #region Helper Functions
-
-        /// <summary>
-        /// Retrieves all zip codes within the provided range of the given zip code
-        /// </summary>
-        /// <param name="requestDto">Zip code request object used for search</param>
-        /// <returns>Array of relevant zip codes and their associated data</returns>
-        /// <exception cref="HttpRequestException"></exception>
-        /// <exception cref="HttpException"></exception>
-        public async Task<ZipCodeSearchResult[]> FetchZipCodesInRange(ZipCodeSearchRequestDto requestDto)
-        {
-            var request = new ZipCodeSearchRequest()
-            {
-                OriginZipCode = requestDto.zip,
-                Distance = requestDto.dist,
-                Units = requestDto.units
-            };
-
-            // Pre-flight checks before the API is called
-            if (!IsZipCode(request.OriginZipCode))
-            {
-                throw new HttpRequestException("Invalid Zip Code");
-            }
-
-            if (request.Units != "mile" && request.Units != "km")
-            {
-                throw new HttpRequestException("Invalid units parameter. Accepted units are 'mile' or 'km'");
-            }
-
-            // Build API Request
-            var client = new HttpClient();
-            var baseUrl = "https://www.zipcodeapi.com/rest";
-            var authToken = Keystore.ZipCodeApiKey;
-            var endpoint = "radius.json";
-            var completeUrl =
-                $"{baseUrl}/{authToken}/{endpoint}/{request.OriginZipCode}/{request.Distance.ToString()}/{request.Units}";
-
-            // Parse the API call result
-            var result = await client.GetAsync(completeUrl);
-
-            // Handle any non-successful response codes from the API
-            if (!result.IsSuccessStatusCode)
-            {
-                switch (result.StatusCode)
-                {
-                    case HttpStatusCode.BadRequest:
-                        throw new HttpException("Malformed API Request: 400");
-                    case HttpStatusCode.Unauthorized:
-                        throw new HttpException("Unauthorized API access attempt: 401");
-                    case HttpStatusCode.NotFound:
-                        throw new HttpException("Provided zip code could not be found: 404");
-                }
-
-                // Has to be checked separately since the code isn't included in the HttpStatusCode enum
-                if (result.StatusCode.GetHashCode() == 429)
-                {
-                    throw new HttpException("Allowed API usage has been exceeded: 429");
-                }
-            }
-
-            // Parse and return the zip code results from the API
-            var data = await result.Content.ReadAsAsync<ZipCodeSearchRequestResultsDto>();
-            var zipCodeResults = new List<ZipCodeSearchResult>();
-            foreach (var dto in data.zip_codes)
-            {
-                zipCodeResults.Add(new ZipCodeSearchResult(dto));
-            }
-
-            return zipCodeResults.ToArray();
-        }
+        
 
         #endregion
 
         
         #region Validation Functions
+
+        /// <summary>
+        /// Validates provided parameters
+        /// </summary>
+        /// <param name="postalCode">Postal code being searched for</param>
+        /// <param name="countryCode">2 character code for the country the postal code belongs to</param>
+        /// <param name="range">Distance (radius) results should be limited to</param>
+        /// <param name="unit">Unit type for the distance</param>
+        /// <exception cref="Exception">List of invalid parameters</exception>
+        public void ValidateParameters(string postalCode, string countryCode, int range, string unit)
+        {
+            StringBuilder sb = new StringBuilder("Invalid Location Search Parameters:");
+            var valid = true;
+            if (!IsValidZipCode(postalCode))
+            {
+                valid = false;
+                sb.Append(" Postal code format not recognized.");
+            }
+
+            if (!IsSupportedCountryCode(countryCode))
+            {
+                valid = false;
+                sb.Append(" Country code not supported.");
+            }
+
+            if (!IsValidRange(range))
+            {
+                valid = false;
+                sb.Append($" Range must be between {_minRange.ToString()} and {_maxRange.ToString()} inclusive.");
+            }
+
+            if (!IsSupportedUnitType(unit))
+            {
+                valid = false;
+                sb.Append(" Unit type not recognized.");
+            }
+
+            if (!valid)
+            {
+                throw new Exception(sb.ToString());
+            }
+        }
         
         /// <summary>
         /// Checks to see if the provided input is a valid zip code.
         /// </summary>
         /// <param name="input">Zip code to check</param>
         /// <returns>Validity of the zip code</returns>
-        private bool IsZipCode(string input)
+        public bool IsValidZipCode(string input)
         {
-            Regex regex = new Regex(@"^\d{5}(?:[-\s]\d{4})?$");
-            return regex.IsMatch(input);
+            var regexes = new []
+            {
+                // US Zip: e.g. 83402
+                new Regex(@"^\d{5}(?:[-\s]\d{4})?$"), 
+                // UK Zip: e.g. CW3 9SS
+                new Regex(@"^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$"),
+                // CA Zip: e.g. M1R 0E9
+                new Regex(@"[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]"),
+            };
+
+            return regexes.Any(regex => regex.IsMatch(input));
+        }
+
+        /// <summary>
+        /// Checks to see if country code is accepted
+        /// </summary>
+        /// <param name="countryCode"></param>
+        /// <returns></returns>
+        public bool IsSupportedCountryCode(string countryCode)
+        {
+            return _supportedZipCodes.Contains(countryCode.ToUpper());
+        }
+
+        /// <summary>
+        /// Checks to see if provided range is within constraints
+        /// </summary>
+        /// <param name="range"></param>
+        /// <returns></returns>
+        public bool IsValidRange(int range)
+        {
+            return _minRange <= range  && range <= _maxRange;
+        }
+
+        /// <summary>
+        /// Checks to see if provided unit type is accepted
+        /// </summary>
+        /// <param name="unit"></param>
+        /// <returns></returns>
+        public bool IsSupportedUnitType(string unit)
+        {
+            return _supportedUnitTypes.Contains(unit.ToUpper());
         }
 
         #endregion
