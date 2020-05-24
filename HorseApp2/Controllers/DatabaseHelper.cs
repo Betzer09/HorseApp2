@@ -81,9 +81,10 @@ namespace HorseApp2.Controllers
             {
                 request.Range = CheckIntParam(headers, "dist", 25).Item2;
                 request.Unit = CheckStringParam(headers, "unit", "mile").Item2;
+                
                 // Set up default values to work off whether the Code starts with a letter or a number.
                 // Canada starts with a letter, US starts with digits.
-                var isUS = Char.IsDigit(zipCode[0]);
+                var isUS = zipCode.Length > 0 && Char.IsDigit(zipCode[0]);
                 request.CountryCode = CheckStringParam(headers, "countryCode", isUS ? "US" : "CA").Item2;
                 request.PostalCode = zipCode;
                 
