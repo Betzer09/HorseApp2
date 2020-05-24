@@ -6,7 +6,6 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using HorseApp2.Models;
-using HorseApp2.Models.Geography;
 
 namespace HorseApp2.Controllers
 {
@@ -46,6 +45,7 @@ namespace HorseApp2.Controllers
         /// </summary>
         /// <param name="headers">Data source to search for parameters</param>
         /// <returns>Initialized search active listings request from the given data source</returns>
+        /// <exception cref="Exception">Rethrown exception from parameter builder functions</exception>
         public async Task<SearchActiveListingsRequest> BuildListingRequest(HttpHeaders headers)
         {
             var request = new SearchActiveListingsRequest();
@@ -74,27 +74,19 @@ namespace HorseApp2.Controllers
             request.OrderByType = CheckIntParam(headers, "orderByType", 1).Item2;
             request.OrderByDesc = CheckBoolParam(headers, "orderByDesc").Item2;
             
-            // Handle Zip Code
+            // Handle Postal Code Metadata
             var (zipCodeExists, zipCode) = CheckStringParam(headers, "zip");
             request.LocationsSearch = zipCodeExists;
             if (zipCodeExists)
             {
-                var distance = CheckIntParam(headers, "dist", 25).Item2;
-                var unit = CheckStringParam(headers, "unit", "mile").Item2;
-                var geographyController = new GeographyRequestController();
-                var zipCodeRequest = new ZipCodeSearchRequestDto()
-                {
-                    zip = zipCode,
-                    units = unit,
-                    dist = distance
-                };
-                var zipCodeResults = await geographyController.FetchZipCodesInRange(zipCodeRequest);
-                var results = new List<string>();
-                foreach (var result in zipCodeResults)
-                {
-                    results.Add(result.ZipCode);
-                } 
-                request.Locations = results;
+                request.Range = CheckIntParam(headers, "dist", 25).Item2;
+                request.Unit = CheckStringParam(headers, "unit", "mile").Item2;
+                request.CountryCode = CheckStringParam(headers, "countryCode", "US").Item2;
+                request.PostalCode = zipCode;
+                
+                var geographyRequestController = new GeographyRequestController();
+                geographyRequestController.ValidateParameters(request.PostalCode, request.CountryCode, request.Range,
+                    request.Unit);
             }
 
             // Handle Range Parameters
@@ -202,9 +194,14 @@ namespace HorseApp2.Controllers
             parameters.Add(BuildSqlParameter("IsSireRegistered", request.IsSireRegistered));
             parameters.Add(BuildSqlParameter("IsDamSireRegisteredSearch", request.IsDamSireRegisteredSearch));
             parameters.Add(BuildSqlParameter("IsDamSireRegistered", request.IsDamSireRegistered));
+            
+            // Location Search Parameters
             parameters.Add(BuildSqlParameter("@LocationsSearch", request.LocationsSearch));
-            parameters.Add(BuildSqlParameter("@Locations", BuildSqlParameterValue(request.Locations, "string", "System.String")));
-
+            parameters.Add(BuildSqlParameter("@PostalCode", request.PostalCode));
+            parameters.Add(BuildSqlParameter("@Range", request.Range));
+            parameters.Add(BuildSqlParameter("@CountryCode", request.CountryCode));
+            parameters.Add(BuildSqlParameter("@Unit", request.Unit));
+            
             return parameters;
         }
 
