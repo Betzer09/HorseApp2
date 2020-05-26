@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using HorseApp2.Models;
@@ -76,21 +77,24 @@ namespace HorseApp2.Controllers
             
             // Handle Postal Code Metadata
             var (zipCodeExists, zipCode) = CheckStringParam(headers, "zip");
-            request.LocationsSearch = zipCodeExists;
+            var (countryCodeExists, countryCode) = CheckStringParam(headers, "countryCode");
+            request.LocationsSearch = zipCodeExists && countryCodeExists;
+            
+            // Throw an error if zip code or country code are provided without the other.
+            if (zipCodeExists && !countryCodeExists || countryCodeExists && !zipCodeExists)
+            {
+                throw new HttpRequestException("Postal and country codes must be provided together for location filtering.");
+            }
+            
             if (zipCodeExists)
             {
+                request.CountryCode = countryCode;
                 request.Range = CheckIntParam(headers, "dist", 25).Item2;
                 request.Unit = CheckStringParam(headers, "unit", "mile").Item2;
-                
-                // Set up default values to work off whether the Code starts with a letter or a number.
-                // Canada starts with a letter, US starts with digits.
-                var isUS = zipCode.Length > 0 && Char.IsDigit(zipCode[0]);
-                request.CountryCode = CheckStringParam(headers, "countryCode", isUS ? "US" : "CA").Item2;
-                request.PostalCode = zipCode;
-                
+
                 var geographyRequestController = new GeographyRequestController();
-                geographyRequestController.ValidateParameters(request.PostalCode, request.CountryCode, request.Range,
-                    request.Unit);
+                geographyRequestController.ValidateParameters(request.Range, request.Unit);
+                request.PostalCode = geographyRequestController.PreparePostalCode(zipCode, request.CountryCode);
             }
 
             // Handle Range Parameters

@@ -4,7 +4,6 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -20,15 +19,6 @@ namespace HorseApp2.Controllers
     {
 
         #region Class Variables
-        
-        /// <summary>
-        /// List of zip code options
-        /// </summary>
-        private readonly string[] _supportedZipCodes =
-        {
-            "US",
-            "CA"
-        };
         
         /// <summary>
         /// List of unit type options
@@ -82,17 +72,7 @@ namespace HorseApp2.Controllers
             {
                 return InternalServerError(exception);
             }
-
-            if (!IsValidZipCode(objRequest.PostalCode))
-            {
-                return BadRequest("Invalid postal code format provided.");
-            }
-
-            if (!IsSupportedCountryCode(objRequest.CountryCode))
-            {
-                return BadRequest($"Invalid country code. {objRequest.CountryCode} is not supported.");
-            }
-
+            
             // Connect to the db and search for relevant listings
             try
             {
@@ -142,8 +122,80 @@ namespace HorseApp2.Controllers
         #endregion
 
         #region Helper Functions
-        
 
+        /// <summary>
+        /// Cleans up and reformats postal code for proper db matching
+        /// </summary>
+        /// <param name="postalCode">The postal code to be searched with</param>
+        /// <param name="countryCode">The target country's code</param>
+        /// <returns>Reformatted, upper-cased string</returns>
+        public string PreparePostalCode(string postalCode, string countryCode)
+        {
+            postalCode = postalCode.TrimStart(' ').TrimEnd(' ');
+            switch (countryCode)
+            {
+                // US, in case they include extended zip
+                case "US":
+                    if (postalCode.Length > 5)
+                    {
+                        postalCode = postalCode.Substring(0, 5);
+                    }
+                    break;
+                
+                // Countries only including first three characters
+                case "CA": // Canada
+                case "MT": // Malta
+                case "IE": // Ireland
+                    if (postalCode.Length > 3)
+                    {
+                        postalCode = postalCode.Substring(0, 3);
+                    }
+                    break;
+                
+                // Chile: e.g. 2340000
+                case "CL":
+                    if (postalCode.Length >= 3)
+                    {
+                        postalCode = $"{postalCode.Substring(0, 3)}0000";
+                    }
+
+                    break;
+                    
+                // Argentina
+                case "AR":
+                    if (postalCode.Length > 4)
+                    {
+                        postalCode = postalCode.Substring(0, 4);
+                    }
+
+                    break;
+
+                // Brazil: Only -000 variants of the zip code are listed in the db
+                case "BR":
+                    if (postalCode.Length >= 5)
+                    {
+                        postalCode = $"{postalCode.Substring(0, 5)}-000";
+                    }
+
+                    break;
+                
+                // Great Britain: For copyright reasons, only outward (first 3-4 characters) are in the db.
+                case "GB":
+                    var outwardCodeSeparationIndex = postalCode.IndexOf(' ');
+                    if (outwardCodeSeparationIndex >= 0)
+                    {
+                        postalCode = $"{postalCode.Substring(0, outwardCodeSeparationIndex)}";
+                    }
+                    else if (postalCode.Length > 4)
+                    {
+                        postalCode = postalCode.Substring(0, 4);
+                    }
+                    break;
+            }
+
+            return postalCode.ToUpper();
+        }
+        
         #endregion
 
         
@@ -157,21 +209,10 @@ namespace HorseApp2.Controllers
         /// <param name="range">Distance (radius) results should be limited to</param>
         /// <param name="unit">Unit type for the distance</param>
         /// <exception cref="Exception">List of invalid parameters</exception>
-        public void ValidateParameters(string postalCode, string countryCode, int range, string unit)
+        public void ValidateParameters(int range, string unit)
         {
             StringBuilder sb = new StringBuilder("Invalid Location Search Parameters:");
             var valid = true;
-            if (!IsValidZipCode(postalCode))
-            {
-                valid = false;
-                sb.Append(" Postal code format not recognized.");
-            }
-
-            if (!IsSupportedCountryCode(countryCode))
-            {
-                valid = false;
-                sb.Append(" Country code not supported.");
-            }
 
             if (!IsValidRange(range))
             {
@@ -189,36 +230,6 @@ namespace HorseApp2.Controllers
             {
                 throw new Exception(sb.ToString());
             }
-        }
-        
-        /// <summary>
-        /// Checks to see if the provided input is a valid zip code.
-        /// </summary>
-        /// <param name="input">Zip code to check</param>
-        /// <returns>Validity of the zip code</returns>
-        public bool IsValidZipCode(string input)
-        {
-            var regexes = new []
-            {
-                // US Zip: e.g. 83402
-                new Regex(@"^\d{5}(?:[-\s]\d{4})?$"), 
-                // UK Zip: e.g. CW3 9SS
-                new Regex(@"^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$"),
-                // CA Zip: e.g. M1R 0E9
-                new Regex(@"[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]"),
-            };
-
-            return regexes.Any(regex => regex.IsMatch(input));
-        }
-
-        /// <summary>
-        /// Checks to see if country code is accepted
-        /// </summary>
-        /// <param name="countryCode"></param>
-        /// <returns></returns>
-        public bool IsSupportedCountryCode(string countryCode)
-        {
-            return _supportedZipCodes.Contains(countryCode.ToUpper());
         }
 
         /// <summary>
