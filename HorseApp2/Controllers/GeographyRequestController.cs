@@ -113,6 +113,16 @@ namespace HorseApp2.Controllers
                     return Ok(response);
                 }
             }
+            catch (SqlException exception)
+            {
+                // If it's specifically the "Zip code not found error"
+                if (exception.Number == 51000)
+                {
+                    return BadRequest("Provided postal code could not be found.");
+                }
+
+                return InternalServerError(exception);
+            }
             catch (Exception exception)
             {
                 return InternalServerError(exception);
