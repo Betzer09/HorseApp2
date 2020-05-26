@@ -191,6 +191,7 @@
     <Compile Include="Models\HorseListing.cs" />
     <Compile Include="Models\HorseListingData.cs" />
     <Compile Include="Models\HorseListingPhoto.cs" />
+    <Compile Include="Models\ResponseMessage.cs" />
     <Compile Include="Models\SearchActiveListingsRequest.cs" />
     <Compile Include="Models\SearchResponse.cs" />
     <Compile Include="Models\SireListing.cs" />

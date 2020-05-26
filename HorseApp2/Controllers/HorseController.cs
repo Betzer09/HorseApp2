@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Results;
 
 namespace HorseApp2.Controllers
 {
@@ -543,7 +544,12 @@ namespace HorseApp2.Controllers
                 // If it's specifically the "Zip code not found error"
                 if (exception.Number == 51000)
                 {
-                    return BadRequest("Provided postal code could not be found.");
+                    // return BadRequest("Provided postal code could not be found.");
+                    var contentResult = new NegotiatedContentResult<ResponseMessage>(
+                        HttpStatusCode.NoContent, 
+                        new ResponseMessage {Message = "Provided postal code could not be found."},
+                        this);
+                    return contentResult;
                 }
 
                 return InternalServerError(exception);
