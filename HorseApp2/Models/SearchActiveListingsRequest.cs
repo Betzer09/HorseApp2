@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 
@@ -63,6 +64,19 @@ namespace HorseApp2.Models
         //public bool callForPrice { get; set }
         public bool HeightSearch { get; set; }
         public List<double> Heights { get; set; }
+
+        #region Location Search Parameters
+
+        // Start Location Search Parameters
+        public bool LocationsSearch { get; set; } // Not Required
+        public string PostalCode { get; set; }
+        public int Range { get; set; } = 25;
+        public string CountryCode { get; set; } = "US";
+        public string Unit { get; set; } = "mile";
+        // End Location Search Parameters
+
+        #endregion
+        
 
         public bool IsSireRegisteredSearch { get; set; }
         public bool IsDamSireRegisteredSearch { get; set; }
