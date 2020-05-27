@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Newtonsoft.Json;
 
 namespace HorseApp2.Models
 {
@@ -36,7 +37,9 @@ namespace HorseApp2.Models
         public bool IsDamSireRegistered { get; set; }
         public bool? callForPrice { get; set; }
         public double Height { get; set; }
+        [JsonProperty("zip")]
         public string Zip { get; set; }
+        [JsonProperty("countryCode")]
         public string CountryCode { get; set; }
 
         public List<HorseListingPhoto> photos { get; set; }
