@@ -12,7 +12,6 @@ namespace HorseApp2.Models
         {
             photos = new List<HorseListingPhoto>();
         }
-        //private int _price;
 
         public string activeListingId { get; set; }
         public int? age { get; set; }
@@ -38,6 +37,7 @@ namespace HorseApp2.Models
         public bool? callForPrice { get; set; }
         public double Height { get; set; }
         public string Zip { get; set; }
+        public string CountryCode { get; set; }
 
         public List<HorseListingPhoto> photos { get; set; }
 

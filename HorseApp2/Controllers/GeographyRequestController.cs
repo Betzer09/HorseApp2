@@ -53,9 +53,9 @@ namespace HorseApp2.Controllers
         public async Task<IHttpActionResult> GetListingsInZipCodeRange()
         {
             var request = Request;
-            if (!request.Headers.Contains("zip"))
+            if (!request.Headers.Contains("zip") || !request.Headers.Contains("countryCode"))
             {
-                return BadRequest("'zip' parameter is required to search by zip code. 'dist' and 'units' are optional.");
+                return BadRequest("'zip' and 'countryCode' parameters are required to search by zip code. 'dist' and 'units' are optional.");
             }
             
             var dbHelper = new DatabaseHelper();

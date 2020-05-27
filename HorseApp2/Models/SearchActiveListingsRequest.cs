@@ -71,7 +71,7 @@ namespace HorseApp2.Models
         public bool LocationsSearch { get; set; } // Not Required
         public string PostalCode { get; set; }
         public int Range { get; set; } = 25;
-        public string CountryCode { get; set; } = "US";
+        public string CountryCode { get; set; }
         public string Unit { get; set; } = "mile";
         // End Location Search Parameters
 
