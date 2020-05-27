@@ -185,9 +185,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Keystore.cs" />
-    <Compile Include="Models\Geography\ZipCodeSearchRequest.cs" />
-    <Compile Include="Models\Geography\ZipCodeSearchResult.cs" />
-    <Compile Include="Models\Geography\ZipCodeSearchResultDTO.cs" />
     <Compile Include="Models\HorseListing.cs" />
     <Compile Include="Models\HorseListingData.cs" />
     <Compile Include="Models\HorseListingPhoto.cs" />

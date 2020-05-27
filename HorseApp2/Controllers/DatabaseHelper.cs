@@ -149,6 +149,7 @@ namespace HorseApp2.Controllers
             parameters.Add(BuildSqlParameter("@CallForPrice", listing.callForPrice));
             parameters.Add(BuildSqlParameter("@Height", listing.Height));
             parameters.Add(BuildSqlParameter("@Zip", listing.Zip));
+            parameters.Add(BuildSqlParameter("@CountryCode", listing.CountryCode));
 
             return parameters;
         }
@@ -251,6 +252,7 @@ namespace HorseApp2.Controllers
             listing.IsSireRegistered = bool.Parse(row["IsSireRegistered"].ToString());
             listing.IsDamSireRegistered = bool.Parse(row["IsDamSireRegistered"].ToString());
             listing.Zip = row["Zip"].ToString();
+            listing.CountryCode = row["CountryCode"].ToString();
 
             int i = 0;
             foreach (DataRow dr in photos)

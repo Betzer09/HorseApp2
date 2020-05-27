@@ -204,6 +204,12 @@ namespace HorseApp2.Controllers
             SqlParameter param23 = new SqlParameter();
             param23.ParameterName = "@Height";
             param23.Value = listing.Height;
+            SqlParameter param24 = new SqlParameter();
+            param24.ParameterName = "@Zip";
+            param24.Value = listing.Zip;
+            SqlParameter param25 = new SqlParameter();
+            param25.ParameterName = "@CountryCode";
+            param25.Value = listing.CountryCode;
 
             /*
             SqlParameter param24 = new SqlParameter();
@@ -293,10 +299,8 @@ namespace HorseApp2.Controllers
             parameters.Add(param20);
             parameters.Add(param22);
             parameters.Add(param23);
-            /*
             parameters.Add(param24);
             parameters.Add(param25);
-            */
             parameters.Add(photos);
 
 
@@ -1453,220 +1457,6 @@ namespace HorseApp2.Controllers
             response.createdOn = row["CreatedOn"].ToString();
 
             return response;
-        }
-
-        /// <summary>
-        /// Populates an Active Listing object with data rows
-        /// </summary>
-        /// <param name="row"></param>
-        /// <param name="photos"></param>
-        /// <returns></returns>
-        private HorseListing PopulateListing(DataRow row, List<DataRow> photos)
-        {
-            HorseListing listing = new HorseListing();
-
-            listing.activeListingId = row["ActiveListingId"].ToString();
-            listing.age = int.Parse(row["Age"].ToString());
-            listing.color = row["Color"].ToString();
-            listing.dam = row["Dam"].ToString();
-            listing.sire = row["Sire"].ToString();
-            listing.damSire = row["DamSire"].ToString();
-            listing.description = row["Description"].ToString();
-            listing.gender = row["Gender"].ToString();
-            listing.horseName = row["HorseName"].ToString();
-            listing.inFoal = bool.Parse(row["InFoal"].ToString());
-            listing.lte = decimal.Parse(row["Lte"].ToString());
-            listing.originalDateListed = row["OriginalDateListed"].ToString();
-            listing.price = decimal.Parse(row["Price"].ToString());
-            listing.purchaseListingType = row["PurchaseListingType"].ToString();
-            listing.ranchPhoto = row["RanchPhoto"].ToString();
-            listing.sellerId = row["SellerId"].ToString();
-            listing.horseType = row["HorseType"].ToString();
-            listing.isSold = bool.Parse(row["IsSold"].ToString());
-            listing.InFoalTo = row["InFoalTo"].ToString();
-            listing.callForPrice = bool.Parse(row["CallForPrice"].ToString());
-            listing.Height = double.Parse(row["Height"].ToString());
-            listing.IsSireRegistered = bool.Parse(row["IsSireRegistered"].ToString());
-            listing.IsDamSireRegistered = bool.Parse(row["IsDamSireRegistered"].ToString());
-
-            int i = 0;
-            foreach (DataRow dr in photos)
-            {
-                listing.photos.Add(new HorseListingPhoto());
-                listing.photos.ElementAt(i).activeListingPhotoId = long.Parse(dr["ActiveListingPhotoId"].ToString());
-                listing.photos.ElementAt(i).activeListingId = dr["ActiveListingId"].ToString();
-                listing.photos.ElementAt(i).photoUrl = dr["PhotoURL"].ToString();
-                listing.photos.ElementAt(i).photoOrder = int.Parse(dr["PhotoOrder"].ToString());
-                listing.photos.ElementAt(i).createdOn = dr["CreatedOn"].ToString();
-                listing.photos.ElementAt(i).updatedOn = dr["UpdatedOn"].ToString();
-                listing.photos.ElementAt(i).isVideo = bool.Parse(dr["IsVideo"].ToString());
-
-                i++;
-            }
-
-            return listing;
-        }
-
-        /// <summary>
-        /// Converts data from a request object for inserting an ActiveListing into a datatable
-        /// Creates readable data for sp
-        /// </summary>
-        /// <param name="listing"></param>
-        /// <returns></returns>
-        private DataTable ListingDataRequestToDataTable(HorseListing listing)
-        {
-            DataTable dt = new DataTable();
-            DataColumn AgeColumn = new DataColumn("Age");
-            AgeColumn.DataType = System.Type.GetType("System.String");
-            DataColumn ColorColumn = new DataColumn("Color");
-            ColorColumn.DataType = System.Type.GetType("System.String");
-            DataColumn DamColumn = new DataColumn("Dam");
-            DamColumn.DataType = System.Type.GetType("System.String");
-            DataColumn SireColumn = new DataColumn("Sire");
-            SireColumn.DataType = System.Type.GetType("System.String");
-            DataColumn DamSireColumn = new DataColumn("DamSire");
-            DamSireColumn.DataType = System.Type.GetType("System.String");
-            DataColumn DescriptionColumn = new DataColumn("Description");
-            DescriptionColumn.DataType = System.Type.GetType("System.String");
-            DataColumn GenderColumn = new DataColumn("Gender");
-            GenderColumn.DataType = System.Type.GetType("System.String");
-            DataColumn HorseNameColumn = new DataColumn("HorseName");
-            HorseNameColumn.DataType = System.Type.GetType("System.String");
-            DataColumn InForalColumn = new DataColumn("InFoal");
-            InForalColumn.DataType = System.Type.GetType("System.Boolean");
-            DataColumn LteColumn = new DataColumn("Lte");
-            LteColumn.DataType = System.Type.GetType("System.Decimal");
-            DataColumn OriginalDateListedColumn = new DataColumn("OriginalDateListed");
-            OriginalDateListedColumn.DataType = System.Type.GetType("System.DateTime");
-            DataColumn PriceColumn = new DataColumn("Price");
-            PriceColumn.DataType = System.Type.GetType("System.Decimal");
-            DataColumn PurchaseListingTypeColumn = new DataColumn("PurchaseListingType");
-            PurchaseListingTypeColumn.DataType = System.Type.GetType("System.String");
-            DataColumn RanchPhotoColumn = new DataColumn("RanchPhoto");
-            RanchPhotoColumn.DataType = System.Type.GetType("System.String");
-            DataColumn SellerIdColumn = new DataColumn("SellerId");
-            SellerIdColumn.DataType = System.Type.GetType("System.String");
-            DataColumn HorseTypeColumn = new DataColumn("HorseType");
-            HorseTypeColumn.DataType = System.Type.GetType("System.String");
-            DataColumn IsSoldColumn = new DataColumn("IsSold");
-            IsSoldColumn.DataType = System.Type.GetType("System.Boolean");
-            DataColumn IsRegisteredColumn = new DataColumn("IsRegistered");
-            IsRegisteredColumn.DataType = System.Type.GetType("System.Boolean");
-            DataColumn CallForPriceColumn = new DataColumn("CallForPrice");
-            CallForPriceColumn.DataType = System.Type.GetType("System.Boolean");
-            DataColumn HeightColumn = new DataColumn("Height");
-            HeightColumn.DataType = System.Type.GetType("System.Double");
-            DataColumn IsSireRegisteredColumn = new DataColumn("IsSireRegistered");
-            IsSireRegisteredColumn.DataType = System.Type.GetType("System.Boolean");
-            DataColumn IsDamSireRegisteredColumn = new DataColumn("IsDamSireRegistered");
-            IsDamSireRegisteredColumn.DataType = System.Type.GetType("System.Boolean");
-
-
-            dt.Columns.Add(AgeColumn);
-            dt.Columns.Add(ColorColumn);
-            dt.Columns.Add(DamColumn);
-            dt.Columns.Add(SireColumn);
-            dt.Columns.Add(DamSireColumn);
-            dt.Columns.Add(DescriptionColumn);
-            dt.Columns.Add(GenderColumn);
-            dt.Columns.Add(HorseNameColumn);
-            dt.Columns.Add(InForalColumn);
-            dt.Columns.Add(LteColumn);
-            dt.Columns.Add(OriginalDateListedColumn);
-            dt.Columns.Add(PriceColumn);
-            dt.Columns.Add(PurchaseListingTypeColumn);
-            dt.Columns.Add(RanchPhotoColumn);
-            dt.Columns.Add(SellerIdColumn);
-            dt.Columns.Add(HorseTypeColumn);
-            dt.Columns.Add(IsSoldColumn);
-            dt.Columns.Add(IsRegisteredColumn);
-            dt.Columns.Add(CallForPriceColumn);
-            dt.Columns.Add(HeightColumn);
-            dt.Columns.Add(IsSireRegisteredColumn);
-            dt.Columns.Add(IsDamSireRegisteredColumn);
-
-            var newRow = dt.NewRow();
-            newRow["Age"] = listing.age;
-            newRow["Color"] = listing.color;
-            newRow["Dam"] = listing.dam;
-            newRow["Sire"] = listing.sire;
-            newRow["DamSire"] = listing.damSire;
-            newRow["Description"] = listing.description;
-            newRow["Gender"] = listing.gender;
-            newRow["HorseName"] = listing.horseName;
-            newRow["InFoal"] = listing.inFoal;
-            newRow["Lte"] = listing.lte;
-            newRow["OriginalDateListed"] = listing.originalDateListed;
-            newRow["Price"] = listing.price;
-            newRow["PurchaseListingType"] = listing.purchaseListingType;
-            newRow["RanchPhoto"] = listing.ranchPhoto;
-            newRow["SellerId"] = listing.sellerId;
-            newRow["HorseType"] = listing.horseType;
-            newRow["IsSold"] = listing.isSold;
-            newRow["CallForPrice"] = listing.callForPrice;
-            newRow["Height"] = listing.Height;
-            newRow["IsSireRegistered"] = listing.IsSireRegistered;
-            newRow["IsDamSireRegistered"] = listing.IsDamSireRegistered;
-
-
-            dt.Rows.Add(newRow);
-
-            return dt;
-        }
-
-        /// <summary>
-        /// Converts photos from request to insert an Active Listing into a datatable
-        /// Creates readable data for sp
-        /// </summary>
-        /// <param name="photos"></param>
-        /// <returns></returns>
-        private DataTable ListingPhotoRequestToDataTable(List<HorseListingPhoto> photos)
-        {
-            DataTable dt = new DataTable();
-            DataColumn PhotoURLColumn = new DataColumn("PhotoURL");
-            PhotoURLColumn.DataType = System.Type.GetType("System.String");
-            DataColumn PhotoOrderColumn = new DataColumn("PhotoOrder");
-            PhotoOrderColumn.DataType = System.Type.GetType("System.Int32");
-            DataColumn CreatedOnColumn = new DataColumn("CreatedOn");
-            CreatedOnColumn.DataType = System.Type.GetType("System.DateTime");
-            DataColumn UpdatedOnColumn = new DataColumn("UpdatedOn");
-            UpdatedOnColumn.DataType = System.Type.GetType("System.DateTime");
-
-            DataColumn IsVideoColumn = new DataColumn("IsVideo");
-            IsVideoColumn.DataType = System.Type.GetType("System.Boolean");
-
-            dt.Columns.Add(PhotoURLColumn);
-            dt.Columns.Add(PhotoOrderColumn);
-            dt.Columns.Add(CreatedOnColumn);
-            dt.Columns.Add(UpdatedOnColumn);
-
-            dt.Columns.Add(IsVideoColumn);
-
-            List<DataRow> rows = new List<DataRow>();
-            int rowCount = photos.Count();
-            for (int i = 0; i < rowCount; i++)
-            {
-                rows.Add(dt.NewRow());
-            }
-
-            int j = 0;
-            HorseListingPhoto photo;
-            foreach (DataRow row in rows)
-            {
-                photo = photos.ElementAt(j);
-
-                row["PhotoURL"] = photo.photoUrl;
-                row["PhotoOrder"] = photo.photoOrder;
-                row["CreatedOn"] = photo.createdOn;
-                row["UpdatedOn"] = photo.updatedOn;
-                row["IsVideo"] = photo.isVideo;
-
-                dt.Rows.Add(row);
-
-                j++;
-            }
-
-            return dt;
         }
 
 
