@@ -148,7 +148,11 @@ namespace HorseApp2.Controllers
             parameters.Add(BuildSqlParameter("InFoalTo", listing.InFoalTo));
             parameters.Add(BuildSqlParameter("@CallForPrice", listing.callForPrice));
             parameters.Add(BuildSqlParameter("@Height", listing.Height));
-            parameters.Add(BuildSqlParameter("@Zip", listing.Zip));
+            
+            var geographyHelper = new GeographyRequestController();
+            parameters.Add(BuildSqlParameter(
+                "@Zip",
+                geographyHelper.PreparePostalCode(listing.Zip, listing.CountryCode)));
             parameters.Add(BuildSqlParameter("@CountryCode", listing.CountryCode));
 
             return parameters;
@@ -205,8 +209,11 @@ namespace HorseApp2.Controllers
             parameters.Add(BuildSqlParameter("IsDamSireRegistered", request.IsDamSireRegistered));
             
             // Location Search Parameters
+            var geographyHelper = new GeographyRequestController();
             parameters.Add(BuildSqlParameter("@LocationsSearch", request.LocationsSearch));
-            parameters.Add(BuildSqlParameter("@PostalCode", request.PostalCode));
+            parameters.Add(BuildSqlParameter(
+                "@PostalCode",
+                geographyHelper.PreparePostalCode(request.PostalCode, request.CountryCode)));
             parameters.Add(BuildSqlParameter("@Range", request.Range));
             parameters.Add(BuildSqlParameter("@CountryCode", request.CountryCode));
             parameters.Add(BuildSqlParameter("@Unit", request.Unit));

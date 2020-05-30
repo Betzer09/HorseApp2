@@ -204,9 +204,10 @@ namespace HorseApp2.Controllers
             SqlParameter param23 = new SqlParameter();
             param23.ParameterName = "@Height";
             param23.Value = listing.Height;
+            var geographyHelper = new GeographyRequestController();
             SqlParameter param24 = new SqlParameter();
             param24.ParameterName = "@Zip";
-            param24.Value = listing.Zip;
+            param24.Value = geographyHelper.PreparePostalCode(listing.Zip, listing.CountryCode);
             SqlParameter param25 = new SqlParameter();
             param25.ParameterName = "@CountryCode";
             param25.Value = listing.CountryCode;
