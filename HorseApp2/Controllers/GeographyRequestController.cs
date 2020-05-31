@@ -141,6 +141,10 @@ namespace HorseApp2.Controllers
         /// <returns>Reformatted, upper-cased string</returns>
         public string PreparePostalCode(string postalCode, string countryCode)
         {
+            if (String.IsNullOrEmpty(postalCode) || String.IsNullOrEmpty(countryCode))
+            {
+                return null;
+            }
             postalCode = postalCode.TrimStart(' ').TrimEnd(' ');
             switch (countryCode)
             {
