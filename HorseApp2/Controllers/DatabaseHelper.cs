@@ -220,6 +220,17 @@ namespace HorseApp2.Controllers
             
             return parameters;
         }
+        
+        /// <summary>
+        /// Convenience function used to build a SQL Parameter
+        /// </summary>
+        /// <param name="name">Name of the parameter</param>
+        /// <param name="value">Value of the parameter</param>
+        /// <returns>Initialized SQL parameter</returns>
+        public SqlParameter BuildSqlParameter(string name, object value)
+        {
+            return new SqlParameter(name, value);
+        }
 
         #endregion
 
@@ -260,6 +271,8 @@ namespace HorseApp2.Controllers
             listing.IsDamSireRegistered = bool.Parse(row["IsDamSireRegistered"].ToString());
             listing.Zip = row["Zip"].ToString();
             listing.CountryCode = row["CountryCode"].ToString();
+            listing.ViewedCount = row["ViewedCount"].ToString();
+            listing.FavoriteCount = row["FavoriteCount"].ToString();
 
             int i = 0;
             foreach (DataRow dr in photos)
@@ -480,17 +493,6 @@ namespace HorseApp2.Controllers
             var min = CheckDecimalParam(headers, minParamName, minDefault);
             var max = CheckDecimalParam(headers, maxParamName, maxDefault);
             return new Tuple<bool, decimal, decimal>(exists, min.Item2, max.Item2);
-        }
-        
-        /// <summary>
-        /// Convenience function used to build a SQL Parameter
-        /// </summary>
-        /// <param name="name">Name of the parameter</param>
-        /// <param name="value">Value of the parameter</param>
-        /// <returns>Initialized SQL parameter</returns>
-        private SqlParameter BuildSqlParameter(string name, object value)
-        {
-            return new SqlParameter(name, value);
         }
 
         /// <summary>

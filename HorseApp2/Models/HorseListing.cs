@@ -41,6 +41,10 @@ namespace HorseApp2.Models
         public string Zip { get; set; }
         [JsonProperty("countryCode")]
         public string CountryCode { get; set; }
+        [JsonProperty("favoriteCount")]
+        public string FavoriteCount { get; set; }
+        [JsonProperty("viewedCount")]
+        public string ViewedCount { get; set; }
 
         public List<HorseListingPhoto> photos { get; set; }
 

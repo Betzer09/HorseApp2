@@ -160,6 +160,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\AnalyticsManagementController.cs" />
     <Compile Include="Controllers\DatabaseHelper.cs" />
     <Compile Include="Controllers\GeographyRequestController.cs" />
     <Compile Include="Controllers\HorseController.cs" />
