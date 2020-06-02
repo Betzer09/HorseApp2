@@ -7,14 +7,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
-using HorseApp2.Models;
+using HorseApp2.Versions.v1_0.Models;
+using Microsoft.Web.Http;
 
-namespace HorseApp2.Controllers
+namespace HorseApp2.Versions.v1_0.Controllers
 {
+    
     /// <summary>
     /// API Controller handling geography-based such as zip code search
     /// </summary>
     [Route("api/[controller]")]
+    [ApiVersion("1.0")]
     public class GeographyRequestController : ApiController
     {
 
@@ -79,7 +82,7 @@ namespace HorseApp2.Controllers
                 using (var context = new HorseDatabaseEntities())
                 {
                     // Initialize command
-                    var searchCmd = new SqlCommand("usp_SearchActiveListings");
+                    var searchCmd = new SqlCommand("usp_v1_0_SearchActiveListings");
                     searchCmd.CommandType = CommandType.StoredProcedure;
 
                     // Initialize Parameters

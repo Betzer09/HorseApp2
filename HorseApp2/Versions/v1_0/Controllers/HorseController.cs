@@ -1,23 +1,22 @@
-﻿using HorseApp2.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Data.Entity.Core.Objects;
-using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Results;
+using HorseApp2.Versions.v1_0.Models;
+using Microsoft.Web.Http;
 
-namespace HorseApp2.Controllers
+namespace HorseApp2.Versions.v1_0.Controllers
 {
     //Main Controller
+    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
     public class HorseController : ApiController
     {
         //Test Endpoint to see if connection to the database is successful
@@ -77,7 +76,7 @@ namespace HorseApp2.Controllers
                 using (var context = new HorseDatabaseEntities())
                 {
                     //Initializing sql command, parameters, and connection
-                    SqlCommand cmd = new SqlCommand("usp_InsertActiveListing");
+                    SqlCommand cmd = new SqlCommand("usp_v1_0_InsertActiveListing");
                     cmd.CommandType = CommandType.StoredProcedure;
                     List<SqlParameter> parameters = dbHelper.GetSqlParametersForInsert(listing);
                     SqlConnection conn = new SqlConnection(context.Database.Connection.ConnectionString);
@@ -211,6 +210,13 @@ namespace HorseApp2.Controllers
             SqlParameter param25 = new SqlParameter();
             param25.ParameterName = "@CountryCode";
             param25.Value = listing.CountryCode;
+            SqlParameter param26 = new SqlParameter();
+            param26.ParameterName = "@FavoriteCount";
+            param26.Value = listing.FavoriteCount;
+            SqlParameter param27 = new SqlParameter();
+            param27.ParameterName = "@ViewedCount";
+            param27.Value = listing.ViewedCount;
+
 
             /*
             SqlParameter param24 = new SqlParameter();
@@ -302,6 +308,8 @@ namespace HorseApp2.Controllers
             parameters.Add(param23);
             parameters.Add(param24);
             parameters.Add(param25);
+            parameters.Add(param26);
+            parameters.Add(param27);
             parameters.Add(photos);
 
 
@@ -312,7 +320,7 @@ namespace HorseApp2.Controllers
                 using (var context = new HorseDatabaseEntities())
                 {
                     //Initializing sql command, parameters, and connection
-                    SqlCommand cmd = new SqlCommand("usp_UpdateActiveListing");
+                    SqlCommand cmd = new SqlCommand("usp_v1_0_UpdateActiveListing");
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     System.Data.SqlClient.SqlConnection conn =
@@ -394,7 +402,7 @@ namespace HorseApp2.Controllers
                 using (var context = new HorseDatabaseEntities())
                 {
                     //Initializing sql command, parameters, and connection
-                    SqlCommand cmd = new SqlCommand("usp_DeleteActiveListing");
+                    SqlCommand cmd = new SqlCommand("usp_v1_0_DeleteActiveListing");
                     cmd.CommandType = CommandType.StoredProcedure;
                     SqlParameter param = new SqlParameter();
                     param.ParameterName = "@ActiveListingIds";
@@ -442,7 +450,7 @@ namespace HorseApp2.Controllers
                 using (var context = new HorseDatabaseEntities())
                 {
                     //Initializing sql command, parameters, and connection
-                    SqlCommand cmd = new SqlCommand("usp_GetDeletedListings");
+                    SqlCommand cmd = new SqlCommand("usp_v1_0_GetDeletedListings");
                     cmd.CommandType = CommandType.StoredProcedure;
                     SqlParameter param = new SqlParameter();
 
@@ -509,7 +517,7 @@ namespace HorseApp2.Controllers
                 using (var context = new HorseDatabaseEntities())
                 {
                     //Initializing sql command, parameters, and connection
-                    SqlCommand cmd = new SqlCommand("usp_SearchActiveListings");
+                    SqlCommand cmd = new SqlCommand("usp_v1_0_SearchActiveListings");
                     cmd.CommandType = CommandType.StoredProcedure;
                     List<SqlParameter> parameters = dbHelper.GetSqlParametersForSearchListings(objRequest);
                     SqlConnection conn = new SqlConnection(context.Database.Connection.ConnectionString);
@@ -595,7 +603,7 @@ namespace HorseApp2.Controllers
                 using (var context = new HorseDatabaseEntities())
                 {
                     //Initializing sql command, parameters, and connection
-                    SqlCommand cmd = new SqlCommand("usp_InsertSire");
+                    SqlCommand cmd = new SqlCommand("usp_v1_0_InsertSire");
                     cmd.CommandType = CommandType.StoredProcedure;
 
 
@@ -665,7 +673,7 @@ namespace HorseApp2.Controllers
                 using (var context = new HorseDatabaseEntities())
                 {
                     //Initializing sql command, parameters, and connection
-                    SqlCommand cmd = new SqlCommand("usp_UpdateSireName");
+                    SqlCommand cmd = new SqlCommand("usp_v1_0_UpdateSireName");
                     cmd.CommandType = CommandType.StoredProcedure;
 
 
@@ -749,7 +757,7 @@ namespace HorseApp2.Controllers
                 using (var context = new HorseDatabaseEntities())
                 {
                     //Initializing sql command, parameters, and connection
-                    SqlCommand cmd = new SqlCommand("usp_DeleteSire");
+                    SqlCommand cmd = new SqlCommand("usp_v1_0_DeleteSire");
                     cmd.CommandType = CommandType.StoredProcedure;
                     SqlParameter param = new SqlParameter();
                     param.ParameterName = "@Name";
@@ -815,7 +823,7 @@ namespace HorseApp2.Controllers
                 using (var context = new HorseDatabaseEntities())
                 {
                     //Initializing sql command, parameters, and connection
-                    SqlCommand cmd = new SqlCommand("usp_SearchAllSires");
+                    SqlCommand cmd = new SqlCommand("usp_v1_0_SearchAllSires");
                     cmd.CommandType = CommandType.StoredProcedure;
                     SqlParameter param = new SqlParameter();
                     param.ParameterName = "@Name";
@@ -927,7 +935,7 @@ namespace HorseApp2.Controllers
                 using (var context = new HorseDatabaseEntities())
                 {
                     //Initializing sql command, parameters, and connection
-                    SqlCommand cmd = new SqlCommand("usp_SearchAllSiresElastically");
+                    SqlCommand cmd = new SqlCommand("usp_v1_0_SearchAllSiresElastically");
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     SqlParameter param0 = new SqlParameter();
@@ -1053,7 +1061,7 @@ namespace HorseApp2.Controllers
                 using (var context = new HorseDatabaseEntities())
                 {
                     //Initializing sql command, parameters, and connection
-                    SqlCommand cmd = new SqlCommand("usp_searchByPrice");
+                    SqlCommand cmd = new SqlCommand("usp_v1_0_searchByPrice");
                     cmd.CommandType = CommandType.StoredProcedure;
                     List<SqlParameter> parameters = new List<SqlParameter>();
                     SqlParameter param1 = new SqlParameter();
@@ -1128,7 +1136,7 @@ namespace HorseApp2.Controllers
                 using (var context = new HorseDatabaseEntities())
                 {
                     //Initializing sql command, parameters, and connection
-                    SqlCommand cmd = new SqlCommand("usp_SearchByHorseType");
+                    SqlCommand cmd = new SqlCommand("usp_v1_0_SearchByHorseType");
                     cmd.CommandType = CommandType.StoredProcedure;
                     List<SqlParameter> parameters = new List<SqlParameter>();
                     SqlParameter param1 = new SqlParameter();
@@ -1197,7 +1205,7 @@ namespace HorseApp2.Controllers
                 using (var context = new HorseDatabaseEntities())
                 {
                     //Initializing sql command, parameters, and connection
-                    SqlCommand cmd = new SqlCommand("usp_SearchBySire");
+                    SqlCommand cmd = new SqlCommand("usp_v1_0_SearchBySire");
                     cmd.CommandType = CommandType.StoredProcedure;
                     List<SqlParameter> parameters = new List<SqlParameter>();
                     SqlParameter param1 = new SqlParameter();
@@ -1266,7 +1274,7 @@ namespace HorseApp2.Controllers
                 using (var context = new HorseDatabaseEntities())
                 {
                     //Initializing sql command, parameters, and connection
-                    SqlCommand cmd = new SqlCommand("usp_SearchByGender");
+                    SqlCommand cmd = new SqlCommand("usp_v1_0_SearchByGender");
                     cmd.CommandType = CommandType.StoredProcedure;
                     List<SqlParameter> parameters = new List<SqlParameter>();
                     SqlParameter param1 = new SqlParameter();
@@ -1341,7 +1349,7 @@ namespace HorseApp2.Controllers
                 using (var context = new HorseDatabaseEntities())
                 {
                     //Initializing sql command, parameters, and connection
-                    SqlCommand cmd = new SqlCommand("usp_SearchByAge");
+                    SqlCommand cmd = new SqlCommand("usp_v1_0_SearchByAge");
                     cmd.CommandType = CommandType.StoredProcedure;
                     List<SqlParameter> parameters = new List<SqlParameter>();
                     SqlParameter param1 = new SqlParameter();
@@ -1572,7 +1580,7 @@ namespace HorseApp2.Controllers
             {
                 using (var context = new HorseDatabaseEntities())
                 {
-                    SqlCommand cmd = new SqlCommand("usp_InsertSires");
+                    SqlCommand cmd = new SqlCommand("usp_v1_0_InsertSires");
                     cmd.CommandType = CommandType.StoredProcedure;
                     SqlParameter param = new SqlParameter();
                     SqlParameter param2 = new SqlParameter();

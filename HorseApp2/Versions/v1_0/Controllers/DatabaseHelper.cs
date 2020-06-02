@@ -6,10 +6,12 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using HorseApp2.Models;
+using HorseApp2.Versions.v1_0.Models;
+using Microsoft.Web.Http;
 
-namespace HorseApp2.Controllers
+namespace HorseApp2.Versions.v1_0.Controllers
 {
+    [ApiVersion("1.0")]
     public class DatabaseHelper
     {
         #region Public Methods
@@ -220,18 +222,25 @@ namespace HorseApp2.Controllers
             
             return parameters;
         }
-
-        #endregion
-
-        #region Private Methods
-
-         /// <summary>
+        
+        /// <summary>
+        /// Convenience function used to build a SQL Parameter
+        /// </summary>
+        /// <param name="name">Name of the parameter</param>
+        /// <param name="value">Value of the parameter</param>
+        /// <returns>Initialized SQL parameter</returns>
+        public SqlParameter BuildSqlParameter(string name, object value)
+        {
+            return new SqlParameter(name, value);
+        }
+        
+        /// <summary>
         /// Populates an Active Listing object with data rows
         /// </summary>
         /// <param name="row"></param>
         /// <param name="photos"></param>
         /// <returns></returns>
-        private HorseListing PopulateListing(DataRow row, List<DataRow> photos)
+        public HorseListing PopulateListing(DataRow row, List<DataRow> photos)
         {
             HorseListing listing = new HorseListing();
 
@@ -260,6 +269,8 @@ namespace HorseApp2.Controllers
             listing.IsDamSireRegistered = bool.Parse(row["IsDamSireRegistered"].ToString());
             listing.Zip = row["Zip"].ToString();
             listing.CountryCode = row["CountryCode"].ToString();
+            listing.ViewedCount = row["ViewedCount"].ToString();
+            listing.FavoriteCount = row["FavoriteCount"].ToString();
 
             int i = 0;
             foreach (DataRow dr in photos)
@@ -278,6 +289,10 @@ namespace HorseApp2.Controllers
 
             return listing;
         }
+
+        #endregion
+
+        #region Private Methods
 
         /// <summary>
         /// Checks if the given parameter name exists as a list of strings in the source
@@ -480,17 +495,6 @@ namespace HorseApp2.Controllers
             var min = CheckDecimalParam(headers, minParamName, minDefault);
             var max = CheckDecimalParam(headers, maxParamName, maxDefault);
             return new Tuple<bool, decimal, decimal>(exists, min.Item2, max.Item2);
-        }
-        
-        /// <summary>
-        /// Convenience function used to build a SQL Parameter
-        /// </summary>
-        /// <param name="name">Name of the parameter</param>
-        /// <param name="value">Value of the parameter</param>
-        /// <returns>Initialized SQL parameter</returns>
-        private SqlParameter BuildSqlParameter(string name, object value)
-        {
-            return new SqlParameter(name, value);
         }
 
         /// <summary>

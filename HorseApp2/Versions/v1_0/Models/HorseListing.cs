@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Microsoft.Web.Http;
 using Newtonsoft.Json;
 
-namespace HorseApp2.Models
+namespace HorseApp2.Versions.v1_0.Models
 {
     //1 horse listing that includes the photos for the post
+    [ApiVersion("1.0")]
     public class HorseListing
     {
         public HorseListing()
@@ -41,6 +43,10 @@ namespace HorseApp2.Models
         public string Zip { get; set; }
         [JsonProperty("countryCode")]
         public string CountryCode { get; set; }
+        [JsonProperty("favoriteCount")]
+        public string FavoriteCount { get; set; }
+        [JsonProperty("viewedCount")]
+        public string ViewedCount { get; set; }
 
         public List<HorseListingPhoto> photos { get; set; }
 
