@@ -4,15 +4,18 @@ using System.Data.SqlClient;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Microsoft.Web.Http;
 using Newtonsoft.Json;
 
-namespace HorseApp2.Controllers
+namespace HorseApp2.Versions.v1_0.Controllers
 {
     /// <summary>
     /// API Controller handling analytics requests such as incrementing/decrementing times a listing has been added to
     /// favorites and incrementing listing views
     /// </summary>
+    // [Route("api/[controller]")]
     [Route("api/[controller]")]
+    [ApiVersion("1.0")]
     public class AnalyticsManagementController : ApiController
     {
         #region Class Variables
@@ -149,6 +152,7 @@ namespace HorseApp2.Controllers
         #endregion
     }
 
+    [ApiVersion("1.0")]
     public class ActiveListingIdRequest
     {
         /// <summary>
@@ -162,6 +166,7 @@ namespace HorseApp2.Controllers
         [JsonProperty("isIncrementing")] public bool IsIncrementing { get; set; } = true;
     }
 
+    [ApiVersion("1.0")]
     public class ViewCountResponse
     {
         /// <summary>
@@ -170,6 +175,7 @@ namespace HorseApp2.Controllers
         [JsonProperty("viewedCount")] public int ViewedCount { get; set; }
     }
 
+    [ApiVersion("1.0")]
     public class FavoritesCountResponse
     {
         /// <summary>

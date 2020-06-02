@@ -1,23 +1,22 @@
-﻿using HorseApp2.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Data.Entity.Core.Objects;
-using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Results;
+using HorseApp2.Versions.v1_0.Models;
+using Microsoft.Web.Http;
 
-namespace HorseApp2.Controllers
+namespace HorseApp2.Versions.v1_0.Controllers
 {
     //Main Controller
+    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
     public class HorseController : ApiController
     {
         //Test Endpoint to see if connection to the database is successful

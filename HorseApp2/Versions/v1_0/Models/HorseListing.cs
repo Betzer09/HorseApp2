@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Microsoft.Web.Http;
 using Newtonsoft.Json;
 
-namespace HorseApp2.Models
+namespace HorseApp2.Versions.v1_0.Models
 {
     //1 horse listing that includes the photos for the post
+    [ApiVersion("1.0")]
     public class HorseListing
     {
         public HorseListing()
