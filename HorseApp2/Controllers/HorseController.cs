@@ -211,6 +211,13 @@ namespace HorseApp2.Controllers
             SqlParameter param25 = new SqlParameter();
             param25.ParameterName = "@CountryCode";
             param25.Value = listing.CountryCode;
+            SqlParameter param26 = new SqlParameter();
+            param26.ParameterName = "@FavoriteCount";
+            param26.Value = listing.FavoriteCount;
+            SqlParameter param27 = new SqlParameter();
+            param27.ParameterName = "@ViewedCount";
+            param27.Value = listing.ViewedCount;
+
 
             /*
             SqlParameter param24 = new SqlParameter();
@@ -302,6 +309,8 @@ namespace HorseApp2.Controllers
             parameters.Add(param23);
             parameters.Add(param24);
             parameters.Add(param25);
+            parameters.Add(param26);
+            parameters.Add(param27);
             parameters.Add(photos);
 
 
