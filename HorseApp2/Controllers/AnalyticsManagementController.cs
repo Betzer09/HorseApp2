@@ -1,13 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Http.Results;
-using HorseApp2.Models;
+using Newtonsoft.Json;
 
 namespace HorseApp2.Controllers
 {
@@ -16,111 +13,168 @@ namespace HorseApp2.Controllers
     /// favorites and incrementing listing views
     /// </summary>
     [Route("api/[controller]")]
-    public class AnalyticsManagementController: ApiController
+    public class AnalyticsManagementController : ApiController
     {
         #region Class Variables
-
-        
 
         #endregion
 
         #region Get Requests
 
-        
-
         #endregion
 
         #region Post Requests
-        
-        // Add View
+
         /// <summary>
-        /// Search for horses within a provided range of a given zip code.
+        /// Increments the view count for the given active listing ID
         /// </summary>
-        /// <remarks>Kept active to provide easy access for validation and testing</remarks>
-        /// <returns>HTTP response, which includes the search results on success</returns>
+        /// <param name="requestBody">Request pulled from the post body, including the active listing ID</param>
+        /// <returns>The number of views, or an error response</returns>
         [HttpPost]
         [Route("IncrementListingViewCount")]
-        public async Task<IHttpActionResult> IncrementListingViewCount([FromBody] string activeListingId)
+        public async Task<IHttpActionResult> IncrementListingViewCount(ActiveListingIdRequest requestBody)
         {
-            var request = Request;
-            if (String.IsNullOrEmpty(activeListingId))
+            if (requestBody == null || string.IsNullOrEmpty(requestBody.ActiveListingId))
             {
                 return BadRequest("'activeListingId' is a required parameter.");
             }
 
-            return Ok();
-            // try
-            // {
-            //     using (var context = new HorseDatabaseEntities())
-            //     {
-            //         //Initializing sql command, parameters, and connection
-            //         SqlCommand cmd = new SqlCommand("usp_IncrementListingViewCount");
-            //         
-            //         var dbHelper = new DatabaseHelper();
-            //         var activeListingId = dbHelper.BuildSqlParameter("@ActiveListingId", )
-            //         
-            //         cmd.CommandType = CommandType.StoredProcedure;
-            //         SqlConnection conn = new SqlConnection(context.Database.Connection.ConnectionString);
-            //         cmd.Connection = conn;
-            //         cmd.Parameters.AddRange(parameters.ToArray());
-            //
-            //
-            //         //open connection
-            //         context.Database.Connection.Open();
-            //
-            //         //execute and retrieve data from stored procedure
-            //         SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-            //         DataSet ds = new DataSet();
-            //         adapter.Fill(ds);
-            //         DataTable listingData = ds.Tables[0];
-            //         DataTable photos = ds.Tables[1];
-            //         DataTable totalListings = ds.Tables[2];
-            //
-            //         int total = 0;
-            //         foreach (DataRow row in totalListings.Rows)
-            //         {
-            //             total = int.Parse(row[0].ToString());
-            //         }
-            //
-            //         //convert data from stored proceduure into ActiveListing object
-            //         SearchResponse response = new SearchResponse();
-            //         response.listings = dbHelper.DataTablesToHorseListing(listingData, photos);
-            //         response.totalNumOfListings = total;
-            //         response.pageNumber = objRequest.Page;
-            //
-            //         //close connection and return
-            //         context.Database.Connection.Close();
-            //         return Ok(response);
-            //     }
-            // }
-            // catch (SqlException exception)
-            // {
-            //     // If it's specifically the "Zip code not found error"
-            //     if (exception.Number == 51000)
-            //     {
-            //         var contentResult = new NegotiatedContentResult<ResponseMessage>(
-            //             HttpStatusCode.NoContent, 
-            //             new ResponseMessage {Message = "Provided postal code could not be found."},
-            //             this);
-            //         return contentResult;
-            //     }
-            //
-            //     return InternalServerError(exception);
-            // }
-            // catch (Exception e)
-            // {
-            //     return InternalServerError(e);
-            // }
+            try
+            {
+                using (var context = new HorseDatabaseEntities())
+                {
+                    //Initializing sql command, parameters, and connection
+                    SqlCommand cmd = new SqlCommand("usp_IncrementActiveListingViewedCount");
+
+                    var dbHelper = new DatabaseHelper();
+                    var activeListingIdParameter =
+                        dbHelper.BuildSqlParameter("@ActiveListingId", requestBody.ActiveListingId);
+
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    SqlConnection conn = new SqlConnection(context.Database.Connection.ConnectionString);
+                    cmd.Connection = conn;
+                    cmd.Parameters.Add(activeListingIdParameter);
+
+
+                    //open connection
+                    context.Database.Connection.Open();
+
+                    //execute and retrieve data from stored procedure
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    adapter.Fill(ds);
+                    if (ds.Tables.Count == 0 || ds.Tables[0].Rows.Count == 0)
+                    {
+                        return Content(HttpStatusCode.NotFound,
+                            $"Active Listing with ID '{requestBody.ActiveListingId}' could not be found.");
+                    }
+
+                    var result = ds.Tables[0].Rows[0].Field<int>("ViewedCount");
+
+                    //close connection and return the count
+                    context.Database.Connection.Close();
+                    return Ok(new ViewCountResponse {ViewedCount = result});
+                }
+            }
+            catch (Exception e)
+            {
+                return InternalServerError(e);
+            }
         }
-        
-        // Adjust Favorites Count
+
+        /// <summary>
+        /// Updates the favorite count for the given active listing ID
+        /// </summary>
+        /// <param name="requestBody">Request pulled from the post body, including the active listing ID and increment flag</param>
+        /// <returns>The number of times the listing has been added to users' favorites, or an error response</returns>
+        [HttpPost]
+        [Route("UpdateActiveListingFavoritesCount")]
+        public async Task<IHttpActionResult> UpdateActiveListingFavoritesCount(ActiveListingIdRequest requestBody)
+        {
+            if (requestBody == null || string.IsNullOrEmpty(requestBody.ActiveListingId))
+            {
+                return BadRequest("'activeListingId' is a required parameter.");
+            }
+
+            try
+            {
+                using (var context = new HorseDatabaseEntities())
+                {
+                    //Initializing sql command, parameters, and connection
+                    SqlCommand cmd = new SqlCommand("usp_UpdateActiveListingFavoritesCount");
+
+                    var dbHelper = new DatabaseHelper();
+                    var activeListingIdParameter =
+                        dbHelper.BuildSqlParameter("@ActiveListingId", requestBody.ActiveListingId);
+                    var incrementParameter =
+                        dbHelper.BuildSqlParameter("@Incrementing", requestBody.IsIncrementing);
+
+
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    SqlConnection conn = new SqlConnection(context.Database.Connection.ConnectionString);
+                    cmd.Connection = conn;
+                    cmd.Parameters.Add(activeListingIdParameter);
+                    cmd.Parameters.Add(incrementParameter);
+
+                    //open connection
+                    context.Database.Connection.Open();
+
+                    //execute and retrieve data from stored procedure
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    adapter.Fill(ds);
+                    if (ds.Tables.Count == 0 || ds.Tables[0].Rows.Count == 0)
+                    {
+                        return Content(HttpStatusCode.NotFound,
+                            $"Active Listing with ID '{requestBody.ActiveListingId}' could not be found.");
+                    }
+
+                    var result = ds.Tables[0].Rows[0].Field<int>("FavoriteCount");
+
+                    //close connection and return the count
+                    context.Database.Connection.Close();
+                    return Ok(new FavoritesCountResponse {FavoriteCount = result});
+                }
+            }
+            catch (Exception e)
+            {
+                return InternalServerError(e);
+            }
+        }
 
         #endregion
 
         #region Helper Functions
 
-        
-
         #endregion
+    }
+
+    public class ActiveListingIdRequest
+    {
+        /// <summary>
+        /// ID of the requested listing
+        /// </summary>
+        [JsonProperty("activeListingId")] public string ActiveListingId { get; set; }
+
+        /// <summary>
+        /// Flag determining whether favorite adjustments will increment or decrement
+        /// </summary>
+        [JsonProperty("isIncrementing")] public bool IsIncrementing { get; set; } = true;
+    }
+
+    public class ViewCountResponse
+    {
+        /// <summary>
+        /// Count of views for the requested listing
+        /// </summary>
+        [JsonProperty("viewedCount")] public int ViewedCount { get; set; }
+    }
+
+    public class FavoritesCountResponse
+    {
+        /// <summary>
+        /// Count of favorites the requested listing has received
+        /// </summary>
+        [JsonProperty("favoriteCount")] public int FavoriteCount { get; set; }
     }
 }

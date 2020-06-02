@@ -231,18 +231,14 @@ namespace HorseApp2.Controllers
         {
             return new SqlParameter(name, value);
         }
-
-        #endregion
-
-        #region Private Methods
-
-         /// <summary>
+        
+        /// <summary>
         /// Populates an Active Listing object with data rows
         /// </summary>
         /// <param name="row"></param>
         /// <param name="photos"></param>
         /// <returns></returns>
-        private HorseListing PopulateListing(DataRow row, List<DataRow> photos)
+        public HorseListing PopulateListing(DataRow row, List<DataRow> photos)
         {
             HorseListing listing = new HorseListing();
 
@@ -291,6 +287,10 @@ namespace HorseApp2.Controllers
 
             return listing;
         }
+
+        #endregion
+
+        #region Private Methods
 
         /// <summary>
         /// Checks if the given parameter name exists as a list of strings in the source
