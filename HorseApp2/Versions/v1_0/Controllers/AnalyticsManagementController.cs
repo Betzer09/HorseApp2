@@ -47,7 +47,7 @@ namespace HorseApp2.Versions.v1_0.Controllers
                 using (var context = new HorseDatabaseEntities())
                 {
                     //Initializing sql command, parameters, and connection
-                    SqlCommand cmd = new SqlCommand("usp_IncrementActiveListingViewedCount");
+                    SqlCommand cmd = new SqlCommand("usp_v1_0_IncrementActiveListingViewedCount");
 
                     var dbHelper = new DatabaseHelper();
                     var activeListingIdParameter =
@@ -104,7 +104,7 @@ namespace HorseApp2.Versions.v1_0.Controllers
                 using (var context = new HorseDatabaseEntities())
                 {
                     //Initializing sql command, parameters, and connection
-                    SqlCommand cmd = new SqlCommand("usp_UpdateActiveListingFavoritesCount");
+                    SqlCommand cmd = new SqlCommand("usp_v1_0_UpdateActiveListingFavoritesCount");
 
                     var dbHelper = new DatabaseHelper();
                     var activeListingIdParameter =

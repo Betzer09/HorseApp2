@@ -82,7 +82,7 @@ namespace HorseApp2.Versions.v1_0.Controllers
                 using (var context = new HorseDatabaseEntities())
                 {
                     // Initialize command
-                    var searchCmd = new SqlCommand("usp_SearchActiveListings");
+                    var searchCmd = new SqlCommand("usp_v1_0_SearchActiveListings");
                     searchCmd.CommandType = CommandType.StoredProcedure;
 
                     // Initialize Parameters
