@@ -146,6 +146,11 @@ namespace HorseApp2.Versions.v1_1.Controllers
             {
                 return BadRequest($"Parameter 'countryCode' is missing. {requiredParametersMessage}");
             }
+
+            if (locationData.CountryCode.Length != 2)
+            {
+                return BadRequest($"Parameter 'countryCode' must be 2 characters long. {requiredParametersMessage}");
+            }
             if (string.IsNullOrEmpty(locationData.PostalCode))
             {
                 return BadRequest($"Parameter 'postalCode' is missing. {requiredParametersMessage}");
@@ -168,8 +173,12 @@ namespace HorseApp2.Versions.v1_1.Controllers
 
                     var dbHelper = new DatabaseHelper();
                     var parameters = new List<SqlParameter>();
+                    // TODO: SANITIZE COUNTRY CODE
                     parameters.Add(dbHelper.BuildSqlParameter("@countryCode", locationData.CountryCode));
-                    parameters.Add(dbHelper.BuildSqlParameter("@postalCode", locationData.PostalCode));
+                    parameters.Add(dbHelper.BuildSqlParameter(
+                        "@postalCode", 
+                        PreparePostalCode(locationData.PostalCode, locationData.CountryCode))
+                    );
                     parameters.Add(dbHelper.BuildSqlParameter("@longitude", locationData.Longitude));
                     parameters.Add(dbHelper.BuildSqlParameter("@latitude", locationData.Latitude));
 
