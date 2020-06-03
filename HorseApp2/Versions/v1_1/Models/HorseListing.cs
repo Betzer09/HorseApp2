@@ -41,9 +41,9 @@ namespace HorseApp2.Versions.v1_1.Models
         [JsonProperty("countryCode")]
         public string CountryCode { get; set; }
         [JsonProperty("favoriteCount")]
-        public string FavoriteCount { get; set; }
+        public int FavoriteCount { get; set; }
         [JsonProperty("viewedCount")]
-        public string ViewedCount { get; set; }
+        public int ViewedCount { get; set; }
 
         public List<HorseListingPhoto> photos { get; set; }
 

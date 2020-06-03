@@ -269,8 +269,8 @@ namespace HorseApp2.Versions.v1_0.Controllers
             listing.IsDamSireRegistered = bool.Parse(row["IsDamSireRegistered"].ToString());
             listing.Zip = row["Zip"].ToString();
             listing.CountryCode = row["CountryCode"].ToString();
-            listing.ViewedCount = row["ViewedCount"].ToString();
-            listing.FavoriteCount = row["FavoriteCount"].ToString();
+            listing.ViewedCount = int.Parse(row["ViewedCount"].ToString());
+            listing.FavoriteCount = int.Parse(row["FavoriteCount"].ToString());
 
             int i = 0;
             foreach (DataRow dr in photos)
