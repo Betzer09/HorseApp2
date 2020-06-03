@@ -224,6 +224,23 @@
     <Compile Include="Versions\v1_0\Models\SireResponse.cs" />
     <Compile Include="Versions\v1_0\Models\SireSearchResponse.cs" />
     <Compile Include="Versions\v1_0\Models\UpdateSireNameRequest.cs" />
+    <Compile Include="Versions\v1_1\Controllers\AnalyticsManagementController.cs" />
+    <Compile Include="Versions\v1_1\Controllers\DatabaseHelper.cs" />
+    <Compile Include="Versions\v1_1\Controllers\GeographyRequestController.cs" />
+    <Compile Include="Versions\v1_1\Controllers\HorseController.cs" />
+    <Compile Include="Versions\v1_1\Models\Geography\LocationDatabaseModel.cs" />
+    <Compile Include="Versions\v1_1\Models\HorseListing.cs" />
+    <Compile Include="Versions\v1_1\Models\HorseListingData.cs" />
+    <Compile Include="Versions\v1_1\Models\HorseListingPhoto.cs" />
+    <Compile Include="Versions\v1_1\Models\ResponseMessage.cs" />
+    <Compile Include="Versions\v1_1\Models\RowExistsRequestDTO.cs" />
+    <Compile Include="Versions\v1_1\Models\SearchActiveListingsRequest.cs" />
+    <Compile Include="Versions\v1_1\Models\SearchByPriceResponse.cs" />
+    <Compile Include="Versions\v1_1\Models\SearchResponse.cs" />
+    <Compile Include="Versions\v1_1\Models\SireListing.cs" />
+    <Compile Include="Versions\v1_1\Models\SireResponse.cs" />
+    <Compile Include="Versions\v1_1\Models\SireSearchResponse.cs" />
+    <Compile Include="Versions\v1_1\Models\UpdateSireNameRequest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
@@ -308,8 +325,6 @@
     <Folder Include="Controllers" />
     <Folder Include="Models" />
     <Folder Include="Sires\" />
-    <Folder Include="Versions\v1_1\Controllers" />
-    <Folder Include="Versions\v1_1\Models" />
     <Folder Include="Versions\v2_0\Controllers" />
     <Folder Include="Versions\v2_0\Models" />
   </ItemGroup>
