@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
+using Microsoft.Web.Http;
 
-namespace HorseApp2.Models
+namespace HorseApp2.Versions.v1_0.Models
 {
+    [ApiVersion("1.0")]
     //Response object for searching sires
     public class SireSearchResponse
     {

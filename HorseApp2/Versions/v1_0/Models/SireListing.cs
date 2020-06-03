@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using Microsoft.Web.Http;
 
-namespace HorseApp2.Models
+namespace HorseApp2.Versions.v1_0.Models
 {
     //One listing of a sire
+    [ApiVersion("1.0")]
     public class SireListing
     {
         public long sireServerId { get; set; }

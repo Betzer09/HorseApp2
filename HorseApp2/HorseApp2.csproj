@@ -51,6 +51,10 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.AspNet.WebApi.Versioning, Version=4.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Versioning.4.0.0\lib\net45\Microsoft.AspNet.WebApi.Versioning.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
@@ -160,10 +164,6 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
-    <Compile Include="Controllers\AnalyticsManagementController.cs" />
-    <Compile Include="Controllers\DatabaseHelper.cs" />
-    <Compile Include="Controllers\GeographyRequestController.cs" />
-    <Compile Include="Controllers\HorseController.cs" />
     <Compile Include="database_firewall_rules.cs">
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
@@ -186,18 +186,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Keystore.cs" />
-    <Compile Include="Models\HorseListing.cs" />
-    <Compile Include="Models\HorseListingData.cs" />
-    <Compile Include="Models\HorseListingPhoto.cs" />
-    <Compile Include="Models\ResponseMessage.cs" />
-    <Compile Include="Models\SearchActiveListingsRequest.cs" />
-    <Compile Include="Models\SearchResponse.cs" />
-    <Compile Include="Models\SireListing.cs" />
-    <Compile Include="Models\SireResponse.cs" />
-    <Compile Include="Models\RowExistsRequestDTO.cs" />
-    <Compile Include="Models\SearchByPriceResponse.cs" />
-    <Compile Include="Models\SireSearchResponse.cs" />
-    <Compile Include="Models\UpdateSireNameRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="tblActiveListing.cs">
       <DependentUpon>DataModel.tt</DependentUpon>
@@ -220,6 +208,22 @@
     <Compile Include="usp_UpdateSireName_Result.cs">
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Versions\v1_0\Controllers\AnalyticsManagementController.cs" />
+    <Compile Include="Versions\v1_0\Controllers\DatabaseHelper.cs" />
+    <Compile Include="Versions\v1_0\Controllers\GeographyRequestController.cs" />
+    <Compile Include="Versions\v1_0\Controllers\HorseController.cs" />
+    <Compile Include="Versions\v1_0\Models\HorseListing.cs" />
+    <Compile Include="Versions\v1_0\Models\HorseListingData.cs" />
+    <Compile Include="Versions\v1_0\Models\HorseListingPhoto.cs" />
+    <Compile Include="Versions\v1_0\Models\ResponseMessage.cs" />
+    <Compile Include="Versions\v1_0\Models\RowExistsRequestDTO.cs" />
+    <Compile Include="Versions\v1_0\Models\SearchActiveListingsRequest.cs" />
+    <Compile Include="Versions\v1_0\Models\SearchByPriceResponse.cs" />
+    <Compile Include="Versions\v1_0\Models\SearchResponse.cs" />
+    <Compile Include="Versions\v1_0\Models\SireListing.cs" />
+    <Compile Include="Versions\v1_0\Models\SireResponse.cs" />
+    <Compile Include="Versions\v1_0\Models\SireSearchResponse.cs" />
+    <Compile Include="Versions\v1_0\Models\UpdateSireNameRequest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
@@ -301,7 +305,13 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Controllers" />
+    <Folder Include="Models" />
     <Folder Include="Sires\" />
+    <Folder Include="Versions\v1_1\Controllers" />
+    <Folder Include="Versions\v1_1\Models" />
+    <Folder Include="Versions\v2_0\Controllers" />
+    <Folder Include="Versions\v2_0\Models" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

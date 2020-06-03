@@ -6,10 +6,12 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using HorseApp2.Models;
+using HorseApp2.Versions.v1_0.Models;
+using Microsoft.Web.Http;
 
-namespace HorseApp2.Controllers
+namespace HorseApp2.Versions.v1_0.Controllers
 {
+    [ApiVersion("1.0")]
     public class DatabaseHelper
     {
         #region Public Methods

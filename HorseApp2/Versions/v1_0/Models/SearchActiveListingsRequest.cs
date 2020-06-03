@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
+using Microsoft.Web.Http;
 
-namespace HorseApp2.Models
+namespace HorseApp2.Versions.v1_0.Models
 {
     //Request object for searching the active listings
+    [ApiVersion("1.0")]
     public class SearchActiveListingsRequest
     {
         //NOT REQUIRED
