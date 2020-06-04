@@ -199,7 +199,7 @@ namespace HorseApp2.Versions.v1_1.Controllers
             parameters.Add(BuildSqlParameter("@OrderByDesc", request.OrderByDesc));
             parameters.Add(BuildSqlParameter("@ActiveListingIdSearch", request.ActiveListingIdSearch));
             parameters.Add(BuildSqlParameter("ActiveListingIds", BuildSqlParameterValue(request.ActiveListingIds, "IDs", "System.String")));
-            parameters.Add(BuildSqlParameter("@InFoalToSearch", request.InFoalSearch));
+            parameters.Add(BuildSqlParameter("@InFoalToSearch", request.InFoalToSearch));
             parameters.Add(BuildSqlParameter("@InFoalTo", BuildSqlParameterValue(request.InFoalTo, "InFoalTo", "System.String")));
             parameters.Add(BuildSqlParameter("@IsSoldSearch", request.isSoldSearch));
             parameters.Add(BuildSqlParameter("@IsSold", request.IsSold));
