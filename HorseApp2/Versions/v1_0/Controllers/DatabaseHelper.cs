@@ -80,7 +80,6 @@ namespace HorseApp2.Versions.v1_0.Controllers
             // Handle Postal Code Metadata
             var (zipCodeExists, zipCode) = CheckStringParam(headers, "zip");
             var (countryCodeExists, countryCode) = CheckStringParam(headers, "countryCode");
-            request.LocationsSearch = zipCodeExists && countryCodeExists;
             
             // Throw an error if zip code or country code are provided without the other.
             if (zipCodeExists && !countryCodeExists || countryCodeExists && !zipCodeExists)
@@ -91,8 +90,9 @@ namespace HorseApp2.Versions.v1_0.Controllers
             if (zipCodeExists)
             {
                 request.CountryCode = countryCode;
-                request.Range = CheckIntParam(headers, "dist", 25).Item2;
+                request.Range = CheckIntParam(headers, "dist", 10000).Item2;
                 request.Unit = CheckStringParam(headers, "unit", "mile").Item2;
+                request.LocationsSearch = request.Range <= 250;
 
                 var geographyRequestController = new GeographyRequestController();
                 geographyRequestController.ValidateParameters(request.Range, request.Unit);

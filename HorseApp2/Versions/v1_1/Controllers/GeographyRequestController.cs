@@ -43,7 +43,7 @@ namespace HorseApp2.Versions.v1_1.Controllers
         /// <summary>
         /// Maximum accepted value for range
         /// </summary>
-        private readonly int _maxRange = 250;
+        private readonly int _maxRange = 10000;
         
         #endregion
         
