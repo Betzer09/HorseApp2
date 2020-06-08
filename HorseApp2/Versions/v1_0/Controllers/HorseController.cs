@@ -558,7 +558,7 @@ namespace HorseApp2.Versions.v1_0.Controllers
                 if (exception.Number == 51000)
                 {
                     var contentResult = new NegotiatedContentResult<ResponseMessage>(
-                        HttpStatusCode.NoContent, 
+                        (HttpStatusCode) 418, 
                         new ResponseMessage {Message = "Provided postal code could not be found."},
                         this);
                     return contentResult;
