@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Results;
 using HorseApp2.Versions.v1_1.Models;
 using HorseApp2.Versions.v1_1.Models.Geography;
 using Microsoft.Web.Http;
@@ -195,8 +196,22 @@ namespace HorseApp2.Versions.v1_1.Controllers
 
                     // Close connection
                     cmd.Connection.Close();
-                    return Ok($"Postal code {locationData.PostalCode} was successfully added.");
+                    return Ok(new ResponseMessage() {Message = $"Postal code {locationData.PostalCode} was successfully added."});
                 }
+            }
+            catch (SqlException exception)
+            {
+                // If it's specifically the "Zip code not found error"
+                if (exception.Number == 51000)
+                {
+                    var contentResult = new NegotiatedContentResult<ResponseMessage>(
+                        (HttpStatusCode) 418, 
+                        new ResponseMessage {Message = "Provided postal code could not be found."},
+                        this);
+                    return contentResult;
+                }
+
+                return InternalServerError(exception);
             }
             catch (Exception exception)
             {
