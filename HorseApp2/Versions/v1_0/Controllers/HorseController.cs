@@ -66,7 +66,7 @@ namespace HorseApp2.Versions.v1_0.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("InsertActiveListing")]
-        public HorseListing InsertActiveListing(HorseListing listing)
+        public IHttpActionResult InsertActiveListing(HorseListing listing)
         {
             //response object
             HorseListing response = new HorseListing();
@@ -116,13 +116,27 @@ namespace HorseApp2.Versions.v1_0.Controllers
                     context.Database.Connection.Close();
                 }
             }
+            catch (SqlException exception)
+            {
+                // If it's specifically the "Zip code not found error"
+                if (exception.Number == 51000)
+                {
+                    var contentResult = new NegotiatedContentResult<ResponseMessage>(
+                        (HttpStatusCode) 418, 
+                        new ResponseMessage {Message = "Provided postal code could not be found."},
+                        this);
+                    return contentResult;
+                }
+
+                return InternalServerError(exception);
+            }
             catch (Exception e)
             {
                 e.ToString();
                 response = new HorseListing();
             }
 
-            return response;
+            return Ok(response);
         }
 
         /// <summary>
@@ -579,7 +593,7 @@ namespace HorseApp2.Versions.v1_0.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("InsertSire")]
-        public SireResponse InsertSire()
+        public IHttpActionResult InsertSire()
         {
             SireResponse response = new SireResponse();
 
@@ -658,7 +672,7 @@ namespace HorseApp2.Versions.v1_0.Controllers
                 e.ToString();
             }
 
-            return response;
+            return Ok(response);
         }
 
         [HttpPut]
