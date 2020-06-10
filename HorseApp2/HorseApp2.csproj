@@ -51,6 +51,10 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.AspNet.WebApi.Versioning, Version=4.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Versioning.4.0.0\lib\net45\Microsoft.AspNet.WebApi.Versioning.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
@@ -160,57 +164,83 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
-    <Compile Include="Controllers\HorseController.cs" />
     <Compile Include="database_firewall_rules.cs">
-      <DependentUpon>DataModel2.tt</DependentUpon>
+      <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="DataModel2.Context.cs">
+    <Compile Include="DataModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>DataModel2.Context.tt</DependentUpon>
+      <DependentUpon>DataModel.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="DataModel2.cs">
+    <Compile Include="DataModel.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>DataModel2.tt</DependentUpon>
+      <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="DataModel2.Designer.cs">
+    <Compile Include="DataModel.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>DataModel2.edmx</DependentUpon>
+      <DependentUpon>DataModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\HorseListing.cs" />
-    <Compile Include="Models\HorseListingData.cs" />
-    <Compile Include="Models\HorseListingPhoto.cs" />
-    <Compile Include="Models\SearchActiveListingsRequest.cs" />
-    <Compile Include="Models\SearchResponse.cs" />
-    <Compile Include="Models\SireListing.cs" />
-    <Compile Include="Models\SireResponse.cs" />
-    <Compile Include="Models\RowExistsRequestDTO.cs" />
-    <Compile Include="Models\SearchByPriceResponse.cs" />
-    <Compile Include="Models\SireSearchResponse.cs" />
+    <Compile Include="Keystore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="tblActiveListing.cs">
-      <DependentUpon>DataModel2.tt</DependentUpon>
+      <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="tblActiveListingPhoto.cs">
-      <DependentUpon>DataModel2.tt</DependentUpon>
+      <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="tblName.cs">
-      <DependentUpon>DataModel2.tt</DependentUpon>
+      <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="tblSire.cs">
-      <DependentUpon>DataModel2.tt</DependentUpon>
+      <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="usp_InsertSire_Result.cs">
-      <DependentUpon>DataModel2.tt</DependentUpon>
+      <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="usp_SearchAllSires_Result.cs">
-      <DependentUpon>DataModel2.tt</DependentUpon>
+      <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="usp_UpdateSireName_Result.cs">
+      <DependentUpon>DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Versions\v1_0\Controllers\AnalyticsManagementController.cs" />
+    <Compile Include="Versions\v1_0\Controllers\DatabaseHelper.cs" />
+    <Compile Include="Versions\v1_0\Controllers\GeographyRequestController.cs" />
+    <Compile Include="Versions\v1_0\Controllers\HorseController.cs" />
+    <Compile Include="Versions\v1_0\Models\HorseListing.cs" />
+    <Compile Include="Versions\v1_0\Models\HorseListingData.cs" />
+    <Compile Include="Versions\v1_0\Models\HorseListingPhoto.cs" />
+    <Compile Include="Versions\v1_0\Models\ResponseMessage.cs" />
+    <Compile Include="Versions\v1_0\Models\RowExistsRequestDTO.cs" />
+    <Compile Include="Versions\v1_0\Models\SearchActiveListingsRequest.cs" />
+    <Compile Include="Versions\v1_0\Models\SearchByPriceResponse.cs" />
+    <Compile Include="Versions\v1_0\Models\SearchResponse.cs" />
+    <Compile Include="Versions\v1_0\Models\SireListing.cs" />
+    <Compile Include="Versions\v1_0\Models\SireResponse.cs" />
+    <Compile Include="Versions\v1_0\Models\SireSearchResponse.cs" />
+    <Compile Include="Versions\v1_0\Models\UpdateSireNameRequest.cs" />
+    <Compile Include="Versions\v1_1\Controllers\AnalyticsManagementController.cs" />
+    <Compile Include="Versions\v1_1\Controllers\DatabaseHelper.cs" />
+    <Compile Include="Versions\v1_1\Controllers\GeographyRequestController.cs" />
+    <Compile Include="Versions\v1_1\Controllers\HorseController.cs" />
+    <Compile Include="Versions\v1_1\Models\Geography\LocationDatabaseModel.cs" />
+    <Compile Include="Versions\v1_1\Models\HorseListing.cs" />
+    <Compile Include="Versions\v1_1\Models\HorseListingData.cs" />
+    <Compile Include="Versions\v1_1\Models\HorseListingPhoto.cs" />
+    <Compile Include="Versions\v1_1\Models\ResponseMessage.cs" />
+    <Compile Include="Versions\v1_1\Models\RowExistsRequestDTO.cs" />
+    <Compile Include="Versions\v1_1\Models\SearchActiveListingsRequest.cs" />
+    <Compile Include="Versions\v1_1\Models\SearchByPriceResponse.cs" />
+    <Compile Include="Versions\v1_1\Models\SearchResponse.cs" />
+    <Compile Include="Versions\v1_1\Models\SireListing.cs" />
+    <Compile Include="Versions\v1_1\Models\SireResponse.cs" />
+    <Compile Include="Versions\v1_1\Models\SireSearchResponse.cs" />
+    <Compile Include="Versions\v1_1\Models\UpdateSireNameRequest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
@@ -221,20 +251,21 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="CowHorses.txt" />
     <Content Include="CuttingSires.txt" />
-    <Content Include="DataModel2.Context.tt">
+    <Content Include="DataModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>DataModel2.edmx</DependentUpon>
-      <LastGenOutput>DataModel2.Context.cs</LastGenOutput>
+      <DependentUpon>DataModel.edmx</DependentUpon>
+      <LastGenOutput>DataModel.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="DataModel2.tt">
+    <Content Include="DataModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>DataModel2.edmx</DependentUpon>
-      <LastGenOutput>DataModel2.cs</LastGenOutput>
+      <DependentUpon>DataModel.edmx</DependentUpon>
+      <LastGenOutput>DataModel.cs</LastGenOutput>
     </Content>
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="ReiningSires.txt" />
+    <Content Include="RopingSires.txt" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\HelpPage\Views\Web.config" />
@@ -256,13 +287,14 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
-    <EntityDeploy Include="DataModel2.edmx">
+    <EntityDeploy Include="DataModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>DataModel2.Designer.cs</LastGenOutput>
+      <LastGenOutput>DataModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="DataModel2.edmx.diagram">
-      <DependentUpon>DataModel2.edmx</DependentUpon>
+    <Content Include="DataModel.edmx.diagram">
+      <DependentUpon>DataModel.edmx</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\devequinetraderappservice - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\equinetraderappservice - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\HorseApp220200318122300 - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\HorseAppService - Web Deploy.pubxml" />
@@ -290,7 +322,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Controllers" />
+    <Folder Include="Models" />
     <Folder Include="Sires\" />
+    <Folder Include="Versions\v2_0\Controllers" />
+    <Folder Include="Versions\v2_0\Models" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

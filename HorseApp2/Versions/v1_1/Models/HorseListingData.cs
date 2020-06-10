@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using Microsoft.Web.Http;
 
-namespace HorseApp2.Models
+namespace HorseApp2.Versions.v1_1.Models
 {
     //Contains all the necessary fields to build a horse listing besides the photos
+    [ApiVersion("1.1")]
     public class HorseListingData
     {
         public long ActiveListingId { get; set; }

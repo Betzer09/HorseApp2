@@ -33,5 +33,9 @@ namespace HorseApp2
         public string HorseType { get; set; }
         public Nullable<bool> IsSold { get; set; }
         public string InFoalTo { get; set; }
+        public Nullable<bool> CallForPrice { get; set; }
+        public Nullable<double> Height { get; set; }
+        public Nullable<bool> isSireRegistered { get; set; }
+        public Nullable<bool> isDamSireRegistered { get; set; }
     }
 }
